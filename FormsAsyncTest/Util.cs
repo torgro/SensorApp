@@ -124,4 +124,29 @@ public static class Util
         NewList.AddRange(ArrayOfBytes);
         return Util.EscapeUartBytes(NewList);
     }
+
+    public static int ComputeChecksum(byte[] ArrayOfBytes)
+    {
+        int checksum = 0;
+	    byte bb = new byte();
+	    int max = 255;
+	    //bool escapeFlag = false;
+	    if (ArrayOfBytes.Length > 3) 
+        {
+		    foreach (byte SingleByte in ArrayOfBytes) 
+            {			    
+			    // Looking for escape byte, if found skip it and do not add it to the sum &H7d = 125
+                if (SingleByte == (byte)125)
+                {
+				    //byte is escape byte, not adding it
+			    } else {
+                    checksum += SingleByte;
+			    }
+		    }
+            checksum = checksum - ArrayOfBytes[0] - ArrayOfBytes[1] - ArrayOfBytes[2] - ArrayOfBytes[ArrayOfBytes.Length - 1];
+            checksum = max & checksum;
+            checksum = max - checksum;		    
+	    }
+        return checksum;
+    }
 }

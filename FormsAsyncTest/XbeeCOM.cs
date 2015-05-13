@@ -11,11 +11,9 @@ using System.IO.Ports;
 
 public class XbeeCOM
 { 
-    //private bool dataInBuffer = false;
     private System.IO.Ports.SerialPort SerialPort1;
     public bool IsOpen = false;
     public int DataReceivedCounter = 0;
-    //private xBee.ilog.iLogit iLog;
     public string port { get; set; }
     public int BaudRate { get; set; }
     public bool RtsEnable { get; set; }
@@ -27,14 +25,11 @@ public class XbeeCOM
     public XbeeCOM()
     {
         this.BaudRate = 9600;
-        //this.initPort();
     }
 
     public XbeeCOM(string COMport)
     {
         this.port = COMport;
-        //this.iLog = ilog;
-        //this.initPort();
     }
 
     public void TestLogEvent(string msg)
@@ -75,7 +70,7 @@ public class XbeeCOM
             }
             this.SerialPort1.Open();
             this.LogIt("Serialport is OPEN, using port " + this.port.ToString());
-            this.LogIt(string.Format("BaudRate is {0}", this.BaudRate.ToString()));//BaudRate is" + this.BaudRate.ToString);
+            this.LogIt(string.Format("BaudRate is {0}", this.BaudRate.ToString()));
             this.IsOpen = true;
 
             this.SerialPort1.DataReceived += new SerialDataReceivedEventHandler(this.DataReceivedHandler);
@@ -101,47 +96,7 @@ public class XbeeCOM
                 this.IsOpen = true;
             }
             List<byte> list = Util.EscapeUartBytes(b);
-            //List<byte> list = new List<byte>();
-            //foreach (byte singleByte in b)
-            //{
-            //    switch (singleByte)
-            //    {
-            //        case 0x7e:
-            //            if (list.Count == 0)
-            //            {
-            //                list.Add(singleByte);
-            //            }
-            //            else
-            //            {
-            //                list.Add(0x7d);
-            //                byte XoredByte = (byte)(singleByte ^ 0x20);
-            //                list.Add(XoredByte);
-            //            }
-            //            break;
-
-            //        case 0x11:
-            //            list.Add(0x7d);
-            //            byte XoredByte11 = (byte)(singleByte ^ 0x20);
-            //            list.Add(XoredByte11);
-            //            break;
-
-            //        case 0x13:
-            //            list.Add(0x7d);
-            //            byte XoredByte13 = (byte)(singleByte ^ 0x20);
-            //            list.Add(XoredByte13);
-            //            break;
-
-            //        case 0x7d:
-            //            list.Add(0x7d);
-            //            byte XoredByte7d = (byte)(singleByte ^ 0x20);
-            //            list.Add(XoredByte7d);
-            //            break;
-
-            //        default:
-            //            list.Add(singleByte);
-            //            break;
-            //    }
-            //}
+            
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             foreach (byte bbyte in list)
             {
@@ -181,6 +136,7 @@ public class XbeeCOM
         }
         else
         {
+            this.LogIt("Serialport1 is null");
         }
         this.IsOpen = false;
     }
@@ -205,7 +161,6 @@ public class XbeeCOM
     {
         SerialPort sp = (SerialPort)sender;
         this.DataReceivedCounter += 1;
-        //byte bytes = new byte();
         int length = sp.BytesToRead;
         this.LogIt("Data frame Received, length: " + length.ToString());
         byte[] buff = new byte[length];
