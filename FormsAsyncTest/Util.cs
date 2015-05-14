@@ -15,7 +15,8 @@ public static class Util
     public static byte ConvertHexToByte(string Hex)
     {
         byte ReturnByte = 0;
-        ReturnByte = Convert.ToByte(Hex);
+        int hexInt = ConvertHexToInt(Hex);
+        ReturnByte = Convert.ToByte(hexInt);
         return ReturnByte;
     }
     public static string ConvertToBin(byte SingleByte)

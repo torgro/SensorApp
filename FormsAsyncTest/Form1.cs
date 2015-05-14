@@ -32,12 +32,14 @@ namespace FormsAsyncTest
         private void InboundXbeeTestEvent(string msg)
         {
             this.textBox3.AppendText(msg);
+            this.textBox3.AppendText(Environment.NewLine);
         }
 
         private async void button1_Click(object sender, EventArgs e)
         {
             this.textBox2.Text = "";
             this.logit(new LogDetail("button1_clicked"));
+            this.InboundXbeeTestEvent("button1_clicked");
             this.button1.Enabled = false;
             Task tt = doWork();
                        
@@ -68,17 +70,23 @@ namespace FormsAsyncTest
             throw new Exception("Something happened."); 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
             //await man.PreEventProcessAsync("msgss");
             //this.serial.TestLogEvent("this is test");
             //this.serial.Open(); { 0x7d, 0x31,0x33,0x5e }
-            byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
-            byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };
-            List<byte> l = new List<byte>();
-            l.AddRange(NeedEscapingbytes);
+            this.button2.Enabled = false;
+            string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D9 17 FF FE C1 01 00 01 00 00 01 26";
+            XbeeBasePacket xbee = new XbeeBasePacket();
+            xbee.LogEvent += this.InboundXbeeTestEvent;
+            await xbee.AddByte(SampleOn);
+            this.button2.Enabled = true;
+            //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
+            //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
+            //List<byte> l = new List<byte>();
+            //l.AddRange(NeedEscapingbytes);
             //Util.UnEscapeUartBytes(l);
-            Util.EscapeUartBytes(l);
+            //Util.EscapeUartBytes(l);
         }
     }
 
