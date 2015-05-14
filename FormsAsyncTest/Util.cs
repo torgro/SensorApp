@@ -12,6 +12,12 @@ public static class Util
         returnString = SingleByte.ToString("x2").ToUpper();
         return returnString;
     }
+    public static byte ConvertHexToByte(string Hex)
+    {
+        byte ReturnByte = 0;
+        ReturnByte = Convert.ToByte(Hex);
+        return ReturnByte;
+    }
     public static string ConvertToBin(byte SingleByte)
     {
         string returnString = string.Empty;
@@ -128,7 +134,7 @@ public static class Util
     public static int ComputeChecksum(byte[] ArrayOfBytes)
     {
         int checksum = 0;
-	    byte bb = new byte();
+	    //byte bb = new byte();
 	    int max = 255;
 	    //bool escapeFlag = false;
 	    if (ArrayOfBytes.Length > 3) 
