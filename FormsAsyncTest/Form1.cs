@@ -17,6 +17,7 @@ namespace FormsAsyncTest
         private XbeeCOM serial = new XbeeCOM();
         private MonitorDevices Devices = new MonitorDevices();
         private XbeeBasePacket Packet = new XbeeBasePacket();
+        private GenericPackets GenericPackets = new GenericPackets();
         private Logging Logs = new Logging();
         private Stat Statistics = new Stat();
         private int IRC = 0;
@@ -120,10 +121,17 @@ namespace FormsAsyncTest
                         this.data_main.DataSource = this.Devices.List;
                         this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Devices.List.Count);         
                         break;
-                    case GridViewMode.Packets:
-                        this.logit(new LogDetail("view is Packets"));
+                    case GridViewMode.DataSample:
+                        this.logit(new LogDetail("view is DataSample"));
                         this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count);         
                         //this.data_main.DataSource = this.
+                        break;
+                    case GridViewMode.RemoteCommand:
+                        this.logit(new LogDetail("view is RemoteCommand"));
+                        break;
+                    case GridViewMode.AllPackets:
+                        this.logit(new LogDetail("view is AllPackets"));
+                        this.data_main.DataSource = this.GenericPackets.Packets.ToList<GenericPacket>();
                         break;
                     default:
                         break;
@@ -147,6 +155,7 @@ namespace FormsAsyncTest
                 }
             }
         }
+        
         private void InboundXbeeTestEvent(string msg)
         {
             this.textBox3.AppendText(msg);
@@ -202,7 +211,9 @@ namespace FormsAsyncTest
             await Packet.AddByte(SampleOn);
             this.button2.Enabled = true;
             string hex = Packet.GetPacketAsHex();
+            this.GenericPackets.AddGenericPacket(Packet.PacketBytes.ToArray());
             var tore = "";
+            this.UpdateDGV();
             //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
             //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
             //List<byte> l = new List<byte>();
@@ -215,7 +226,9 @@ namespace FormsAsyncTest
         {
             Log = 0,
             Device = 1,
-            Packets = 2
+            AllPackets = 2,
+            DataSample = 3,
+            RemoteCommand = 4
         }
 
         private void btn_logs_Click(object sender, EventArgs e)
@@ -232,6 +245,22 @@ namespace FormsAsyncTest
             this.CurrentGridView = GridViewMode.Device;
             this.UpdateDGV();
             this.btn_device.Enabled = true;
+        }
+
+        private void btn_AllPackets_Click(object sender, EventArgs e)
+        {
+            this.btn_AllPackets.Enabled = false;
+            this.CurrentGridView = GridViewMode.AllPackets;
+            this.UpdateDGV();
+            this.btn_AllPackets.Enabled = true;
+        }
+
+        private async void btn_ManPacket_Click(object sender, EventArgs e)
+        {
+            this.Packet = new XbeeBasePacket();
+            await Packet.AddByte(this.textBox1.Text);
+            this.GenericPackets.AddGenericPacket(this.Packet.PacketBytes.ToArray());
+            this.UpdateDGV();
         }          
     }
 

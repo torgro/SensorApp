@@ -35,6 +35,8 @@ public class XbeeBasePacket
 
     public XbeeBasePacket(byte[] PacketBytes)
     {
+        this.PacketByteList = new List<byte[]>();
+        this.PacketBytes = new List<byte>();
         foreach (byte b in PacketBytes) 
         {
             this.PacketBytes.Add(b);
@@ -51,7 +53,25 @@ public class XbeeBasePacket
                 this.PacketType = (XbeePacketType)Enum.Parse(typeof(XbeePacketType), this.PacketBytes[3].ToString());
             }
         }
+    }
 
+    public XbeeBasePacket(string hex)
+    {
+        this.PacketByteList = new List<byte[]>();
+        this.PacketBytes = new List<byte>();
+        char[] SplitSpace = { ' ' };
+        foreach (string s in hex.Split(SplitSpace))
+        {
+            int numb = Util.ConvertHexToInt(s);
+            PacketBytes.Add((byte)numb);
+        }
+        this.ListLength = this.PacketBytes.Count;
+        this.PacketLength = this.PacketBytes[1] + this.PacketBytes[2];
+        if (this.PacketLength == (this.ListLength - 5))
+        {
+            this.Vaild = true;
+            this.PacketType = (XbeePacketType)Enum.Parse(typeof(XbeePacketType), this.PacketBytes[3].ToString());
+        }
     }
 
     public string GetPacketAsHex()
@@ -66,22 +86,7 @@ public class XbeeBasePacket
         return sb.ToString().TrimEnd(WhiteSpace);
     }
 
-    public XbeeBasePacket(string hex)
-    {
-        char[] SplitSpace = { ' ' };
-        foreach (string s in hex.Split(SplitSpace))
-        {
-            int numb = Util.ConvertHexToInt(s);
-            PacketBytes.Add((byte)numb);
-        }
-        this.ListLength = this.PacketBytes.Count;
-        this.PacketLength = this.PacketBytes[1] + this.PacketBytes[2];
-        if (this.PacketLength == (this.ListLength - 5)) 
-        {
-            this.Vaild = true;
-            this.PacketType = (XbeePacketType)Enum.Parse(typeof(XbeePacketType), this.PacketBytes[3].ToString());
-        }
-    }
+    
 
     private void ResetPacket()
     {
