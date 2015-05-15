@@ -72,6 +72,8 @@ public class GenericPacket
         this.Direction = GetPacketDirection(this.APItype);
     }
 
+    
+
     private XbeeBasePacket.XbeePacketDirection GetPacketDirection(XbeeBasePacket.XbeePacketType APItype)
     {
         XbeeBasePacket.XbeePacketDirection Direction;

@@ -143,6 +143,35 @@ namespace FormsAsyncTest
             }            
         }
 
+        private void PacketInterpreter(GenericPacket GenericPack)
+        {
+            try
+            {
+                switch (GenericPack.APItype)
+                {
+                    case XbeeBasePacket.XbeePacketType.TransmitRequest:
+                        break;
+                    case XbeeBasePacket.XbeePacketType.RemoteCmdRespons:
+                        break;
+                    case XbeeBasePacket.XbeePacketType.DataSample:
+                        XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray().Take(GenericPack.PacketBytes.Count).ToArray());
+                        datasample.AddBytes(GenericPack.PacketBytes.ToArray());
+                        break;
+                    case XbeeBasePacket.XbeePacketType.RemoteCmd:
+                        break;
+                    case XbeeBasePacket.XbeePacketType.ReceivePacket:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+        }
+
         private void UpdateFirstDisplayedScrollingRowIndex(DataGridView DataGridObject, int RowIndex)
         {
             if (DataGridObject != null)
@@ -156,8 +185,8 @@ namespace FormsAsyncTest
         
         private void InboundXbeeTestEvent(string msg)
         {
-            this.textBox3.AppendText(msg);
-            this.textBox3.AppendText(Environment.NewLine);
+            //this.textBox3.AppendText(msg);
+            //this.textBox3.AppendText(Environment.NewLine);
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -212,6 +241,7 @@ namespace FormsAsyncTest
             this.GenericPackets.AddGenericPacket(Packet.PacketBytes.ToArray());
             var tore = "";
             this.UpdateDGV();
+            this.PacketInterpreter(new GenericPacket(Packet.PacketBytes.ToArray()));
             //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
             //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
             //List<byte> l = new List<byte>();

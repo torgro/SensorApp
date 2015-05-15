@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSamples.cs" />
     <Compile Include="DataSampleStruct.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -61,7 +62,6 @@
     <Compile Include="Util.cs" />
     <Compile Include="XbeeBasePacket.cs" />
     <Compile Include="XbeeCOM.cs" />
-    <Compile Include="XbeePacketInterpreter.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

@@ -171,6 +171,11 @@ namespace XbeeStruct
             return api;
         }
 
+        public XbeeBasePacket.XbeePacketType GetXbeePacketType()
+        {
+            return XbeeBasePacket.XbeePacketType.DataSample;
+        }
+
         private static List<byte> mSamples = new List<byte>();
         public static System.Collections.ArrayList packetbytes { get; set; }
         public const int DataPayLoadStartAtIndex = 20;
@@ -184,7 +189,6 @@ namespace XbeeStruct
                 mSamples.Add(bytes[i]);
             }
             this.CheckSum = bytes[bytes.Length - 1];
-            //packetbytes.ToArray()
         }
 
         public string GetSampleAsHex()
@@ -229,7 +233,6 @@ namespace XbeeStruct
         FromEndDeviceBroadcast = 0x42,
         FromEndDeviceEncrypted = 0x60,
         FromEndDeviceEncryptedPacketAcknowledged = 0x61,
-        FromEndDeviceEncryptedBroadcast = 0x62,
-        aaa = 0xc1
+        FromEndDeviceEncryptedBroadcast = 0x62
     }
 }
