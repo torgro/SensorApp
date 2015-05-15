@@ -8,27 +8,23 @@ using System.Diagnostics;
 
 class XbeeBasePacket
 {
-    //public string PacketHex { get; set; }
-    public List<string> PacketHexList { get; set; }
     public List<byte[]> PacketByteList { get; set; }
     public List<byte> PacketBytes { get; set; }
     public bool Vaild { get; set; }
     public bool Dropped { get; set; }
     public int ListLength { get; set; }
     public int PacketLength { get; set; }
-    //public xbeeBase.DMFrameType PacketType { get; set; }
+    public bool EscapeCharFlag { get; set; }
     public XbeePacketType PacketType { get; set; }
     public int EscapeCharCount { get; set; }
-    //public int DroppedPackets { get; set; }
+    // Events and delegates
     public event LogEventEventHandler LogEvent;
     public delegate void LogEventEventHandler(string str);
     public event VaildPacketEventHandler VaildPacket;
     public delegate void VaildPacketEventHandler(string hex);
-    public bool EscapeCharFlag { get; set; }
 
     public XbeeBasePacket()
     {
-        this.PacketHexList = new List<string>();
         this.PacketByteList = new List<byte[]>();
         this.PacketBytes = new List<byte>();
         this.Vaild = false;
@@ -43,12 +39,8 @@ class XbeeBasePacket
         {
             this.PacketBytes.Add(b);
             string s = Util.ConvertToHex(b);
-            //if (s.Length == 1) 
-            //{
-            //    s = "0" + s;
-            //}
-            //this.PacketHex = this.PacketHex + s + " ";
         }
+
         this.ListLength = this.PacketBytes.Count;
         if (this.PacketBytes.Count >= 3) 
         {
@@ -110,8 +102,7 @@ class XbeeBasePacket
         if (this.EscapeCharFlag == true) {
             this.EscapeCharFlag = false;
             this.LogIt("EscapeFlag was TRUE, now false");
-            thebyte = (byte)(thebyte - 32);
-            //&H20
+            thebyte = (byte)(thebyte ^ 0x20); //&H20
             this.LogIt("thebyte:" + thebyte.ToString());
         }
         //check for escapechar
@@ -120,8 +111,11 @@ class XbeeBasePacket
             this.EscapeCharCount += 1;
             this.EscapeCharFlag = true;
         }
-
-        this.PacketBytes.Add(thebyte);
+        else
+        {
+            this.PacketBytes.Add(thebyte);
+        }
+                
         if (this.PacketBytes[0] == 0x7E) {
             //we have a valid packet start byte
         } else {
@@ -129,15 +123,10 @@ class XbeeBasePacket
             //something is wrong, invalid packet, reset (should notify about dropping bytes)
             this.LogIt("Dropping frame, invalid packet/frame due to delimiter error");
             //TODO - create badpacket log/list with reason (checksumERROR, delimmiter error, length error)
-            //this.ResetPacket();
-            //this.DroppedPackets += 1;
             return false;
         }
-        string s = Util.ConvertToHex(thebyte);
-        // Format string so 1 = 01, 2 = 02 etc
-        //s = String.Format("00", s)
-        
-        //this.PacketHex = this.PacketHex + s + " ";
+        string ByteAsHex = Util.ConvertToHex(thebyte);
+       
         this.ListLength = this.PacketBytes.Count;
         if (this.PacketBytes.Count >= 3) 
         {
@@ -145,43 +134,36 @@ class XbeeBasePacket
             if (this.PacketLength == (this.ListLength - this.EscapeCharCount - 4)) {
                 int intCalculatedChecksum = Util.ComputeChecksum(this.PacketBytes.ToArray());
                 int packetCheckSum = Convert.ToInt32(this.PacketBytes[this.PacketBytes.Count - 1]);
-                //if checksum then raise event Vaildpacket
+                //if checksum match then raise event Vaildpacket
                 if (intCalculatedChecksum == packetCheckSum) 
                 {
                     this.LogIt("Checksum OK");
                     this.Vaild = true;
-                    System.Threading.Thread.Sleep(2000);
-                    //this.PacketHex = this.PacketHex.Replace(" 7D", "");
-                    //int c = 0;
-                    //foreach (byte b in this.PacketBytes) 
-                    //{                        
-                    //    if (b == 0x7D) {
-                    //        this.EscapeCharFlag = true;
-                    //        break; // TODO: might not be correct. Was : Exit For
-                    //    }
-                    //    c += 1;
-                    //}
-                    //if (c > 0 & this.EscapeCharFlag == true) {
-                    //    this.PacketBytes.RemoveAt(c);
-                    //} else {
-                    //    this.EscapeCharFlag = false;
-                    //}
-                    //this.PacketHexList.Add(this.PacketHex);
-                    //this.PacketByteList.Add(this.PacketBytes.ToArray);
                     this.LogIt("Valid packet received");
-
-                    if (VaildPacket != null) {
-                        VaildPacket(this.GetPacketAsHex());
-                    }
-                } else {
+                    this.XbeeBasePacket_Vaild();
+                } 
+                else 
+                {
                     this.LogIt("BAD checksum, resetting/dropping");
-                    this.ResetPacket();
-                    this.Dropped = true;
-                    //this.DroppedPackets += 1;
+                    //this.ResetPacket();
+                    this.Dropped = true;                    
                 }
             }
         }
         return true;
+    }
+
+    public void XbeeBasePacket_Vaild()
+    {
+        if (VaildPacket != null)
+        {
+            // Raise ValidPacket event
+            VaildPacket(this.GetPacketAsHex());
+        }
+        else
+        {
+            this.LogIt("Warning unable to send event since ValidPacket is null");
+        }
     }
 
     public void AddByte(byte[] ArrayOfbytes)
@@ -207,8 +189,8 @@ class XbeeBasePacket
     }
 
     private void LogIt(string Str)
-    {
-        string calledby = new StackFrame(1, true).GetMethod().Name;
+    {       
+        string calledby = new StackFrame(4, true).GetMethod().Name;
         if (LogEvent != null)
         {
             LogEvent(this.GetType().FullName + " - " + calledby + " - " + Str);

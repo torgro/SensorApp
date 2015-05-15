@@ -76,11 +76,15 @@ namespace FormsAsyncTest
             //this.serial.TestLogEvent("this is test");
             //this.serial.Open(); { 0x7d, 0x31,0x33,0x5e }
             this.button2.Enabled = false;
-            string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D9 17 FF FE C1 01 00 01 00 00 01 26";
+            //
+            //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
+            string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
             XbeeBasePacket xbee = new XbeeBasePacket();
             xbee.LogEvent += this.InboundXbeeTestEvent;
             await xbee.AddByte(SampleOn);
             this.button2.Enabled = true;
+            string hex = xbee.GetPacketAsHex();
+            var tore = "";
             //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
             //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
             //List<byte> l = new List<byte>();
