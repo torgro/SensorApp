@@ -68,6 +68,7 @@ namespace FormsAsyncTest
                 bool ReturnValue = true;                
                 Stats stats = new Stats();
                 stats.ComPortInterrupts = this.IRC.ToString();
+                stats.Packets = this.GenericPackets.Packets.Count.ToString();
                 Statistics.AddStats(stats);
                 return ReturnValue;
             });
@@ -136,7 +137,8 @@ namespace FormsAsyncTest
                     default:
                         break;
                 }
-                
+                //this.data_main.AutoResizeColumns(DataGridViewAutoSizeColumnMode.AllCells); 
+                this.data_main.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                 this.data_main.ResumeLayout();
             }
             catch (Exception ex)

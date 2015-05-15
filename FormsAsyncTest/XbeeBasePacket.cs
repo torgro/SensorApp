@@ -217,6 +217,12 @@ public class XbeeBasePacket
         DataSample = 0x92,
         RemoteCmd = 0x17,
         ReceivePacket = 0x90
-    }        
+    }
+
+    public enum XbeePacketDirection
+    {
+        In = 0,
+        Out = 1
+    }
 }
 

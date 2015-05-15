@@ -18,7 +18,10 @@ public class GenericPackets
         GenericPacket packet = new GenericPacket(PacketOfBytes);
         if (packet.PacketBytes.Count > 0)
         {
+            packet.ID = this.Packets.Count;
+            packet.Time = DateTime.Now;
             this.Packets.Add(packet);
+            
         }    
     }
 }
@@ -26,14 +29,18 @@ public class GenericPackets
 
 public class GenericPacket
 {
-    public string Delimiter { get; set; }
-    public int PacketLength { get; set; }
+    public int ID { get; set; }
+    public DateTime Time { get; set; }
+    public string Delimiter;
+    public int Length { get; set; }
     public byte API { get; set; }
     public int FrameID { get; set; }
     public byte CheckSum { get; set; }
     public List<byte> PacketBytes { get; set; }
     public string Hex { get; set; }
     public string SourceAddress { get; set; }
+    public XbeeBasePacket.XbeePacketType APItype { get; set; }
+    public XbeeBasePacket.XbeePacketDirection Direction { get; set; }
 
     public GenericPacket()
     {
@@ -52,7 +59,7 @@ public class GenericPacket
         XbeeBasePacket packet = new XbeeBasePacket(PacketOfBytes);
         this.Hex = packet.GetPacketAsHex();
         this.Delimiter = Util.ConvertToHex(PacketOfBytes[0]);
-        this.PacketLength = (PacketOfBytes[1] + PacketOfBytes[2]);
+        this.Length = (PacketOfBytes[1] + PacketOfBytes[2]);
         this.API = PacketOfBytes[3];
         this.FrameID = PacketOfBytes[4];
         int StartIndexAddress = this.GetSourceAddressIndex();
@@ -68,6 +75,35 @@ public class GenericPacket
         //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[10]);
         //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[11]);
         this.CheckSum = PacketOfBytes[PacketOfBytes.Length -1];
+        this.APItype = (XbeeBasePacket.XbeePacketType)Enum.Parse(typeof(XbeeBasePacket.XbeePacketType), this.API.ToString());
+        this.Direction = GetPacketDirection(this.APItype);
+    }
+
+    private XbeeBasePacket.XbeePacketDirection GetPacketDirection(XbeeBasePacket.XbeePacketType APItype)
+    {
+        XbeeBasePacket.XbeePacketDirection Direction;
+        switch (APItype)
+        {
+            case XbeeBasePacket.XbeePacketType.TransmitRequest:
+                Direction = XbeeBasePacket.XbeePacketDirection.In;
+                break;
+            case XbeeBasePacket.XbeePacketType.RemoteCmdRespons:
+                Direction = XbeeBasePacket.XbeePacketDirection.In;
+                break;
+            case XbeeBasePacket.XbeePacketType.DataSample:
+                Direction = XbeeBasePacket.XbeePacketDirection.In;
+                break;
+            case XbeeBasePacket.XbeePacketType.RemoteCmd:
+                Direction = XbeeBasePacket.XbeePacketDirection.Out;
+                break;
+            case XbeeBasePacket.XbeePacketType.ReceivePacket:
+                Direction = XbeeBasePacket.XbeePacketDirection.In;
+                break;
+            default:
+                Direction = XbeeBasePacket.XbeePacketDirection.In;
+                break;
+        }
+        return Direction;
     }
     
     private int GetSourceAddressIndex()
