@@ -112,20 +112,23 @@ namespace FormsAsyncTest
                     case GridViewMode.Log:
                         //this.logit(new LogDetail("view is log"));
                         this.data_main.DataSource = this.Logs.LogItems.ToList<LogDetail>();
+                        this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count -5);                                            
                         break;
 
                     case GridViewMode.Device:
                         this.logit(new LogDetail("view is Device"));
                         this.data_main.DataSource = this.Devices.List;
-
+                        this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Devices.List.Count);         
                         break;
                     case GridViewMode.Packets:
                         this.logit(new LogDetail("view is Packets"));
+                        this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count);         
                         //this.data_main.DataSource = this.
                         break;
                     default:
                         break;
                 }
+                
                 this.data_main.ResumeLayout();
             }
             catch (Exception ex)
@@ -134,6 +137,16 @@ namespace FormsAsyncTest
             }            
         }
 
+        private void UpdateFirstDisplayedScrollingRowIndex(DataGridView DataGridObject, int RowIndex)
+        {
+            if (DataGridObject != null)
+            {
+                if (RowIndex > 5)
+                {
+                    DataGridObject.FirstDisplayedScrollingRowIndex = RowIndex;
+                }
+            }
+        }
         private void InboundXbeeTestEvent(string msg)
         {
             this.textBox3.AppendText(msg);
