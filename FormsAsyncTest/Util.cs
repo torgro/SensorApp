@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 public static class Util
 {
@@ -156,4 +157,35 @@ public static class Util
 	    }
         return checksum;
     }
+
+    public static T BytesToStructure<T>(byte[] bytes)
+	{
+		GCHandle pinnedBytesInMem = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+		dynamic _data = (T)Marshal.PtrToStructure(pinnedBytesInMem.AddrOfPinnedObject(), typeof(T));
+		pinnedBytesInMem.Free();
+		return _data;
+	}
+
+	public static byte[] StructToBytes<T>(T _data)
+	{
+		int size = Marshal.SizeOf(_data);
+		byte[] arr = new byte[size];
+		IntPtr ptr = Marshal.AllocHGlobal(size);
+		Marshal.StructureToPtr(_data, ptr, true);
+		Marshal.Copy(ptr, arr, 0, size);
+		Marshal.FreeHGlobal(ptr);
+		return arr;
+	}
+
+	public static byte[] GetBytes<T>(T _data)
+	{
+		int size = Marshal.SizeOf(_data);
+		byte[] arr = new byte[size];
+		IntPtr ptr = Marshal.AllocHGlobal(size);
+		Marshal.StructureToPtr(_data, ptr, true);
+		Marshal.Copy(ptr, arr, 0, size);
+		Marshal.FreeHGlobal(ptr);
+		return arr;
+	}
 }
+

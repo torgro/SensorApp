@@ -13,7 +13,6 @@ namespace FormsAsyncTest
     public partial class Form1 : Form
     {
         public delegate void delegateXbeeTest(string msg);
-        //public delegate async void delegateElapsed(object sender, System.Timers.ElapsedEventArgs e);
         private XbeeCOM serial = new XbeeCOM();
         private MonitorDevices Devices = new MonitorDevices();
         private XbeeBasePacket Packet = new XbeeBasePacket();
@@ -111,12 +110,10 @@ namespace FormsAsyncTest
                 this.data_main.SuspendLayout();
                 switch (this.CurrentGridView)
                 {
-                    case GridViewMode.Log:
-                        //this.logit(new LogDetail("view is log"));
+                    case GridViewMode.Log:                       
                         this.data_main.DataSource = this.Logs.LogItems.ToList<LogDetail>();
                         this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count -5);                                            
                         break;
-
                     case GridViewMode.Device:
                         this.logit(new LogDetail("view is Device"));
                         this.data_main.DataSource = this.Devices.List;
@@ -124,8 +121,7 @@ namespace FormsAsyncTest
                         break;
                     case GridViewMode.DataSample:
                         this.logit(new LogDetail("view is DataSample"));
-                        this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count);         
-                        //this.data_main.DataSource = this.
+                        this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count);                                 
                         break;
                     case GridViewMode.RemoteCommand:
                         this.logit(new LogDetail("view is RemoteCommand"));
@@ -136,14 +132,14 @@ namespace FormsAsyncTest
                         break;
                     default:
                         break;
-                }
-                //this.data_main.AutoResizeColumns(DataGridViewAutoSizeColumnMode.AllCells); 
+                }                
                 this.data_main.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                 this.data_main.ResumeLayout();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                //throw new Exception(ex.Message);
+                this.logit(new LogDetail("EXCEPTION: " + ex.Message));
             }            
         }
 

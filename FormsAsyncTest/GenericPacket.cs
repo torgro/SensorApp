@@ -67,13 +67,6 @@ public class GenericPacket
         {
             this.SourceAddress += Util.ConvertToHex(PacketOfBytes[i]);
         }
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[5]);
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[6]);
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[7]);
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[8]);
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[9]);
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[10]);
-        //this.SourceAddress += Util.ConvertToHex(PacketOfBytes[11]);
         this.CheckSum = PacketOfBytes[PacketOfBytes.Length -1];
         this.APItype = (XbeeBasePacket.XbeePacketType)Enum.Parse(typeof(XbeeBasePacket.XbeePacketType), this.API.ToString());
         this.Direction = GetPacketDirection(this.APItype);

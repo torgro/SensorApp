@@ -91,7 +91,7 @@
             this.data_main.Location = new System.Drawing.Point(119, 67);
             this.data_main.Name = "data_main";
             this.data_main.RowTemplate.Height = 24;
-            this.data_main.Size = new System.Drawing.Size(1157, 223);
+            this.data_main.Size = new System.Drawing.Size(1157, 381);
             this.data_main.TabIndex = 6;
             // 
             // btn_logs
