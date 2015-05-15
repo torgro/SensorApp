@@ -55,6 +55,7 @@
     <Compile Include="MonitorDevices.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stats.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="XbeeBasePacket.cs" />
     <Compile Include="XbeeCOM.cs" />

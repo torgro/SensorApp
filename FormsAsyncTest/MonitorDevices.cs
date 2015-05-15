@@ -16,38 +16,47 @@ public class MonitorDevices
     public MonitorDevices() 
     {
         this.List = new List<MonitorDevice>();
+        this.TreeNodes = new List<TreeNode>();
         TreeNode node = new TreeNode();
         node.Name = "AllSensors";
         node.Text = "All Sensors";
         this.TreeNodes.Add(node);
     }
 
+    private void AddNewDevice(MonitorDevice Device)
+    {
+        List<MonitorDevice> ListMatch = this.GetDevice(Device.MAC);
+        if (ListMatch.Count > 0)
+        {
+            this.LogIt("Monitor with MAC " + Device.MAC + " exists, NOT adding!");
+        }
+        else
+        {
+            this.LogIt("Monitor with MAC " + Device.MAC + " not found adding it!");
+            Device.Enabled = true;
+            this.List.Add(Device);
+        }       
+    }
+
     public void AddDevice(string MAC)
     {
+        this.LogIt("Adding device with MAC " + MAC);
         MonitorDevice device = new MonitorDevice();
         device.DeviceID = this.List.Count;
         device.MAC = MAC;
         device.Enabled = true;
-        this.List.Add(device);
+        this.AddNewDevice(device);
     }
     public void AddDevice(MonitorDevice dev)
     {
         dev.DeviceID = this.List.Count;
-        MonitorDevice DeviceExists = this.GetDevice(dev.MAC);
-        if(DeviceExists != null)
-        {
-            // device exists, not adding
-        }
-        else
-        {
-            this.List.Add(dev);
-        }       
+        this.AddNewDevice(dev);
     }
 
     private void LogIt(string Str)
     {
         LogDetail log = new LogDetail();
-        string calledby = new StackFrame(4, true).GetMethod().Name;
+        string calledby = new StackFrame(2, true).GetMethod().Name;
         string ClassName = this.GetType().FullName;
         log.ClassName = ClassName;
         log.Description = Str;
@@ -61,22 +70,22 @@ public class MonitorDevices
         }
     }
 
-    public MonitorDevice GetDevice(int ById)
+    public List<MonitorDevice> GetDevice(int ById)
 	{
-        System.Collections.Generic.IEnumerable<MonitorDevice> q = //default(System.Collections.Generic.IEnumerable<MonitorDevice>);
+        System.Collections.Generic.IEnumerable<MonitorDevice> q = 
         from it in this.List.AsEnumerable()
         select it;
-        return (MonitorDevice)q;
+        return q.ToList<MonitorDevice>();
 	}
 
-    public MonitorDevice GetDevice(string MAC)
+    public List<MonitorDevice> GetDevice(string MAC)
 	{
         System.Collections.Generic.IEnumerable<MonitorDevice> q =
-        from it in this.List.AsEnumerable()
+        from it in this.List
         where it.MAC.ToLower() == MAC.ToLower()
         select it;
-        
-		return q.First();
+
+        return q.ToList<MonitorDevice>(); 
 	}
 
 }

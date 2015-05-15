@@ -13,20 +13,125 @@ namespace FormsAsyncTest
     public partial class Form1 : Form
     {
         public delegate void delegateXbeeTest(string msg);
-        private manager man;
+        //public delegate async void delegateElapsed(object sender, System.Timers.ElapsedEventArgs e);
         private XbeeCOM serial = new XbeeCOM();
+        private MonitorDevices Devices = new MonitorDevices();
+        private XbeeBasePacket Packet = new XbeeBasePacket();
+        private Logging Logs = new Logging();
+        private Stat Statistics = new Stat();
+        private int IRC = 0;
+        private System.Windows.Forms.Timer ticks;
+        private GridViewMode CurrentGridView = GridViewMode.Log;
+
         public Form1()
         {
             InitializeComponent();
            
             //this.man.XbeeTest += this.InboundXbeeTestEvent;
-            this.serial.LogEvent += this.logit;            
+            this.serial.LogEvent += this.logit;
+            this.Packet.LogEvent += this.logit;
+            this.Devices.LogEvent += this.logit;
+            this.Statistics.AddStats(new Stats());
+            this.data_Stats.SuspendLayout();
+            this.data_Stats.DataSource = this.Statistics.StatParis;
+            this.data_Stats.ResumeLayout();
+            this.ticks = new System.Windows.Forms.Timer();
+            this.ticks.Interval = 3000;
+            this.ticks.Enabled = true;
+            this.ticks.Tick += this.Ticks_Elapsed;
+            MonitorDevice mon = new MonitorDevice();
+            mon.Enabled = true;
+            mon.MAC = "0013A20040A1D8CE";
+            mon.GPSlat = "59,664874";
+            mon.GPSlong = "6,444361";
+            mon.Name = "bøen";
+            this.Devices.AddDevice(mon);
+        //    this.tics = new System.Timers.Timer(3000);
+        //    this.tics.Elapsed += this.Ticks_Elapsed;
+        //    this.tics.SynchronizingObject = this;
+        //    this.tics.Enabled = true;
+        }
+        private async void Ticks_Elapsed(object Sender, EventArgs e)
+        {
+            this.logit(new LogDetail("EVENT_Updating statistics"));
+            this.IRC++;
+            await this.UpdateStats();
+            this.UpdateStatsView();
+        }
+
+        //private async Task<bool> UpdateStats()
+        private async Task<bool> UpdateStats()
+        {         
+            bool GetNewStats = await Task.Run(() =>
+            {
+                bool ReturnValue = true;                
+                Stats stats = new Stats();
+                stats.ComPortInterrupts = this.IRC.ToString();
+                Statistics.AddStats(stats);
+                return ReturnValue;
+            });
+            
+            return true;
+        }
+
+        private void UpdateStatsView()
+        {
+            this.data_Stats.SuspendLayout();
+            this.data_Stats.DataSource = this.Statistics.StatParis;
+            this.data_Stats.ResumeLayout();
+        }
+
+        private async Task<bool> UpdateStatsViewAsync()
+        {
+            return await Task.Run(() => 
+                {
+                    bool retValue = true;
+                    this.data_Stats.Refresh();
+                    return retValue;
+                });
         }
 
         private void logit(LogDetail it)
         {
-            this.textBox3.AppendText(it.Description + " Method: " + it.Method);
+            this.textBox3.AppendText(it.TimeDate + " - " + it.Description + " Method: " + it.Method);
             this.textBox3.AppendText(Environment.NewLine);
+            this.Logs.AddItem(it);
+            if(this.CurrentGridView == GridViewMode.Log)
+            {
+                this.UpdateDGV();
+            }
+        }
+
+        private void UpdateDGV()
+        {
+            try
+            {
+                this.data_main.SuspendLayout();
+                switch (this.CurrentGridView)
+                {
+                    case GridViewMode.Log:
+                        //this.logit(new LogDetail("view is log"));
+                        this.data_main.DataSource = this.Logs.LogItems.ToList<LogDetail>();
+                        break;
+
+                    case GridViewMode.Device:
+                        this.logit(new LogDetail("view is Device"));
+                        this.data_main.DataSource = this.Devices.List;
+
+                        break;
+                    case GridViewMode.Packets:
+                        this.logit(new LogDetail("view is Packets"));
+                        //this.data_main.DataSource = this.
+                        break;
+                    default:
+                        break;
+                }
+                this.data_main.ResumeLayout();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }            
         }
 
         private void InboundXbeeTestEvent(string msg)
@@ -80,10 +185,10 @@ namespace FormsAsyncTest
             //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
             string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
             XbeeBasePacket xbee = new XbeeBasePacket();
-            xbee.LogEvent += this.logit;
-            await xbee.AddByte(SampleOn);
+            
+            await Packet.AddByte(SampleOn);
             this.button2.Enabled = true;
-            string hex = xbee.GetPacketAsHex();
+            string hex = Packet.GetPacketAsHex();
             var tore = "";
             //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
             //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
@@ -92,6 +197,29 @@ namespace FormsAsyncTest
             //Util.UnEscapeUartBytes(l);
             //Util.EscapeUartBytes(l);
         }
+
+        public enum GridViewMode
+        {
+            Log = 0,
+            Device = 1,
+            Packets = 2
+        }
+
+        private void btn_logs_Click(object sender, EventArgs e)
+        {
+            this.btn_logs.Enabled = false;
+            this.CurrentGridView = GridViewMode.Log;
+            this.UpdateDGV();
+            this.btn_logs.Enabled = true;
+        }
+
+        private void btn_device_Click(object sender, EventArgs e)
+        {
+            this.btn_device.Enabled = false;
+            this.CurrentGridView = GridViewMode.Device;
+            this.UpdateDGV();
+            this.btn_device.Enabled = true;
+        }          
     }
 
     public class manager

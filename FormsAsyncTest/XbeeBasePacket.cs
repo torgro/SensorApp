@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 
-class XbeeBasePacket
+public class XbeeBasePacket
 {
     public List<byte[]> PacketByteList { get; set; }
     public List<byte> PacketBytes { get; set; }

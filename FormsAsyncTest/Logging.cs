@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-class Logging
+public class Logging
 {
     public List<LogDetail> LogItems;
     public int Loglevel;
@@ -23,6 +23,14 @@ class Logging
         it.Method = Method;
         it.TimeDate = DateTime.Now;
         it.id = this.LogItems.Count;
+        it.time = it.TimeDate.ToLongTimeString();
+        this.LogItems.Add(it);
+    }
+    public void AddItem(LogDetail it)
+    {
+        it.id = this.LogItems.Count;
+        it.TimeDate = DateTime.Now;
+        it.time = it.TimeDate.ToLongTimeString();
         this.LogItems.Add(it);
     }
     public void ClearList()
