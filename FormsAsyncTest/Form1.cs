@@ -80,7 +80,7 @@ namespace FormsAsyncTest
             //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
             string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
             XbeeBasePacket xbee = new XbeeBasePacket();
-            xbee.LogEvent += this.InboundXbeeTestEvent;
+            xbee.LogEvent += this.logit;
             await xbee.AddByte(SampleOn);
             this.button2.Enabled = true;
             string hex = xbee.GetPacketAsHex();

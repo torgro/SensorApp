@@ -19,7 +19,7 @@ class XbeeBasePacket
     public int EscapeCharCount { get; set; }
     // Events and delegates
     public event LogEventEventHandler LogEvent;
-    public delegate void LogEventEventHandler(string str);
+    public delegate void LogEventEventHandler(LogDetail LogItem);
     public event VaildPacketEventHandler VaildPacket;
     public delegate void VaildPacketEventHandler(string hex);
 
@@ -189,11 +189,19 @@ class XbeeBasePacket
     }
 
     private void LogIt(string Str)
-    {       
+    {
+        LogDetail log = new LogDetail();
         string calledby = new StackFrame(4, true).GetMethod().Name;
+        string ClassName = this.GetType().FullName;
+        log.ClassName = ClassName;
+        log.Description = Str;
+        log.Level = 0;
+        log.Method = calledby;
+        log.TimeDate = DateTime.Now;
+
         if (LogEvent != null)
         {
-            LogEvent(this.GetType().FullName + " - " + calledby + " - " + Str);
+            LogEvent(log);
         }
     }
 

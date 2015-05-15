@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 public class MonitorDevices
 {
     public List<MonitorDevice> List { get; set; }
     public List<TreeNode> TreeNodes { get; set; }
+    public event LogEventEventHandler LogEvent;
+    public delegate void LogEventEventHandler(LogDetail LogItem);
 
-    public MonitorDevices()
+    public MonitorDevices() 
     {
         this.List = new List<MonitorDevice>();
         TreeNode node = new TreeNode();
@@ -30,7 +33,32 @@ public class MonitorDevices
     public void AddDevice(MonitorDevice dev)
     {
         dev.DeviceID = this.List.Count;
-        this.List.Add(dev);
+        MonitorDevice DeviceExists = this.GetDevice(dev.MAC);
+        if(DeviceExists != null)
+        {
+            // device exists, not adding
+        }
+        else
+        {
+            this.List.Add(dev);
+        }       
+    }
+
+    private void LogIt(string Str)
+    {
+        LogDetail log = new LogDetail();
+        string calledby = new StackFrame(4, true).GetMethod().Name;
+        string ClassName = this.GetType().FullName;
+        log.ClassName = ClassName;
+        log.Description = Str;
+        log.Level = 0;
+        log.Method = calledby;
+        log.TimeDate = DateTime.Now;
+
+        if (LogEvent != null)
+        {
+            LogEvent(log);
+        }
     }
 
     public MonitorDevice GetDevice(int ById)
