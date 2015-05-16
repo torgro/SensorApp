@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class DataSamples
 {
-    List<DataSamplePacket> List { get; set; }
+    public List<DataSamplePacket> List { get; set; }
 
     public DataSamples()
     {

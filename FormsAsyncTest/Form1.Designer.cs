@@ -39,6 +39,7 @@
             this.btn_device = new System.Windows.Forms.Button();
             this.btn_AllPackets = new System.Windows.Forms.Button();
             this.btn_ManPacket = new System.Windows.Forms.Button();
+            this.btn_DataSample = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -47,7 +48,7 @@
             // 
             this.button1.Location = new System.Drawing.Point(12, 69);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 48);
+            this.button1.Size = new System.Drawing.Size(101, 48);
             this.button1.TabIndex = 1;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -79,7 +80,7 @@
             // 
             this.button2.Location = new System.Drawing.Point(12, 123);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(86, 46);
+            this.button2.Size = new System.Drawing.Size(101, 46);
             this.button2.TabIndex = 5;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
@@ -98,7 +99,7 @@
             // 
             this.btn_logs.Location = new System.Drawing.Point(12, 175);
             this.btn_logs.Name = "btn_logs";
-            this.btn_logs.Size = new System.Drawing.Size(86, 46);
+            this.btn_logs.Size = new System.Drawing.Size(101, 46);
             this.btn_logs.TabIndex = 7;
             this.btn_logs.Text = "Logs";
             this.btn_logs.UseVisualStyleBackColor = true;
@@ -117,7 +118,7 @@
             // 
             this.btn_device.Location = new System.Drawing.Point(12, 227);
             this.btn_device.Name = "btn_device";
-            this.btn_device.Size = new System.Drawing.Size(86, 46);
+            this.btn_device.Size = new System.Drawing.Size(101, 46);
             this.btn_device.TabIndex = 9;
             this.btn_device.Text = "Device";
             this.btn_device.UseVisualStyleBackColor = true;
@@ -127,7 +128,7 @@
             // 
             this.btn_AllPackets.Location = new System.Drawing.Point(12, 279);
             this.btn_AllPackets.Name = "btn_AllPackets";
-            this.btn_AllPackets.Size = new System.Drawing.Size(86, 46);
+            this.btn_AllPackets.Size = new System.Drawing.Size(101, 46);
             this.btn_AllPackets.TabIndex = 10;
             this.btn_AllPackets.Text = "AllPackets";
             this.btn_AllPackets.UseVisualStyleBackColor = true;
@@ -143,11 +144,22 @@
             this.btn_ManPacket.UseVisualStyleBackColor = true;
             this.btn_ManPacket.Click += new System.EventHandler(this.btn_ManPacket_Click);
             // 
+            // btn_DataSample
+            // 
+            this.btn_DataSample.Location = new System.Drawing.Point(12, 331);
+            this.btn_DataSample.Name = "btn_DataSample";
+            this.btn_DataSample.Size = new System.Drawing.Size(101, 46);
+            this.btn_DataSample.TabIndex = 12;
+            this.btn_DataSample.Text = "DataSample";
+            this.btn_DataSample.UseVisualStyleBackColor = true;
+            this.btn_DataSample.Click += new System.EventHandler(this.btn_DataSample_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.btn_DataSample);
             this.Controls.Add(this.btn_ManPacket);
             this.Controls.Add(this.btn_AllPackets);
             this.Controls.Add(this.btn_device);
@@ -181,6 +193,7 @@
         private System.Windows.Forms.Button btn_device;
         private System.Windows.Forms.Button btn_AllPackets;
         private System.Windows.Forms.Button btn_ManPacket;
+        private System.Windows.Forms.Button btn_DataSample;
     }
 }
 
