@@ -8,15 +8,21 @@ using System.Runtime.InteropServices;
 
 namespace XbeeStruct
 {
-    public class RemoteCmdStruckt
+    public struct RemoteCmdStruckt
     {
         [MarshalAs(UnmanagedType.U1)]
         //0
         public byte Delimiter;
 
-        [MarshalAs(UnmanagedType.U2)]
+        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         //1 og 2
-        public ushort mLength;
+        //public char[] mLength;
+        [MarshalAs(UnmanagedType.U1)]
+        //1
+        public byte mLength0;
+        [MarshalAs(UnmanagedType.U1)]
+        //2
+        public byte mLength;
         [MarshalAs(UnmanagedType.U1)]
         //3
         public byte API;
@@ -69,6 +75,7 @@ namespace XbeeStruct
         //15
         public byte CmdOptions;
 
+        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)] MarshalAsAttribute
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         //16 17
         public char[] mATCmd;
@@ -81,22 +88,35 @@ namespace XbeeStruct
         //19 
         public byte Checksum;
 
-        public byte[] ATCmdData { get; set; }
-        public static ArrayList packetbytes { get; set; }
-
-        public const int DataPayLoadStartAtIndex = 16;
-        //public const path Direction = path.Ut;
-
-        public const byte FrameTypeId = 0x17;
-        public ushort Length
+        //private byte[] ATCmdData;
+        public void ATCmdData(byte[] bytes)
         {
-            get { return Util.GetUshortFromLittleEndian(this.mLength); }
+            
+        }
+
+        //public void ATCmd(string cmd)
+        //{
+        //    this.mATCmd = cmd.ToCharArray();
+        //}
+        ////public static ArrayList packetbytes { get; set; }
+
+        ////public const int DataPayLoadStartAtIndex = 16;
+        ////public const path Direction = path.Ut;
+
+        ////public const byte FrameTypeId = 0x17;
+        public byte Length
+        {
+            get { return this.mLength; }//{ return Util.GetUshortFromLittleEndian(this.mLength); }
             set
             {
-                this.mLength = Util.GetUshortFromLittleEndian(value);
-                //this.mLength = Util.GetUshortFromLittleEndian(value);
-                ////(33)
-                //this.mLength = System.Convert.ToInt16(33);
+                this.mLength = value;
+                //char first = (char)(0);
+                //char second = (char)(int.Parse(value));
+                //List<char> list = new List<char>();
+
+                //list.Add(first);
+                //list.Add(second);
+                //this.mLength = list.ToArray();
             }
         }
 
@@ -110,7 +130,7 @@ namespace XbeeStruct
             }
             set
             {
-                if (value.Length == 8)
+                if (value.Length == 16)
                 {
                     this.SourceAdr1 = (byte)Util.ConvertHexToInt(value.Substring(0, 2));
                     this.SourceAdr2 = (byte)Util.ConvertHexToInt(value.Substring(2, 2));
@@ -133,12 +153,7 @@ namespace XbeeStruct
         {
             get
             {
-                string str = string.Empty;
-                foreach (char s in this.mATCmd)
-                {
-                    str += s.ToString();
-                }
-                return str;
+                return new string(this.mATCmd);
             }
             set
             {
@@ -161,25 +176,25 @@ namespace XbeeStruct
             }
         }
 
-        public byte[] GetPacketAsBytes()
-        {
-            List<byte> bytelist = new List<byte>();
-            byte[] header = Util.StructToBytes(this);
-            foreach (byte b in header)
-            {
-                bytelist.Add(b);
-            }
-            //bytelist.RemoveAt(bytelist.Count - 1)
-            return bytelist.ToArray();
-        }
+        ////public byte[] GetPacketAsBytes()
+        ////{
+        ////    List<byte> bytelist = new List<byte>();
+        ////    byte[] header = Util.StructToBytes(this);
+        ////    foreach (byte b in header)
+        ////    {
+        ////        bytelist.Add(b);
+        ////    }
+        ////    //bytelist.RemoveAt(bytelist.Count - 1)
+        ////    return bytelist.ToArray();
+        ////}
 
-        public void AddBytes(byte[] bytes)
-        {
-            //not needed in this struct, is it handled by a constant size of 2 in the mashalling structure/declaration
-            // ONLY HERE FOR COMBABILITY WITH OBJECT CALLS and set checksum
-            this.CmdData = 0;
-            this.Checksum = bytes[bytes.Length - 1];
-        }
+        //public void AddBytes(byte[] bytes)
+        //{
+        //    //not needed in this struct, is it handled by a constant size of 2 in the mashalling structure/declaration
+        //    // ONLY HERE FOR COMBABILITY WITH OBJECT CALLS and set checksum
+        //    this.CmdData = 0;
+        //    this.Checksum = bytes[bytes.Length - 1];
+        //}
 
     }
 }

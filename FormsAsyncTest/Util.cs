@@ -13,6 +13,19 @@ public static class Util
         returnString = SingleByte.ToString("x2").ToUpper();
         return returnString;
     }
+
+    public static string ConvertByteArrayToHexString(byte[] bytes)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in bytes)
+        {
+            sb.Append(ConvertToHex(b));
+            sb.Append(" ");
+        }
+        char[] space = {' '};
+
+        return sb.ToString().TrimEnd(space);
+    }
     public static byte ConvertHexToByte(string Hex)
     {
         byte ReturnByte = 0;
@@ -171,7 +184,8 @@ public static class Util
 		int size = Marshal.SizeOf(_data);
 		byte[] arr = new byte[size];
 		IntPtr ptr = Marshal.AllocHGlobal(size);
-		Marshal.StructureToPtr(_data, ptr, true);
+		Marshal.StructureToPtr(_data, ptr, false);
+        
 		Marshal.Copy(ptr, arr, 0, size);
 		Marshal.FreeHGlobal(ptr);
 		return arr;

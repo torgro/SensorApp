@@ -95,6 +95,11 @@ namespace XbeeStruct
 
         //<MarshalAs(UnmanagedType.U1)> _
         //Private CheckSum As Byte '21
+
+        //public DataSampleStruct()
+        //{
+
+        //}
         public byte CheckSum { get; set; }
 
         public byte API

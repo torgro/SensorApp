@@ -20,7 +20,13 @@ public class RemoteCmdPackets
         packet.Id = this.List.Count;
         packet.CheckSum = StructPacket.Checksum;
         packet.API = XbeeBasePacket.XbeePacketType.RemoteCmd;
-        packet.Length = (byte)StructPacket.Length;
+        string test = StructPacket.mLength.ToString();
+        packet.Length = StructPacket.Length;
+        if (packet.Length == 15)
+        {
+            packet.CheckSum = StructPacket.CmdData;
+            packet.CmdData = 0;
+        }
         packet.ATcmd = StructPacket.ATcmd;
         packet.CmdData = StructPacket.CmdData;
         packet.cmdOptions = StructPacket.CmdOptions;
@@ -62,7 +68,7 @@ public class RemoteCmdPacket
         this.Length = 0x0;
     } 
 
-    public XbeeStruct.RemoteCmdStruckt GetPinStatusPacket(XbeeAPIpin Pin, String DestinationAddress, byte FrameID)
+    public byte[] GetPinStatusPacket(XbeeAPIpin Pin, String DestinationAddress, byte FrameID)
     {
         XbeeStruct.RemoteCmdStruckt cmd = new XbeeStruct.RemoteCmdStruckt();
         cmd.ATcmd = Pin.ToString();
@@ -72,23 +78,35 @@ public class RemoteCmdPacket
         cmd.CmdOptions = (byte)apiCmdOptions.None;
         cmd.API = (byte)XbeeBasePacket.XbeePacketType.RemoteCmd;
         cmd.Delimiter = 0x7E;
-        cmd.Length = this.CalcStructLength(cmd.GetPacketAsBytes());
-        cmd.Checksum = 0;
-        cmd.Checksum = (byte)Util.ComputeChecksum(cmd.GetPacketAsBytes());
-        return cmd;
+        cmd.Length = 15;
+        byte[] bytes = Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(cmd);
+        cmd.Checksum = (byte)Util.ComputeChecksum(bytes);
+        bytes = Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(cmd);
+        List<byte> list = new List<byte>();
+        list.AddRange(bytes);
+        list.RemoveAt(18);
+        return list.ToArray<byte>();
     }
 
     public XbeeStruct.RemoteCmdStruckt SetPinStatus(XbeeAPIpin Pin, String DestinationAddress, byte FrameID, bool EnablePin)
     {
-        XbeeStruct.RemoteCmdStruckt cmd = this.GetPinStatusPacket(Pin, DestinationAddress, FrameID);
-        cmd.Checksum = 0;
-        cmd.CmdData = 0x00;
-        if (EnablePin)
+        XbeeStruct.RemoteCmdStruckt cmd = new XbeeStruct.RemoteCmdStruckt();
+        cmd.ATcmd = Pin.ToString();
+        cmd.DestAdr64 = DestinationAddress;
+        cmd.FrameID = FrameID;
+        cmd.DestAdr16 = "FFFE";
+        cmd.CmdOptions = (byte)apiCmdOptions.None;
+        cmd.API = (byte)XbeeBasePacket.XbeePacketType.RemoteCmd;
+        cmd.Delimiter = 0x7E;
+        cmd.Length = 16;
+        if (EnablePin == true)
         {
-            cmd.CmdData = 0x03;
+            cmd.CmdData = 0x33;
         }
-        cmd.Length = this.CalcStructLength(cmd.GetPacketAsBytes());
-        cmd.Checksum = (byte)Util.ComputeChecksum(cmd.GetPacketAsBytes());
+        byte[] bytes = Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(cmd);
+        cmd.Checksum = (byte)Util.ComputeChecksum(bytes);
+        bytes = Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(cmd);
+        string hex = Util.ConvertByteArrayToHexString(bytes);
         return cmd;
     }
 
@@ -99,7 +117,7 @@ public class RemoteCmdPacket
         return ReturnLength;
     }
 
-public enum apiCmdType : int
+    public enum apiCmdType : int
     {
         get = 0x0,
         set = 0x1        

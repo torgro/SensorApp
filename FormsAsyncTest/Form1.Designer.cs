@@ -40,6 +40,7 @@
             this.btn_AllPackets = new System.Windows.Forms.Button();
             this.btn_ManPacket = new System.Windows.Forms.Button();
             this.btn_DataSample = new System.Windows.Forms.Button();
+            this.btn_testcmd = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -154,11 +155,22 @@
             this.btn_DataSample.UseVisualStyleBackColor = true;
             this.btn_DataSample.Click += new System.EventHandler(this.btn_DataSample_Click);
             // 
+            // btn_testcmd
+            // 
+            this.btn_testcmd.Location = new System.Drawing.Point(815, 12);
+            this.btn_testcmd.Name = "btn_testcmd";
+            this.btn_testcmd.Size = new System.Drawing.Size(145, 48);
+            this.btn_testcmd.TabIndex = 13;
+            this.btn_testcmd.Text = "TestRemotecmd";
+            this.btn_testcmd.UseVisualStyleBackColor = true;
+            this.btn_testcmd.Click += new System.EventHandler(this.btn_testcmd_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.btn_testcmd);
             this.Controls.Add(this.btn_DataSample);
             this.Controls.Add(this.btn_ManPacket);
             this.Controls.Add(this.btn_AllPackets);
@@ -194,6 +206,7 @@
         private System.Windows.Forms.Button btn_AllPackets;
         private System.Windows.Forms.Button btn_ManPacket;
         private System.Windows.Forms.Button btn_DataSample;
+        private System.Windows.Forms.Button btn_testcmd;
     }
 }
 

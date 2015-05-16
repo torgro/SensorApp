@@ -38,7 +38,9 @@ namespace FormsAsyncTest
             this.data_Stats.ResumeLayout();
             this.ticks = new System.Windows.Forms.Timer();
             this.ticks.Interval = 3000;
-            this.ticks.Enabled = true;
+            this.textBox3.AppendText("Ticks is disabled!!");
+            this.textBox3.AppendText(Environment.NewLine);
+            //this.ticks.Enabled = true;
             this.ticks.Tick += this.Ticks_Elapsed;
             MonitorDevice mon = new MonitorDevice();
             mon.Enabled = true;
@@ -301,6 +303,26 @@ namespace FormsAsyncTest
             this.CurrentGridView = GridViewMode.DataSample;
             this.UpdateDGV();
             this.btn_DataSample.Enabled = true;
+        }
+
+        private void btn_testcmd_Click(object sender, EventArgs e)
+        {
+            //string DnullOn = "7E 00 10 17 01 00 13 A2 00 40 A1 D8 CE FF FF 02 44 30 03 34";
+            //XbeeBasePacket xbee = new XbeeBasePacket(DnullOn);
+            //XbeeStruct.RemoteCmdStruckt remoteCmd = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(xbee.PacketBytes.ToArray());
+            RemoteCmdPackets packets = new RemoteCmdPackets();
+            RemoteCmdPacket packet = new RemoteCmdPacket();
+            byte[] PinStatusBytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ",""), 1);
+            XbeeStruct.RemoteCmdStruckt statuspin = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(PinStatusBytes);
+            packets.AddPacket(statuspin);
+            XbeeBasePacket xbee = new XbeeBasePacket(PinStatusBytes);
+
+            string toree = xbee.GetPacketAsHex();
+            this.textBox3.AppendText(toree);
+
+            packet = new RemoteCmdPacket();
+            XbeeStruct.RemoteCmdStruckt setpin = packet.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 1, true);
+
         }          
     }
 
