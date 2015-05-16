@@ -15,7 +15,7 @@ namespace XbeeStruct
         public byte Delimiter;
 
         [MarshalAs(UnmanagedType.U2)]
-
+        //1 og 2
         public ushort mLength;
         [MarshalAs(UnmanagedType.U1)]
         //3
@@ -142,7 +142,7 @@ namespace XbeeStruct
             }
             set
             {
-                char[] chars = value.ToCharArray();
+                char[] chars = value.ToUpper().ToCharArray();
                 this.mATCmd = chars;
             }
         }
