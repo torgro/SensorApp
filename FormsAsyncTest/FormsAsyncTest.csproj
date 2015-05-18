@@ -58,6 +58,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteCmdPackets.cs" />
+    <Compile Include="RemoteCmdResponsStruct.cs" />
     <Compile Include="RemoteCmdStruckt.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Util.cs" />

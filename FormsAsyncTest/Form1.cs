@@ -159,7 +159,7 @@ namespace FormsAsyncTest
                         break;
                     case XbeeBasePacket.XbeePacketType.DataSample:
                         XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray().Take(GenericPack.PacketBytes.Count).ToArray());
-                        datasample.AddBytes(GenericPack.PacketBytes.ToArray());
+                        //datasample.AddBytes(GenericPack.PacketBytes.ToArray());
                         this.Datasample.addPacket(datasample);
                         break;
                     case XbeeBasePacket.XbeePacketType.RemoteCmd:
@@ -312,17 +312,22 @@ namespace FormsAsyncTest
             //XbeeStruct.RemoteCmdStruckt remoteCmd = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(xbee.PacketBytes.ToArray());
             RemoteCmdPackets packets = new RemoteCmdPackets();
             RemoteCmdPacket packet = new RemoteCmdPacket();
-            byte[] PinStatusBytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ",""), 1);
+            byte[] PinStatusBytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D3, "00 13 A2 00 40 A1 D8 CE".Replace(" ",""), 1);
             XbeeStruct.RemoteCmdStruckt statuspin = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(PinStatusBytes);
             packets.AddPacket(statuspin);
             XbeeBasePacket xbee = new XbeeBasePacket(PinStatusBytes);
 
             string toree = xbee.GetPacketAsHex();
             this.textBox3.AppendText(toree);
+            toree = Util.ConvertByteArrayToHexString(statuspin.GetPacketAsBytes());
+            this.textBox3.AppendText(Environment.NewLine);
+            this.textBox3.AppendText(toree);
 
             packet = new RemoteCmdPacket();
             XbeeStruct.RemoteCmdStruckt setpin = packet.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 1, true);
-
+            this.textBox3.AppendText(Environment.NewLine);
+            toree = Util.ConvertByteArrayToHexString(setpin.GetPacketAsBytes());
+            this.textBox3.AppendText(toree);
         }          
     }
 

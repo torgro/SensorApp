@@ -7,124 +7,117 @@ using System.Runtime.InteropServices;
 
 namespace XbeeStruct
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+    //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     public struct DataSampleStruct
     {
-
         [MarshalAs(UnmanagedType.U1)]
         //0
-        private byte mDelimiter;
+        public byte Delimiter;
 
-        [MarshalAs(UnmanagedType.U2)]
+        [MarshalAs(UnmanagedType.U1)]
         //1
-        private ushort mLength;
-        //<MarshalAs(UnmanagedType.U1)> _
-        //Private mLength2 As Byte '1
+        public byte mLength0;
+        [MarshalAs(UnmanagedType.U1)]
+        //2
+        public byte mLength;
 
         [MarshalAs(UnmanagedType.U1)]
         //3
-        private byte mapi;
+        public byte api;
 
         [MarshalAs(UnmanagedType.U1)]
         //4
-        private byte SourceAdr1;
+        public byte SourceAdr1;
 
         [MarshalAs(UnmanagedType.U1)]
         //5
-        private byte SourceAdr2;
+        public byte SourceAdr2;
 
         [MarshalAs(UnmanagedType.U1)]
         //6
-        private byte SourceAdr3;
+        public byte SourceAdr3;
 
         [MarshalAs(UnmanagedType.U1)]
         //7
-        private byte SourceAdr4;
+        public byte SourceAdr4;
 
         [MarshalAs(UnmanagedType.U1)]
         //8
-        private byte SourceAdr5;
+        public byte SourceAdr5;
 
         [MarshalAs(UnmanagedType.U1)]
         //9
-        private byte SourceAdr6;
+        public byte SourceAdr6;
 
         [MarshalAs(UnmanagedType.U1)]
         //10
-        private byte SourceAdr7;
+        public byte SourceAdr7;
 
         [MarshalAs(UnmanagedType.U1)]
         //11
-        private byte SourceAdr8;
+        public byte SourceAdr8;
 
         [MarshalAs(UnmanagedType.U1)]
         //12
-        private byte SourceAdrShort1;
+        public byte SourceAdrShort1;
 
         [MarshalAs(UnmanagedType.U1)]
         //13
-        private byte SourceAdrShort2;
+        public byte SourceAdrShort2;
 
         [MarshalAs(UnmanagedType.U1)]
         //14
-        private ReceiveOption mRcvOptions;
+        public ReceiveOption RcvOptions;
 
         [MarshalAs(UnmanagedType.U1)]
         //15
-        private byte mNumSamples;
+        public byte NumSamples;
 
         [MarshalAs(UnmanagedType.U1)]
         //16
-        private byte mDigitalMask1;
+        public byte DigitalMask1;
 
         [MarshalAs(UnmanagedType.U1)]
         //17
-        private byte mDigitalMask2;
+        public byte DigitalMask2;
 
         [MarshalAs(UnmanagedType.U1)]
         //18
-        private byte mAnalogMask;
+        public byte AnalogMask;
 
-        //Public Property Samples As List(Of Byte)
+        [MarshalAs(UnmanagedType.U1)]
+        //'19
+        public Byte Sample1;
 
-        //<MarshalAs(UnmanagedType.U1)> _
-        //Private Sample1 As Byte '19
+        [MarshalAs(UnmanagedType.U1)]
+        //'20
+        public Byte Sample2;
 
-        //<MarshalAs(UnmanagedType.U1)> _
-        //Private sample2 As Byte '20
+        [MarshalAs(UnmanagedType.U1)]
+        //'21
+        public Byte CheckSum;
 
-        //<MarshalAs(UnmanagedType.U1)> _
-        //Private CheckSum As Byte '21
+        //----------------
+        //
+        // END STRUCT
+        //
+        //----------------
 
-        //public DataSampleStruct()
-        //{
-
-        //}
-        public byte CheckSum { get; set; }
-
-        public byte API
-        {
-            get { return mapi; }
-            set { mapi = value; }
-        }
-
-        public string Samples
+        public string SamplesAsHex
         {
             get
             {
                 string s = string.Empty;
-                foreach (byte b in mSamples)
-                {
-                    s += Util.ConvertToHex(b);
-                }
+                s += Util.ConvertToHex(this.Sample1);
+                s += Util.ConvertToHex(this.Sample2);
                 return s;
             }
         }
 
-        public ushort length
+        public byte Length
         {
-            get { return Util.GetUshortFromLittleEndian(this.mLength); }
-            set { this.mLength = Util.GetUshortFromLittleEndian(value); }
+            get { return this.mLength; }
+            set { this.mLength = value; }
         }
 
         public string SourceAdr64
@@ -137,7 +130,7 @@ namespace XbeeStruct
             }
             set
             {
-                if (value.Length == 8)
+                if (value.Length == 16)
                 {
                     this.SourceAdr1 = (byte)Util.ConvertHexToInt(value.Substring(0, 2));
                     this.SourceAdr2 = (byte)Util.ConvertHexToInt(value.Substring(2, 2));
@@ -150,7 +143,7 @@ namespace XbeeStruct
                 }
                 else
                 {
-                    throw new Exception("Sourceaddress must be 8 chars long");
+                    throw new Exception("Sourceaddress must be 16 chars long");
                 }
 
             }
@@ -170,57 +163,16 @@ namespace XbeeStruct
             }
         }
 
-        public byte GetApiType()
-        {
-            byte api = 0x92;
-            return api;
-        }
-
-        public XbeeBasePacket.XbeePacketType GetXbeePacketType()
-        {
-            return XbeeBasePacket.XbeePacketType.DataSample;
-        }
-
-        private static List<byte> mSamples = new List<byte>();
-        public static System.Collections.ArrayList packetbytes { get; set; }
-        public const int DataPayLoadStartAtIndex = 20;
-        //public const path Direction = path.Inn;
-
-        public const byte FrameTypeId = 0x92;
-        public void AddBytes(byte[] bytes)
-        {
-            for (int i = DataPayLoadStartAtIndex; i <= bytes.Length - 2; i += 1)
-            {
-                mSamples.Add(bytes[i]);
-            }
-            this.CheckSum = bytes[bytes.Length - 1];
-        }
-
-        public string GetSampleAsHex()
+        public string GetAsHex()
         {
             string hex = string.Empty;
-            foreach (byte b in mSamples)
-            {
-                hex += Util.ConvertToHex(b);
-            }
+            hex = Util.ConvertByteArrayToHexString(GetPacketAsBytes());
             return hex;
-        }
+        } 
 
         public byte[] GetPacketAsBytes()
         {
-            List<byte> bytelist = new List<byte>();
-            byte[] header = Util.StructToBytes(this);
-            foreach (byte b in header)
-            {
-                bytelist.Add(b);
-            }
-            bytelist.RemoveAt(bytelist.Count - 1);
-            foreach (byte b in mSamples)
-            {
-                bytelist.Add(b);
-            }
-            bytelist.Add(this.CheckSum);
-            return bytelist.ToArray();
+            return Util.StructToBytes<XbeeStruct.DataSampleStruct>(this);         
         }
 
     }

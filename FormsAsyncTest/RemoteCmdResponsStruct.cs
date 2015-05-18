@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,95 +7,92 @@ using System.Runtime.InteropServices;
 
 namespace XbeeStruct
 {
-    public struct RemoteCmdStruckt
-    {
-        [MarshalAs(UnmanagedType.U1)]
-        //0
-        public byte Delimiter;
+    public struct RemoteCmdResponsStruct
+	{
+		[MarshalAs(UnmanagedType.U1)]
+		//0
+		private byte Delimiter;
 
-        [MarshalAs(UnmanagedType.U1)]
+		[MarshalAs(UnmanagedType.U1)]
         //1
         public byte mLength0;
         [MarshalAs(UnmanagedType.U1)]
         //2
         public byte mLength;
-        [MarshalAs(UnmanagedType.U1)]
-        //3
-        public byte API;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //4
-        public byte FrameID;
+		[MarshalAs(UnmanagedType.U1)]
+		//3
+		public byte API;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //5
-        public byte SourceAdr1;
+		[MarshalAs(UnmanagedType.U1)]
+		//4
+		public byte FrameID;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //6
-        public byte SourceAdr2;
+		[MarshalAs(UnmanagedType.U1)]
+		//5
+		private byte SourceAdr1;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //7
-        public byte SourceAdr3;
+		[MarshalAs(UnmanagedType.U1)]
+		//6
+		private byte SourceAdr2;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //8
-        public byte SourceAdr4;
+		[MarshalAs(UnmanagedType.U1)]
+		//7
+		private byte SourceAdr3;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //9
-        public byte SourceAdr5;
+		[MarshalAs(UnmanagedType.U1)]
+		//8
+		private byte SourceAdr4;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //10
-        public byte SourceAdr6;
+		[MarshalAs(UnmanagedType.U1)]
+		//9
+		private byte SourceAdr5;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //11
-        public byte SourceAdr7;
+		[MarshalAs(UnmanagedType.U1)]
+		//10
+		private byte SourceAdr6;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //12
-        public byte SourceAdr8;
+		[MarshalAs(UnmanagedType.U1)]
+		//11
+		private byte SourceAdr7;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //13
-        public byte SourceAdrShort1;
+		[MarshalAs(UnmanagedType.U1)]
+		//12
+		private byte SourceAdr8;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //14
-        public byte SourceAdrShort2;
+		[MarshalAs(UnmanagedType.U1)]
+		//13
+		private byte SourceAdrShort1;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //15
-        public byte CmdOptions;
+		[MarshalAs(UnmanagedType.U1)]
+		//14
+		private byte SourceAdrShort2;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        //16 17
-        public char[] mATCmd;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+		//15 16
+		private char[] mATCmd;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //18 is null if getting value, has value if setting register value
-        public byte CmdData;
+		[MarshalAs(UnmanagedType.U1)]
+		//17
+		public RemoteCmdResponsStatus RemStatus;
 
-        [MarshalAs(UnmanagedType.U1)]
-        //19 
-        public byte Checksum;
-
+		[MarshalAs(UnmanagedType.U1)]
+        //18
+		public byte Checksum;
+		
         //----------------
         //
         // END STRUCT
         //
         //----------------
 
-        public byte Length
+		public byte Length
         {
             get { return this.mLength; }
             set { this.mLength = value; }           
         }
 
-        public string DestAdr64
+		public string SourceAdr
         {
             get
             {
@@ -124,7 +120,7 @@ namespace XbeeStruct
             }
         }
 
-        public string ATcmd
+		public string ATcmd
         {
             get
             {
@@ -137,7 +133,7 @@ namespace XbeeStruct
             }
         }
 
-        public string DestAdr16
+		public string shortAdr
         {
             get
             {
@@ -151,23 +147,26 @@ namespace XbeeStruct
             }
         }
 
+        public string GetAsHex()
+        {
+            string hex = string.Empty;
+            hex = Util.ConvertByteArrayToHexString(GetPacketAsBytes());
+            return hex;
+        } 
+
         public byte[] GetPacketAsBytes()
         {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(this));
-            // if getting value, CmdData should be empty(REMOVED) and last byte should be checksum
-            if (this.Length == 15)
-            {
-                if (this.Checksum == 0)
-                {
-                    bytes.RemoveAt(bytes.Count - 1);
-                }
-                if (this.CmdData != 0)
-                {
-                    bytes.RemoveAt(bytes.Count - 2);
-                }                
-            }
-            return bytes.ToArray();
+            return Util.StructToBytes<XbeeStruct.RemoteCmdResponsStruct>(this);         
         }
+	}
+    public enum RemoteCmdResponsStatus : byte
+    {
+        OK = 0x0,
+        Error = 0x1,
+        InvalidCommand = 0x2,
+        InvalidParameter = 0x3,
+        TransmissionFailed = 0x4
     }
 }
+
+
