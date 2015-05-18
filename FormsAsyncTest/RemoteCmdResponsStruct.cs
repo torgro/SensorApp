@@ -11,7 +11,7 @@ namespace XbeeStruct
 	{
 		[MarshalAs(UnmanagedType.U1)]
 		//0
-		private byte Delimiter;
+        public byte Delimiter;
 
 		[MarshalAs(UnmanagedType.U1)]
         //1
@@ -30,51 +30,51 @@ namespace XbeeStruct
 
 		[MarshalAs(UnmanagedType.U1)]
 		//5
-		private byte SourceAdr1;
+        public byte SourceAdr1;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//6
-		private byte SourceAdr2;
+        public byte SourceAdr2;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//7
-		private byte SourceAdr3;
+        public byte SourceAdr3;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//8
-		private byte SourceAdr4;
+        public byte SourceAdr4;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//9
-		private byte SourceAdr5;
+        public byte SourceAdr5;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//10
-		private byte SourceAdr6;
+        public byte SourceAdr6;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//11
-		private byte SourceAdr7;
+        public byte SourceAdr7;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//12
-		private byte SourceAdr8;
+        public byte SourceAdr8;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//13
-		private byte SourceAdrShort1;
+        public byte SourceAdrShort1;
 
 		[MarshalAs(UnmanagedType.U1)]
 		//14
-		private byte SourceAdrShort2;
+        public byte SourceAdrShort2;
 
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		//15 16
-		private char[] mATCmd;
+        public char[] mATCmd;
 
 		[MarshalAs(UnmanagedType.U1)]
-		//17
-		public RemoteCmdResponsStatus RemStatus;
+		//17 
+        public byte RemStatus;
 
 		[MarshalAs(UnmanagedType.U1)]
         //18
@@ -158,15 +158,7 @@ namespace XbeeStruct
         {
             return Util.StructToBytes<XbeeStruct.RemoteCmdResponsStruct>(this);         
         }
-	}
-    public enum RemoteCmdResponsStatus : byte
-    {
-        OK = 0x0,
-        Error = 0x1,
-        InvalidCommand = 0x2,
-        InvalidParameter = 0x3,
-        TransmissionFailed = 0x4
-    }
+	}    
 }
 
 

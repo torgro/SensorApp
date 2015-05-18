@@ -44,8 +44,8 @@ public class RemoteCmdPackets
         packet.API = XbeeBasePacket.XbeePacketType.RemoteCmdRespons;
         packet.Length = RemoteCmdStruct.Length;
         packet.ATcmd = RemoteCmdStruct.ATcmd;
-        packet.RemoteStatus = RemoteCmdStruct.RemStatus;
-        //packet.cmdOptions = RemoteCmdStruct.CmdOptions;
+        packet.RemoteStatus = (RemoteCmdPacket.RemoteCmdResponsStatus)Enum.Parse(typeof(RemoteCmdPacket.RemoteCmdResponsStatus), RemoteCmdStruct.RemStatus.ToString());//RemoteCmdStruct.RemStatus;
+        
         packet.FrameID = RemoteCmdStruct.FrameID;
         packet.DestAdr16 = RemoteCmdStruct.shortAdr;
         packet.DestAdr64 = RemoteCmdStruct.SourceAdr;
@@ -67,11 +67,11 @@ public class RemoteCmdPacket
     public byte CmdData { get; set; }
     public string DestAdr16 { get; set; }
     public string DestAdr64 { get; set; }
-    public XbeeStruct.RemoteCmdResponsStatus RemoteStatus { get; set; }
+    public RemoteCmdResponsStatus RemoteStatus { get; set; }
     public XbeeBasePacket.XbeePacketDirection Direction { get; set; }
-    private byte DigitalPinHex = 0x44;
+    //private byte DigitalPinHex = 0x44; 
     public List<byte> AllBytes;
-    public string PacketAsHex;
+    public string PacketAsHex; 
 
     public RemoteCmdPacket()
     {
@@ -176,5 +176,13 @@ public class RemoteCmdPacket
         d2 = 18,
         d1 = 19,
         d0 = 20
+    }
+    public enum RemoteCmdResponsStatus : byte
+    {
+        OK = 0x0,
+        Error = 0x1,
+        InvalidCommand = 0x2,
+        InvalidParameter = 0x3,
+        TransmissionFailed = 0x4
     }
 }

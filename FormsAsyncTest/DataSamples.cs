@@ -17,11 +17,11 @@ public class DataSamples
     public void addPacket(XbeeStruct.DataSampleStruct dsStruct)
     {
         DataSamplePacket ds = new DataSamplePacket();
-        ds.API = dsStruct.GetXbeePacketType();
+        ds.API = XbeeBasePacket.XbeePacketType.DataSample;
         ds.CheckSum = dsStruct.CheckSum;
         ds.Id = this.List.Count;
-        ds.Length = dsStruct.length;
-        ds.Samples = dsStruct.Samples;
+        ds.Length = dsStruct.Length;
+        ds.Samples = dsStruct.SamplesAsHex;
         ds.SourceAdr16 = dsStruct.SourceAdr16;
         ds.SourceAdr64 = dsStruct.SourceAdr64;
         ds.TimeDate = DateTime.Now;

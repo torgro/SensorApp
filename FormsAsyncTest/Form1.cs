@@ -20,6 +20,7 @@ namespace FormsAsyncTest
         private Logging Logs = new Logging();
         private Stat Statistics = new Stat();
         private DataSamples Datasample = new DataSamples();
+        private RemoteCmdPackets RemoteCommandPackets = new RemoteCmdPackets();
         private int IRC = 0;
         private System.Windows.Forms.Timer ticks;
         private GridViewMode CurrentGridView = GridViewMode.Log;
@@ -154,20 +155,30 @@ namespace FormsAsyncTest
                 switch (GenericPack.APItype)
                 {
                     case XbeeBasePacket.XbeePacketType.TransmitRequest:
-                        break;
+                        throw new NotImplementedException("TransmitRequest packet not implemented!");    
+                        //break;
+
                     case XbeeBasePacket.XbeePacketType.RemoteCmdRespons:
+                        XbeeStruct.RemoteCmdResponsStruct RemoteResponsStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdResponsStruct>(GenericPack.PacketBytes.ToArray());
+                        this.RemoteCommandPackets.AddPacket(RemoteResponsStruct);
                         break;
+
                     case XbeeBasePacket.XbeePacketType.DataSample:
-                        XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray().Take(GenericPack.PacketBytes.Count).ToArray());
-                        //datasample.AddBytes(GenericPack.PacketBytes.ToArray());
+                        XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray());
                         this.Datasample.addPacket(datasample);
                         break;
+
                     case XbeeBasePacket.XbeePacketType.RemoteCmd:
+                        XbeeStruct.RemoteCmdStruckt RemoteStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(GenericPack.PacketBytes.ToArray());
+                        this.RemoteCommandPackets.AddPacket(RemoteStruct);
                         break;
+
                     case XbeeBasePacket.XbeePacketType.ReceivePacket:
-                        break;
+                        throw new NotImplementedException("ReceivePacket not implemented!");
+                        //break;
                     default:
-                        break;
+                        throw new NotImplementedException("unknown packet not implemented!");
+                        //break;
                 }
             }
             catch (Exception)
@@ -333,7 +344,7 @@ namespace FormsAsyncTest
 
     public class manager
     {
-        public event XbeeHEXeEventHandler XbeeHEXx;
+        //public event XbeeHEXeEventHandler XbeeHEXx;
         public event XbeeTestEventHandler XbeeTest;
         public delegate void XbeeTestEventHandler(string h);
         public delegate void XbeeHEXeEventHandler(byte[] ByteArray);
