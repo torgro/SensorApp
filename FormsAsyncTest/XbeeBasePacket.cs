@@ -21,7 +21,7 @@ public class XbeeBasePacket
     public event LogEventEventHandler LogEvent;
     public delegate void LogEventEventHandler(LogDetail LogItem);
     public event VaildPacketEventHandler VaildPacket;
-    public delegate void VaildPacketEventHandler(string hex);
+    public delegate void VaildPacketEventHandler(byte[] bytes);
 
     public XbeeBasePacket()
     {
@@ -105,19 +105,36 @@ public class XbeeBasePacket
         if (this.EscapeCharFlag == true) {
             this.EscapeCharFlag = false;
             this.LogIt("EscapeFlag was TRUE, now false");
+            this.LogIt("old thebyte:" + Util.ConvertToHex(thebyte));
             thebyte = (byte)(thebyte ^ 0x20); //&H20
-            this.LogIt("thebyte:" + thebyte.ToString());
-        }
-        //check for escapechar
-        if (thebyte == 0x7D & this.EscapeCharFlag == false) {
-            this.LogIt("received escapechar, setting flag to TRUE");
-            this.EscapeCharCount += 1;
-            this.EscapeCharFlag = true;
+            this.LogIt("Xored thebyte:" + Util.ConvertToHex(thebyte));
+            this.PacketBytes.Add(thebyte);
         }
         else
         {
-            this.PacketBytes.Add(thebyte);
+             if (thebyte == 0x7D)
+             {
+                 this.LogIt("byte is escapechar");
+                 this.EscapeCharCount++;
+                 this.EscapeCharFlag = true;
+             }
+             else
+             {
+                 this.LogIt("Adding regular byte" + Util.ConvertToHex(thebyte));
+                 this.PacketBytes.Add(thebyte);
+             }
         }
+        //check for escapechar
+        //if (thebyte == 0x7D & this.EscapeCharFlag == false) {
+        //    this.LogIt("received escapechar, setting flag to TRUE");
+        //    this.EscapeCharCount += 1;
+        //    this.EscapeCharFlag = true;
+        //}
+        //else
+        //{
+           
+        //}
+        
                 
         if (this.PacketBytes[0] == 0x7E) {
             //we have a valid packet start byte
@@ -134,7 +151,7 @@ public class XbeeBasePacket
         if (this.PacketBytes.Count >= 3) 
         {
             this.PacketLength = this.PacketBytes[1] + this.PacketBytes[2];
-            if (this.PacketLength == (this.ListLength - this.EscapeCharCount - 4)) {
+            if (this.PacketLength == (this.ListLength - this.EscapeCharCount - 3)) {
                 int intCalculatedChecksum = Util.ComputeChecksum(this.PacketBytes.ToArray());
                 int packetCheckSum = Convert.ToInt32(this.PacketBytes[this.PacketBytes.Count - 1]);
                 //if checksum match then raise event Vaildpacket
@@ -167,7 +184,9 @@ public class XbeeBasePacket
         if (VaildPacket != null)
         {
             // Raise ValidPacket event
-            VaildPacket(this.GetPacketAsHex());
+            //VaildPacket(this.GetPacketAsHex());
+            VaildPacket(this.PacketBytes.ToArray());
+            this.ResetPacket();
         }
         else
         {
@@ -223,7 +242,7 @@ public class XbeeBasePacket
 
         if (LogEvent != null)
         {
-            LogEvent(log);
+            //LogEvent(log);
         }
     }
 

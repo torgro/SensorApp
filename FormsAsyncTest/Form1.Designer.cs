@@ -44,6 +44,8 @@
             this.btn_RemoteCmd = new System.Windows.Forms.Button();
             this.btn_TestSample = new System.Windows.Forms.Button();
             this.btn_tasks = new System.Windows.Forms.Button();
+            this.btn_Connect = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -74,7 +76,7 @@
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(119, 483);
+            this.textBox3.Location = new System.Drawing.Point(119, 539);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(819, 95);
@@ -198,11 +200,32 @@
             this.btn_tasks.UseVisualStyleBackColor = true;
             this.btn_tasks.Click += new System.EventHandler(this.btn_tasks_Click);
             // 
+            // btn_Connect
+            // 
+            this.btn_Connect.Location = new System.Drawing.Point(12, 487);
+            this.btn_Connect.Name = "btn_Connect";
+            this.btn_Connect.Size = new System.Drawing.Size(101, 46);
+            this.btn_Connect.TabIndex = 17;
+            this.btn_Connect.Text = "Connect";
+            this.btn_Connect.UseVisualStyleBackColor = true;
+            this.btn_Connect.Click += new System.EventHandler(this.btn_Connect_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(143, 466);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(101, 46);
+            this.button3.TabIndex = 18;
+            this.button3.Text = "Connect";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btn_Connect);
             this.Controls.Add(this.btn_tasks);
             this.Controls.Add(this.btn_TestSample);
             this.Controls.Add(this.btn_RemoteCmd);
@@ -246,6 +269,8 @@
         private System.Windows.Forms.Button btn_RemoteCmd;
         private System.Windows.Forms.Button btn_TestSample;
         private System.Windows.Forms.Button btn_tasks;
+        private System.Windows.Forms.Button btn_Connect;
+        private System.Windows.Forms.Button button3;
     }
 }
 

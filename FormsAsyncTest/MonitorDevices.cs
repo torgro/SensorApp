@@ -51,7 +51,8 @@ public class MonitorDevices
     public void AddDevice(MonitorDevice dev)
     {
         this.LogIt("Adding device with mac " + dev.MAC);
-        dev.DeviceID = this.List.Count;
+        dev.DeviceID = this.List.Count + 1;
+        
         this.AddNewDevice(dev);
     }
 
@@ -89,14 +90,14 @@ public class MonitorDevices
         return q.ToList<MonitorDevice>();
 	}
 
-    public int GetDeviceID(string MAC)
+    public int GetDeviceID(string MAC) 
     {
         System.Collections.Generic.IEnumerable<int> q =
-            from it in this.List.AsEnumerable()
-            where it.MAC.ToUpper() == MAC
+            from it in this.List.OfType<MonitorDevice>()
+            where it.MAC.ToUpper() == MAC.ToUpper()
             select it.DeviceID;
 
-        return q.First();
+        return q.FirstOrDefault();
     }
 
     public async Task<List<MonitorDevice>> GetDeviceAsync(int ById)
@@ -126,6 +127,16 @@ public class MonitorDevices
 
         return q.ToList<MonitorDevice>(); 
 	}
+
+    public MonitorDevice GetSingleDevice(int id)
+    {
+        System.Collections.Generic.IEnumerable<MonitorDevice> q =
+            from it in this.List
+            where it.DeviceID == id
+            select it;
+
+        return q.First();
+    }
 }
 
 public class MonitorDevice
@@ -138,6 +149,7 @@ public class MonitorDevice
     public string GPSlong { get; set; }
     public bool Online { get; set; }
     public int NumberOfSensors { get; set; }
+    public int TimeOutMinutes { get; set; }
     public string LastStatus { get; set; }
     public string Logs;//{ get; set; }
     public MonitorHeading Heading { get; set; }
@@ -171,8 +183,9 @@ public class MonitorDevice
         this.NumberOfSensors = 2;
         this.Sensor1Detect = false;
         this.Sensor2Detect = false;
+        this.TimeOutMinutes = 1;
     }
-
+   
     public void SetProperty(string PropertyName, int value)
     {
         try

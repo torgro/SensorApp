@@ -96,18 +96,19 @@ public class XbeeCOM
                 this.IsOpen = true;
             }
             List<byte> list = Util.EscapeUartBytes(b);
+            string hexpacket = Util.ConvertByteArrayToHexString(b);
             
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (byte bbyte in list)
-            {
-                sb.Append(Util.ConvertToHex(bbyte));
-                sb.Append(" ");
-            }
-            char[] trimWhite = {' '};
-            this.LogIt("Sending this hex thingy '" + sb.ToString().TrimEnd(trimWhite) + "'");
+            //System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            //foreach (byte bbyte in list)
+            //{
+            //    sb.Append(Util.ConvertToHex(bbyte));
+            //    sb.Append(" ");
+            //}
+            //char[] trimWhite = {' '};
+            this.LogIt("Sending this hex thingy '" + hexpacket + "'");
 
             this.LogIt("Writing " + list.Count + " bytes to the serialport");
-            this.SerialPort1.Write(list.ToArray(), 0, list.Count);
+            //this.SerialPort1.Write(list.ToArray(), 0, list.Count);
             this.LogIt("Writing done");
         }
         catch (Exception ex)
@@ -175,7 +176,7 @@ public class XbeeCOM
         sp.Read(buff, 0, length);
         if (XbeeHEX != null)
         {
-            this.LogIt("Raising event on Data frame received!");
+            //this.LogIt("Raising event on Data frame received!");
             XbeeHEX(buff);
         }
     }
