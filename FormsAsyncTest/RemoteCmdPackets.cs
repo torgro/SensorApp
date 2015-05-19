@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 public class RemoteCmdPackets
 {
     public List<RemoteCmdPacket> List;
+    //events and delegates
+    public event LogEventEventHandler LogEvent;
+    public delegate void LogEventEventHandler(LogDetail LogItem);
 
     public RemoteCmdPackets()
     {
@@ -15,6 +19,7 @@ public class RemoteCmdPackets
 
     public void AddPacket(XbeeStruct.RemoteCmdStruckt StructPacket)
     {
+        this.LogIt("Adding RemoteCmdStruckt packet");
         RemoteCmdPacket packet = new RemoteCmdPacket();
         packet.TimeDate = DateTime.Now;
         packet.Id = this.List.Count;
@@ -32,11 +37,13 @@ public class RemoteCmdPackets
         packet.FrameID = StructPacket.FrameID;
         packet.DestAdr16 = StructPacket.DestAdr16;
         packet.DestAdr64 = StructPacket.DestAdr64;
+        packet.Direction = XbeeBasePacket.XbeePacketDirection.Out;
         this.List.Add(packet);
     }
 
     public void AddPacket(XbeeStruct.RemoteCmdResponsStruct RemoteCmdStruct)
     {
+        this.LogIt("Adding RemoteCmdResponsStruct packet");
         RemoteCmdPacket packet = new RemoteCmdPacket();
         packet.TimeDate = DateTime.Now;
         packet.Id = this.List.Count;
@@ -49,7 +56,34 @@ public class RemoteCmdPackets
         packet.FrameID = RemoteCmdStruct.FrameID;
         packet.DestAdr16 = RemoteCmdStruct.shortAdr;
         packet.DestAdr64 = RemoteCmdStruct.SourceAdr;
+        packet.Direction = XbeeBasePacket.XbeePacketDirection.In;
         this.List.Add(packet);
+    }
+
+    virtual protected void OnLogEvent(LogDetail it)
+    {
+        if (LogEvent != null)
+        {
+            LogEvent(it);
+        }
+    }
+
+    private void LogIt(string Str)
+    {
+        LogDetail log = new LogDetail();
+        string calledby = new StackFrame(2, true).GetMethod().Name;
+        string ClassName = this.GetType().FullName;
+        log.ClassName = ClassName;
+        log.Description = Str;
+        log.Level = 0;
+        log.Method = calledby;
+        log.TimeDate = DateTime.Now;
+
+        OnLogEvent(log);
+        //if (LogEvent != null)
+        //{
+        //    LogEvent(log);
+        //}
     }
 }
 
@@ -62,7 +96,7 @@ public class RemoteCmdPacket
     public byte CheckSum { get; set; }
     public byte Length { get; set; }
     public string ATcmd { get; set; }
-    public string PinName { get; set; }
+    //public string PinName { get; set; }
     public byte cmdOptions { get; set; }
     public byte CmdData { get; set; }
     public string DestAdr16 { get; set; }

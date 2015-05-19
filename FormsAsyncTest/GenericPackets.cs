@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 public class GenericPackets
 {
     public List<GenericPacket> Packets;
+    // Events and delegates
+    public event LogEventEventHandler LogEvent;
+    public delegate void LogEventEventHandler(LogDetail LogItem);
 
     public GenericPackets() 
     {
@@ -15,6 +19,7 @@ public class GenericPackets
 
     public void AddGenericPacket(byte[] PacketOfBytes)
     {
+        this.LogIt("Add packet with byte array");
         GenericPacket packet = new GenericPacket(PacketOfBytes);
         if (packet.PacketBytes.Count > 0)
         {
@@ -24,8 +29,32 @@ public class GenericPackets
             
         }    
     }
-}
 
+    public void AddGenericPacket(GenericPacket Packet)
+    {
+        this.LogIt("Add packet with GenericPacket class");
+        Packet.ID = this.Packets.Count;
+        Packet.Time = DateTime.Now;
+        this.Packets.Add(Packet);
+    }
+
+    private void LogIt(string Str)
+    {
+        LogDetail log = new LogDetail();
+        string calledby = new StackFrame(3, true).GetMethod().Name;
+        string ClassName = this.GetType().FullName;
+        log.ClassName = ClassName;
+        log.Description = Str;
+        log.Level = 0;
+        log.Method = calledby;
+        log.TimeDate = DateTime.Now;
+
+        if (this.LogEvent != null)
+        {
+            this.LogEvent(log);
+        }
+    }
+}
 
 public class GenericPacket
 {
@@ -71,8 +100,6 @@ public class GenericPacket
         this.APItype = (XbeeBasePacket.XbeePacketType)Enum.Parse(typeof(XbeeBasePacket.XbeePacketType), this.API.ToString());
         this.Direction = GetPacketDirection(this.APItype);
     }
-
-    
 
     private XbeeBasePacket.XbeePacketDirection GetPacketDirection(XbeeBasePacket.XbeePacketType APItype)
     {

@@ -41,6 +41,9 @@
             this.btn_ManPacket = new System.Windows.Forms.Button();
             this.btn_DataSample = new System.Windows.Forms.Button();
             this.btn_testcmd = new System.Windows.Forms.Button();
+            this.btn_RemoteCmd = new System.Windows.Forms.Button();
+            this.btn_TestSample = new System.Windows.Forms.Button();
+            this.btn_tasks = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -64,9 +67,9 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(1043, 10);
+            this.textBox2.Location = new System.Drawing.Point(1305, 56);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(203, 22);
+            this.textBox2.Size = new System.Drawing.Size(49, 22);
             this.textBox2.TabIndex = 3;
             // 
             // textBox3
@@ -161,15 +164,48 @@
             this.btn_testcmd.Name = "btn_testcmd";
             this.btn_testcmd.Size = new System.Drawing.Size(145, 48);
             this.btn_testcmd.TabIndex = 13;
-            this.btn_testcmd.Text = "TestRemotecmd";
+            this.btn_testcmd.Text = "TestRemoteCmd";
             this.btn_testcmd.UseVisualStyleBackColor = true;
             this.btn_testcmd.Click += new System.EventHandler(this.btn_testcmd_Click);
+            // 
+            // btn_RemoteCmd
+            // 
+            this.btn_RemoteCmd.Location = new System.Drawing.Point(12, 383);
+            this.btn_RemoteCmd.Name = "btn_RemoteCmd";
+            this.btn_RemoteCmd.Size = new System.Drawing.Size(101, 46);
+            this.btn_RemoteCmd.TabIndex = 14;
+            this.btn_RemoteCmd.Text = "RemoteCmd";
+            this.btn_RemoteCmd.UseVisualStyleBackColor = true;
+            this.btn_RemoteCmd.Click += new System.EventHandler(this.btn_RemoteCmd_Click);
+            // 
+            // btn_TestSample
+            // 
+            this.btn_TestSample.Location = new System.Drawing.Point(975, 13);
+            this.btn_TestSample.Name = "btn_TestSample";
+            this.btn_TestSample.Size = new System.Drawing.Size(145, 48);
+            this.btn_TestSample.TabIndex = 15;
+            this.btn_TestSample.Text = "TestSample";
+            this.btn_TestSample.UseVisualStyleBackColor = true;
+            this.btn_TestSample.Click += new System.EventHandler(this.btn_TestSample_Click);
+            // 
+            // btn_tasks
+            // 
+            this.btn_tasks.Location = new System.Drawing.Point(12, 435);
+            this.btn_tasks.Name = "btn_tasks";
+            this.btn_tasks.Size = new System.Drawing.Size(101, 46);
+            this.btn_tasks.TabIndex = 16;
+            this.btn_tasks.Text = "Tasks";
+            this.btn_tasks.UseVisualStyleBackColor = true;
+            this.btn_tasks.Click += new System.EventHandler(this.btn_tasks_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.btn_tasks);
+            this.Controls.Add(this.btn_TestSample);
+            this.Controls.Add(this.btn_RemoteCmd);
             this.Controls.Add(this.btn_testcmd);
             this.Controls.Add(this.btn_DataSample);
             this.Controls.Add(this.btn_ManPacket);
@@ -207,6 +243,9 @@
         private System.Windows.Forms.Button btn_ManPacket;
         private System.Windows.Forms.Button btn_DataSample;
         private System.Windows.Forms.Button btn_testcmd;
+        private System.Windows.Forms.Button btn_RemoteCmd;
+        private System.Windows.Forms.Button btn_TestSample;
+        private System.Windows.Forms.Button btn_tasks;
     }
 }
 

@@ -86,8 +86,6 @@ public class XbeeBasePacket
         return sb.ToString().TrimEnd(WhiteSpace);
     }
 
-    
-
     private void ResetPacket()
     {
         this.Vaild = false;
@@ -98,7 +96,7 @@ public class XbeeBasePacket
         this.EscapeCharCount = 0;
     }
 
-    public async Task<bool> AddByte(byte thebyte)
+    public void AddByte(byte thebyte)
     {
         if (this.Vaild == true) {
             this.LogIt("WARNING - Resetting packet");
@@ -128,7 +126,7 @@ public class XbeeBasePacket
             //something is wrong, invalid packet, reset (should notify about dropping bytes)
             this.LogIt("Dropping frame, invalid packet/frame due to delimiter error");
             //TODO - create badpacket log/list with reason (checksumERROR, delimmiter error, length error)
-            return false;
+            //return false;
         }
         string ByteAsHex = Util.ConvertToHex(thebyte);
        
@@ -155,7 +153,13 @@ public class XbeeBasePacket
                 }
             }
         }
-        return true;
+        //return true;
+    }
+
+    public async Task<bool> AddByteAsync(byte thebyte)
+    {
+        bool x = await Task.Run(() => AddByteAsync(thebyte));
+        return x;
     }
 
     public void XbeeBasePacket_Vaild()
@@ -179,7 +183,7 @@ public class XbeeBasePacket
         }
     }
 
-    public async Task<bool> AddByte(string PacketAsHex)
+    public async Task<bool> AddByteAsync(string PacketAsHex)
     {
         char[] Split = { ' ' };
 
@@ -187,10 +191,23 @@ public class XbeeBasePacket
         {
             foreach (string hex in PacketAsHex.Split(Split))
             {
-                await this.AddByte(Util.ConvertHexToByte(hex));
+                await this.AddByteAsync(Util.ConvertHexToByte(hex));
             }
         }
         return true;
+    }
+    public void AddByte(string PacketAsHex)
+    {
+        char[] Split = { ' ' };
+
+        if (PacketAsHex.Contains(" "))
+        {
+            foreach (string hex in PacketAsHex.Split(Split))
+            {
+                this.AddByte(Util.ConvertHexToByte(hex));
+            }
+        }
+        //return true;
     }
 
     private void LogIt(string Str)

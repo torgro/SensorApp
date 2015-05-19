@@ -116,6 +116,14 @@ public class XbeeCOM
         }
     }
 
+    public async Task<bool> WriteAsync(byte[] bytes)
+    {
+        return await Task<bool>.Run(() =>
+            {
+                this.Write(bytes);
+                return true;
+            });
+    }
     public void close()
     {
         if (this.SerialPort1 != null)

@@ -162,10 +162,13 @@ namespace XbeeStruct
                 {
                     bytes.RemoveAt(bytes.Count - 1);
                 }
-                if (this.CmdData != 0)
+                else
                 {
-                    bytes.RemoveAt(bytes.Count - 2);
-                }                
+                    if (this.CmdData != 0)
+                    {
+                        bytes.RemoveAt(bytes.Count - 2);
+                    }          
+                }                      
             }
             return bytes.ToArray();
         }

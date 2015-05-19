@@ -47,10 +47,20 @@ public class MonitorDevices
         device.Enabled = true;
         this.AddNewDevice(device);
     }
+
     public void AddDevice(MonitorDevice dev)
     {
+        this.LogIt("Adding device with mac " + dev.MAC);
         dev.DeviceID = this.List.Count;
         this.AddNewDevice(dev);
+    }
+
+    virtual protected void OnLogEvent(LogDetail it)
+    {
+        if(LogEvent != null)
+        {
+            LogEvent(it);
+        }
     }
 
     private void LogIt(string Str)
@@ -64,10 +74,11 @@ public class MonitorDevices
         log.Method = calledby;
         log.TimeDate = DateTime.Now;
 
-        if (LogEvent != null)
-        {
-            LogEvent(log);
-        }
+        OnLogEvent(log);
+        //if (LogEvent != null)
+        //{
+        //    LogEvent(log);
+        //}
     }
 
     public List<MonitorDevice> GetDevice(int ById)
@@ -78,6 +89,34 @@ public class MonitorDevices
         return q.ToList<MonitorDevice>();
 	}
 
+    public int GetDeviceID(string MAC)
+    {
+        System.Collections.Generic.IEnumerable<int> q =
+            from it in this.List.AsEnumerable()
+            where it.MAC.ToUpper() == MAC
+            select it.DeviceID;
+
+        return q.First();
+    }
+
+    public async Task<List<MonitorDevice>> GetDeviceAsync(int ById)
+    {
+        return await Task<List<MonitorDevice>>.Run(() =>
+        {
+            List<MonitorDevice> list = this.GetDevice(ById);
+            return list;
+        });
+    }
+
+    public async Task<List<MonitorDevice>> GetDeviceAsync(string MAC)
+    {
+        return await Task<List<MonitorDevice>>.Run(() =>
+        {
+            List<MonitorDevice> list = this.GetDevice(MAC);
+            return list;
+        });
+    }
+
     public List<MonitorDevice> GetDevice(string MAC)
 	{
         System.Collections.Generic.IEnumerable<MonitorDevice> q =
@@ -87,7 +126,6 @@ public class MonitorDevices
 
         return q.ToList<MonitorDevice>(); 
 	}
-
 }
 
 public class MonitorDevice
@@ -101,15 +139,20 @@ public class MonitorDevice
     public bool Online { get; set; }
     public int NumberOfSensors { get; set; }
     public string LastStatus { get; set; }
-    public string Logs { get; set; }
+    public string Logs;//{ get; set; }
     public MonitorHeading Heading { get; set; }
     public long BatteryLevel { get; set; }
     public string MAC { get; set; }
-    public string FlightPlan { get; set; }
+    public string FlightPlan;// { get; set; }
     public bool Enabled { get; set; }
     public List<XbeeBasePacket> Packets { get; set; }
     public bool Sensor1Detect { get; set; }
     public bool Sensor2Detect { get; set; }
+    public bool D0triggerON { get; set; }
+    public bool D1triggerON { get; set; }
+    public bool D2triggerON { get; set; }
+    public bool D3triggerON { get; set; }
+    public bool D4triggerON { get; set; }
 
     public MonitorDevice()
     {
@@ -128,6 +171,25 @@ public class MonitorDevice
         this.NumberOfSensors = 2;
         this.Sensor1Detect = false;
         this.Sensor2Detect = false;
+    }
+
+    public void SetProperty(string PropertyName, int value)
+    {
+        try
+        {
+            System.Reflection.PropertyInfo[] props = this.GetType().GetProperties();
+            foreach (System.Reflection.PropertyInfo item in props)
+            {
+                if (item.Name == PropertyName)
+                {
+                    item.SetValue(this, value);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }        
     }
 }
 
