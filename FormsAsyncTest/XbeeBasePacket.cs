@@ -246,7 +246,7 @@ public class XbeeBasePacket
         }
     }
 
-    public enum XbeePacketType
+    public enum XbeePacketType : byte
     {
         TransmitRequest = 0x10,
         RemoteCmdRespons = 0x97,

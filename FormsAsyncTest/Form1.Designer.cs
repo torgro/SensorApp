@@ -46,6 +46,8 @@
             this.btn_tasks = new System.Windows.Forms.Button();
             this.btn_Connect = new System.Windows.Forms.Button();
             this.btn_EnableD0 = new System.Windows.Forms.Button();
+            this.btn_DisableD0 = new System.Windows.Forms.Button();
+            this.btn_StatusD0 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -220,11 +222,33 @@
             this.btn_EnableD0.UseVisualStyleBackColor = true;
             this.btn_EnableD0.Click += new System.EventHandler(this.btn_EnableD0_Click);
             // 
+            // btn_DisableD0
+            // 
+            this.btn_DisableD0.Location = new System.Drawing.Point(250, 466);
+            this.btn_DisableD0.Name = "btn_DisableD0";
+            this.btn_DisableD0.Size = new System.Drawing.Size(101, 46);
+            this.btn_DisableD0.TabIndex = 19;
+            this.btn_DisableD0.Text = "DisableD0";
+            this.btn_DisableD0.UseVisualStyleBackColor = true;
+            this.btn_DisableD0.Click += new System.EventHandler(this.btn_DisableD0_Click);
+            // 
+            // btn_StatusD0
+            // 
+            this.btn_StatusD0.Location = new System.Drawing.Point(357, 466);
+            this.btn_StatusD0.Name = "btn_StatusD0";
+            this.btn_StatusD0.Size = new System.Drawing.Size(101, 46);
+            this.btn_StatusD0.TabIndex = 20;
+            this.btn_StatusD0.Text = "StatusD0";
+            this.btn_StatusD0.UseVisualStyleBackColor = true;
+            this.btn_StatusD0.Click += new System.EventHandler(this.btn_StatusD0_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.btn_StatusD0);
+            this.Controls.Add(this.btn_DisableD0);
             this.Controls.Add(this.btn_EnableD0);
             this.Controls.Add(this.btn_Connect);
             this.Controls.Add(this.btn_tasks);
@@ -272,6 +296,8 @@
         private System.Windows.Forms.Button btn_tasks;
         private System.Windows.Forms.Button btn_Connect;
         private System.Windows.Forms.Button btn_EnableD0;
+        private System.Windows.Forms.Button btn_DisableD0;
+        private System.Windows.Forms.Button btn_StatusD0;
     }
 }
 

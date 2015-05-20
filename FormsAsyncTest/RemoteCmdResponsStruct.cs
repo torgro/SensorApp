@@ -76,6 +76,10 @@ namespace XbeeStruct
 		//17 
         public byte RemStatus;
 
+        [MarshalAs(UnmanagedType.U1)]
+        //18
+        public byte ResponsValue;
+
 		[MarshalAs(UnmanagedType.U1)]
         //18
 		public byte Checksum;

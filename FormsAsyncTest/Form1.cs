@@ -478,7 +478,60 @@ namespace FormsAsyncTest
                 {
                     MonitorDevice dev = (MonitorDevice)row.DataBoundItem;
                     string mac = dev.MAC;
-                    this.SetDevicePin(true, mac, 1);
+                    //this.SetDevicePin(true, mac, 1);
+                    this.ToggleD0trigger(dev.DeviceID, dev.MAC, true);
+                }
+            }
+        }
+
+        private void btn_DisableD0_Click(object sender, EventArgs e)
+        {
+            if (this.data_main.SelectedCells.Count > 0)
+            {
+                int RowIndex = this.data_main.SelectedCells[0].RowIndex;
+                DataGridViewRow row = this.data_main.Rows[RowIndex];
+                if (typeof(MonitorDevice) == row.DataBoundItem.GetType())
+                {
+                    MonitorDevice dev = (MonitorDevice)row.DataBoundItem;
+                    string mac = dev.MAC;
+                    //this.SetDevicePin(false, mac, 1);
+                    this.ToggleD0trigger(dev.DeviceID, dev.MAC, false);
+                }
+            }
+        }
+
+        private void ToggleD0trigger(int DeviceID, string Address, bool EnableTrigger)
+        {
+            RemoteCmdPacket packet = new RemoteCmdPacket();
+            XbeeStruct.RemoteCmdStruckt struckt = packet.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0,Address,(byte)DeviceID,EnableTrigger);
+            string hex = Util.ConvertByteArrayToHexString(struckt.GetPacketAsBytes());
+            this.GenericPackets.AddGenericPacket(new GenericPacket(struckt.GetPacketAsBytes()));
+            this.serial.Write(struckt.GetPacketAsBytes());
+        }
+
+        private void GetD0Status(int DeviceID, String Adr)
+        {
+            RemoteCmdPacket packet = new RemoteCmdPacket();
+            byte[] bytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D0, Adr, (byte)DeviceID);
+            XbeeStruct.RemoteCmdStruckt StatusPacket = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(bytes);
+            string hex = Util.ConvertByteArrayToHexString(bytes);
+            this.GenericPackets.AddGenericPacket(new GenericPacket(bytes));
+            this.serial.Write(bytes);
+
+        }
+
+        private void btn_StatusD0_Click(object sender, EventArgs e)
+        {
+            if (this.data_main.SelectedCells.Count > 0)
+            {
+                int RowIndex = this.data_main.SelectedCells[0].RowIndex;
+                DataGridViewRow row = this.data_main.Rows[RowIndex];
+                if (typeof(MonitorDevice) == row.DataBoundItem.GetType())
+                {
+                    MonitorDevice dev = (MonitorDevice)row.DataBoundItem;
+                    string mac = dev.MAC;
+                    //this.SetDevicePin(false, mac, 1);
+                    this.GetD0Status(dev.DeviceID, dev.MAC);
                 }
             }
         }
@@ -537,12 +590,21 @@ namespace FormsAsyncTest
             //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
             //string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
             //XbeeBasePacket xbee = new XbeeBasePacket();
-            this.textBox3.AppendText("setting device to disabled");
-            this.Devices.List[0].SetProperty("Online", "false");
-            this.textBox3.AppendText(Environment.NewLine);
-            this.textBox3.AppendText("current view is " + this.CurrentGridView);
-            this.UpdateDGV();
-            this.data_main.Refresh();
+            RemoteCmdPacket on = new RemoteCmdPacket();
+            on.CreateSetPinTriggerPacket(true, RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 16);
+
+            string hex = on.ToString();
+
+            RemoteCmdPacket off = new RemoteCmdPacket();
+            off.CreateSetPinTriggerPacket(false, RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 16);
+            string hexoff = off.ToString();
+            //this.textBox3.AppendText("setting device to disabled");
+            //this.Devices.List[0].SetProperty("Online", "false");
+            //this.textBox3.AppendText(Environment.NewLine);
+            //this.textBox3.AppendText("current view is " + this.CurrentGridView);
+            //this.UpdateDGV();
+            //this.data_main.Refresh();
+
             //await Packet.AddByte(SampleOn);
             this.button2.Enabled = true;
             //string hex = Packet.GetPacketAsHex();
@@ -561,7 +623,7 @@ namespace FormsAsyncTest
 
         private void btn_testcmd_Click(object sender, EventArgs e)
         {
-            //string DnullOn = "7E 00 10 17 01 00 13 A2 00 40 A1 D8 CE FF FF 02 44 30 03 34";
+            //string DnullOn = "7E 00 10 17 01 00 13 A2 00 40 A1 D8 CE FF FE 02 44 30 03 34";
             //XbeeBasePacket xbee = new XbeeBasePacket(DnullOn);
             //XbeeStruct.RemoteCmdStruckt remoteCmd = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(xbee.PacketBytes.ToArray());
             //RemoteCmdPackets packets = new RemoteCmdPackets();
@@ -607,6 +669,10 @@ namespace FormsAsyncTest
             //this.textBox3.AppendText(Environment.NewLine);
         }
         #endregion
+
+        
+
+        
 
         
     }

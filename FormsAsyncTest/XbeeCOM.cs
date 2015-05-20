@@ -93,18 +93,11 @@ public class XbeeCOM
             if (this.SerialPort1.IsOpen == false)
             {
                 this.SerialPort1.Open();
-                this.IsOpen = true;
+                this.IsOpen = this.SerialPort1.IsOpen;                
             }
             List<byte> list = Util.EscapeUartBytes(b);
             string hexpacket = Util.ConvertByteArrayToHexString(b);
-            
-            //System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            //foreach (byte bbyte in list)
-            //{
-            //    sb.Append(Util.ConvertToHex(bbyte));
-            //    sb.Append(" ");
-            //}
-            //char[] trimWhite = {' '};
+           
             this.LogIt("Sending this hex thingy '" + hexpacket + "'");
 
             this.LogIt("Writing " + list.Count + " bytes to the serialport");
