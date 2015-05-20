@@ -108,7 +108,7 @@ public class XbeeCOM
             this.LogIt("Sending this hex thingy '" + hexpacket + "'");
 
             this.LogIt("Writing " + list.Count + " bytes to the serialport");
-            //this.SerialPort1.Write(list.ToArray(), 0, list.Count);
+            this.SerialPort1.Write(list.ToArray(), 0, list.Count);
             this.LogIt("Writing done");
         }
         catch (Exception ex)
@@ -125,6 +125,7 @@ public class XbeeCOM
                 return true;
             });
     }
+
     public void close()
     {
         if (this.SerialPort1 != null)

@@ -43,6 +43,11 @@ public class AutoTasks
         return q.ToList<AutoTask>();
     }
 
+    public int GetPendingTaskCount()
+    {
+        return this.GetPendingTasks().Count;
+    }
+
     public async Task<List<AutoTask>> GetPendingTasksAsync()
     {
         List<AutoTask> list = await Task.Run(() => this.GetPendingTasks());
@@ -83,8 +88,8 @@ public class AutoTask
 {
     public DateTime StartAt { get; set; }
     public AutoTaskType TaskType { get; set; }
-    public byte OldValue { get; set; }
-    public byte NewValue { get; set; }
+    public string OldValue { get; set; }
+    public string NewValue { get; set; }
     public string PropertyName { get; set; }
     public int ObjectID { get; set; }
     public byte[] bytes;// { get; set; }
@@ -140,14 +145,20 @@ public class AutoTask
                     break;
                 case AutoTaskType.Device:
                     this.LogIt("Device task", f);
-                    List<MonitorDevice> DeviceList; 
+                    MonitorDevice CurrentDevice; 
                     if(this.ObjectID > 0) 
                     {
-                        DeviceList = await this.mDevices.GetDeviceAsync(this.ObjectID);
-                        if (DeviceList.Count > 0)
+                        //CurrentDevice = await this.mDevices.GetDeviceAsync(this.ObjectID);
+                        CurrentDevice = this.mDevices.GetSingleDevice(this.ObjectID);
+                        if (CurrentDevice != null)
                         {
-                            MonitorDevice theDevice = DeviceList[0];
-                            theDevice.SetProperty(this.PropertyName, this.NewValue);
+                            //MonitorDevice theDevice = DeviceList[0];
+                            CurrentDevice.SetProperty(this.PropertyName, this.NewValue);
+                        }
+                        else
+                        {
+                            this.LogIt("Warning, unable to find device with id " + this.ObjectID);
+                            return false;
                         }
                         ReturnValue = true;
                     }

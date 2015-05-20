@@ -6,40 +6,67 @@ using System.Threading.Tasks;
 
 public class Stat
 {
-    public List<KeyValuePair<string,string>> StatParis { get; set; }
+    public List<KeyValuePair<string,int>> StatParis { get; set; }
+
+    public int BadPackets { get; set; }
+    public int DataSample { get; set; }
+    public int Filtered { get; set; }
+    public int SensorsOnline { get; set; }
+    public int SensorsOffline { get; set; }
+    public int SensorsDisabled { get; set; }
+    public int ActiveTasks { get; set; }
+    public int Sensors { get; set; }
+    public int ComPortInterrupts { get; set; }
 
     public Stat()
     {
-        this.StatParis = new List<KeyValuePair<string, string>>();
+        this.UpdateStats();
+        //this.StatParis = new List<KeyValuePair<string, int>>();
+        //this.StatParis.Add(this.AddSingle("BadPackets", this.BadPackets));
+        //this.StatParis.Add(this.AddSingle("DataSample", this.DataSample));
+        //this.StatParis.Add(this.AddSingle("Filtered", this.Filtered));
+        //this.StatParis.Add(this.AddSingle("SensorsOnline", this.SensorsOnline));
+        //this.StatParis.Add(this.AddSingle("SensorsDisabled", this.SensorsDisabled));
+        //this.StatParis.Add(this.AddSingle("ActiveTasks", this.ActiveTasks));
+        //this.StatParis.Add(this.AddSingle("Sensors", this.Sensors));
+        //this.StatParis.Add(this.AddSingle("IRQ", this.ComPortInterrupts));
     }
 
-    public Stat(Stats NewStats)
+    public void UpdateStats()
     {
-        this.StatParis = new List<KeyValuePair<string, string>>();
-        this.AddStats(NewStats);
+        this.StatParis = new List<KeyValuePair<string, int>>();
+        //this.StatParis.Add(this.AddSingle("BadPackets", this.BadPackets));
+        this.StatParis.Add(this.AddSingle("DataSample", this.DataSample));
+        this.StatParis.Add(this.AddSingle("Filtered", this.Filtered));
+        this.StatParis.Add(this.AddSingle("SensorsOnline", this.SensorsOnline));
+        this.StatParis.Add(this.AddSingle("SensorsOffline", this.SensorsOffline));
+        this.StatParis.Add(this.AddSingle("ActiveTasks", this.ActiveTasks));
+        this.StatParis.Add(this.AddSingle("Sensors", this.Sensors));
+        this.StatParis.Add(this.AddSingle("IRQ", this.ComPortInterrupts));
     }
 
-    public void AddStats(Stats NewStats)
+    //public Stat(Stats NewStats)
+    //{
+    //    this.StatParis = new List<KeyValuePair<string, int>>();
+    //    this.AddStats(NewStats);
+    //}
+
+    //public void SetSsats()
+    //{
+    //    this.StatParis = new List<KeyValuePair<string, int>>();
+        
+    //}
+    private KeyValuePair<string,int> AddSingle(string Key, int Value)
     {
-        this.StatParis = new List<KeyValuePair<string, string>>();
-        this.StatParis.Add(this.AddSingle("BadPackets", NewStats.BadPackets));
-        this.StatParis.Add(this.AddSingle("Packets", NewStats.Packets));
-        this.StatParis.Add(this.AddSingle("SensorsOnline", NewStats.SensorsOnline));
-        this.StatParis.Add(this.AddSingle("SensorsDisabled", NewStats.SensorsDisabled));
-        this.StatParis.Add(this.AddSingle("SensorsPaused", NewStats.SensorsPaused));
-        this.StatParis.Add(this.AddSingle("Sensors", NewStats.Sensors));
-        this.StatParis.Add(this.AddSingle("IRQ", NewStats.ComPortInterrupts));
-    }
-    private KeyValuePair<string,string> AddSingle(string Key, string Value)
-    {
-        return new KeyValuePair<string, string>(Key, Value);
+        return new KeyValuePair<string, int>(Key, Value);
     }
 }
 
 public class Stats
 {
     public string BadPackets { get; set; }
-    public string Packets { get; set; }
+    public string DataSample { get; set; }
+    public string Filtered { get; set; }
     public string SensorsOnline { get; set; }
     public string SensorsOffline { get; set; }
     public string SensorsDisabled { get; set; }
@@ -50,7 +77,7 @@ public class Stats
     public Stats()
     {
         this.BadPackets = "0";
-        this.Packets = "0";
+        this.DataSample = "0";
         this.ComPortInterrupts = "0";
         this.Sensors = "0";
         this.SensorsDisabled = "0";

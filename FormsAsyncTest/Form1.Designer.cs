@@ -45,7 +45,7 @@
             this.btn_TestSample = new System.Windows.Forms.Button();
             this.btn_tasks = new System.Windows.Forms.Button();
             this.btn_Connect = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btn_EnableD0 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -210,21 +210,22 @@
             this.btn_Connect.UseVisualStyleBackColor = true;
             this.btn_Connect.Click += new System.EventHandler(this.btn_Connect_Click);
             // 
-            // button3
+            // btn_EnableD0
             // 
-            this.button3.Location = new System.Drawing.Point(143, 466);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(101, 46);
-            this.button3.TabIndex = 18;
-            this.button3.Text = "Connect";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btn_EnableD0.Location = new System.Drawing.Point(143, 466);
+            this.btn_EnableD0.Name = "btn_EnableD0";
+            this.btn_EnableD0.Size = new System.Drawing.Size(101, 46);
+            this.btn_EnableD0.TabIndex = 18;
+            this.btn_EnableD0.Text = "EnableD0";
+            this.btn_EnableD0.UseVisualStyleBackColor = true;
+            this.btn_EnableD0.Click += new System.EventHandler(this.btn_EnableD0_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btn_EnableD0);
             this.Controls.Add(this.btn_Connect);
             this.Controls.Add(this.btn_tasks);
             this.Controls.Add(this.btn_TestSample);
@@ -270,7 +271,7 @@
         private System.Windows.Forms.Button btn_TestSample;
         private System.Windows.Forms.Button btn_tasks;
         private System.Windows.Forms.Button btn_Connect;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btn_EnableD0;
     }
 }
 

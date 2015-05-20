@@ -38,6 +38,16 @@ public class GenericPackets
         this.Packets.Add(Packet);
     }
 
+    public int GetFilteredCount()
+    {
+        System.Collections.Generic.IEnumerable<GenericPacket> q =
+            from it in this.Packets
+            where it.Filtered == true
+            select it;
+
+        return q.Count();
+    }
+
     private void LogIt(string Str)
     {
         LogDetail log = new LogDetail();
@@ -70,10 +80,12 @@ public class GenericPacket
     public string SourceAddress { get; set; }
     public XbeeBasePacket.XbeePacketType APItype { get; set; }
     public XbeeBasePacket.XbeePacketDirection Direction { get; set; }
+    public bool Filtered { get; set; }
 
     public GenericPacket()
     {
         this.PacketBytes = new List<byte>();
+        this.Filtered = false;
     }
 
     public GenericPacket(byte[] PacketOfBytes)
@@ -99,6 +111,7 @@ public class GenericPacket
         this.CheckSum = PacketOfBytes[PacketOfBytes.Length -1];
         this.APItype = (XbeeBasePacket.XbeePacketType)Enum.Parse(typeof(XbeeBasePacket.XbeePacketType), this.API.ToString());
         this.Direction = GetPacketDirection(this.APItype);
+        this.Filtered = false;
     }
 
     private XbeeBasePacket.XbeePacketDirection GetPacketDirection(XbeeBasePacket.XbeePacketType APItype)
@@ -137,5 +150,6 @@ public class GenericPacket
         }
         return returnInt;
     }
+
 }
 

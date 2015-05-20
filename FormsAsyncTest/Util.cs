@@ -137,8 +137,6 @@ public static class Util
             }
         }
         return list;
-        return list;
-        return list;
     }
 
     public static List<byte> EscapeUartBytes(byte[] ArrayOfBytes)

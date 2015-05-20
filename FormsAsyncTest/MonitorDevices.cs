@@ -42,7 +42,7 @@ public class MonitorDevices
     {
         this.LogIt("Adding device with MAC " + MAC);
         MonitorDevice device = new MonitorDevice();
-        device.DeviceID = this.List.Count;
+        device.DeviceID = this.List.Count + 1;
         device.MAC = MAC;
         device.Enabled = true;
         this.AddNewDevice(device);
@@ -128,6 +128,16 @@ public class MonitorDevices
         return q.ToList<MonitorDevice>(); 
 	}
 
+    public int GetOnlineDeviceCount(bool Online)
+    {
+        System.Collections.Generic.IEnumerable<MonitorDevice> q =
+            from it in this.List
+            where it.Online == Online
+            select it;
+
+        return q.Count();
+    }
+
     public MonitorDevice GetSingleDevice(int id)
     {
         System.Collections.Generic.IEnumerable<MonitorDevice> q =
@@ -135,7 +145,17 @@ public class MonitorDevices
             where it.DeviceID == id
             select it;
 
-        return q.First();
+        return q.FirstOrDefault();
+    }
+
+    public MonitorDevice GetSingleDevice(string Mac)
+    {
+        System.Collections.Generic.IEnumerable<MonitorDevice> q =
+            from it in this.List
+            where it.MAC.ToUpper() == Mac.ToUpper()
+            select it;
+
+        return q.FirstOrDefault();
     }
 }
 
@@ -186,7 +206,7 @@ public class MonitorDevice
         this.TimeOutMinutes = 1;
     }
    
-    public void SetProperty(string PropertyName, int value)
+    public void SetProperty(string PropertyName, string value)
     {
         try
         {
@@ -195,7 +215,37 @@ public class MonitorDevice
             {
                 if (item.Name == PropertyName)
                 {
-                    item.SetValue(this, value);
+                    System.Type ttype = item.PropertyType.UnderlyingSystemType;
+                    if (typeof(bool) == ttype)
+                    {
+                        bool boolValue = bool.Parse(value);
+                        item.SetValue(this, boolValue);                     
+                    }
+                    if (typeof(byte) == ttype)
+                    {
+                        byte byteValue = byte.Parse(value);
+                        item.SetValue(this, byteValue);
+                    }
+                    if (typeof(string) == ttype)
+                    {
+                        item.SetValue(this, value);
+                    }
+                    if (typeof(int) == item.GetType())
+                    {
+                        int intValue = int.Parse(value);
+                        item.SetValue(this, intValue);
+                    }
+                    if (typeof(Int32) == ttype)
+                    {
+                        int int32Value = int.Parse(value);
+                        item.SetValue(this, int32Value);
+                    }
+                    if (typeof(Int64) == ttype)
+                    {
+                        int int64Value = int.Parse(value);
+                        item.SetValue(this, int64Value);
+                    }
+                    break;
                 }
             }
         }

@@ -141,6 +141,8 @@ public class RemoteCmdPacket
 
     public XbeeStruct.RemoteCmdStruckt SetPinStatus(XbeeAPIpin Pin, String DestinationAddress, byte FrameID, bool EnablePin)
     {
+        //pin D0 off - 7E 00 10 17 01 00 13 A2 00 40 A1 D8 CE FF FE 02 44 30 00 38
+        //pin D0 on  - 7E 00 10 17 01 00 13 A2 00 40 A1 D8 CE FF FE 02 44 30 03 35
         XbeeStruct.RemoteCmdStruckt cmd = new XbeeStruct.RemoteCmdStruckt();
         cmd.ATcmd = Pin.ToString();
         cmd.DestAdr64 = DestinationAddress;
@@ -150,9 +152,10 @@ public class RemoteCmdPacket
         cmd.API = (byte)XbeeBasePacket.XbeePacketType.RemoteCmd;
         cmd.Delimiter = 0x7E;
         cmd.Length = 16;
+        cmd.CmdData = 0x0;
         if (EnablePin == true)
         {
-            cmd.CmdData = 0x33;
+            cmd.CmdData = 0x03;
         }
         byte[] bytes = Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(cmd);
         cmd.Checksum = (byte)Util.ComputeChecksum(bytes);

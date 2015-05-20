@@ -24,11 +24,10 @@ namespace FormsAsyncTest
         private DataSamples Datasample = new DataSamples();
         private RemoteCmdPackets RemoteCommandPackets = new RemoteCmdPackets();
         private AutoTasks Tasks = new AutoTasks();
-        private int IRC = 0;
+        
         private System.Windows.Forms.Timer ticks;
         private GridViewMode CurrentGridView = GridViewMode.Log;
-        
-        //private delegate void XbeeHEXEventHandler(string hex); 
+  
         //settings
         private string ComPort;
 
@@ -42,16 +41,15 @@ namespace FormsAsyncTest
             this.Packet.VaildPacket += this.On_ValidHexPacket;
             this.Devices.LogEvent += this.logit;            
             this.Tasks.LogEvent += this.logit;
-            this.RemoteCommandPackets.LogEvent += this.logit;
-            this.Statistics.AddStats(new Stats());
+            this.RemoteCommandPackets.LogEvent += this.logit;            
             this.data_Stats.SuspendLayout();
             this.data_Stats.DataSource = this.Statistics.StatParis;
             this.data_Stats.ResumeLayout();
             this.ticks = new System.Windows.Forms.Timer();
-            this.ticks.Interval = 10000;
+            this.ticks.Interval = 20000;
             this.textBox3.AppendText("Ticks is disabled!!");
             this.textBox3.AppendText(Environment.NewLine);
-            //this.ticks.Enabled = true;
+            this.ticks.Enabled = true;
             this.ticks.Tick += this.Ticks_Elapsed;
             MonitorDevice mon = new MonitorDevice();
             mon.Enabled = true;
@@ -60,46 +58,34 @@ namespace FormsAsyncTest
             mon.GPSlong = "6,444361";
             mon.Name = "bøen";
             this.Devices.AddDevice(mon);
-        //    this.tics = new System.Timers.Timer(3000);
-        //    this.tics.Elapsed += this.Ticks_Elapsed;
-        //    this.tics.SynchronizingObject = this;
-        //    this.tics.Enabled = true;
-        }
+            this.UpdateStats();
+            this.UpdateStatsView();        
+        }              
 
-        //private async Task<bool> UpdateStats()
-
-        private void On_ValidHexPacket(byte[] bytes)
-        {
-            this.logit("Valid bytes packet ");
-            this.PacketInterpreter(new GenericPacket(bytes));
-        }
-
-        private void On_SerialBytes(byte[] bytes)
-        {
-            //this.logit("Received binary data");
-            this.Packet.AddByte(bytes);
-        }
         private void UpdateStats()
-        {
-            Stats stats = new Stats();
-            stats.ComPortInterrupts = this.IRC.ToString();
-            stats.Packets = this.GenericPackets.Packets.Count.ToString();
-            stats.Sensors = this.Devices.List.Count.ToString();
-            Statistics.AddStats(stats);
+        {            
+            this.Statistics.DataSample = this.Datasample.List.Count;
+            this.Statistics.Sensors = this.Devices.List.Count;
+            this.Statistics.SensorsOnline = this.Devices.GetOnlineDeviceCount(true);
+            this.Statistics.Filtered = this.GenericPackets.GetFilteredCount();
+            this.Statistics.ActiveTasks = this.Tasks.GetPendingTaskCount();
+            this.Statistics.SensorsOffline = this.Devices.GetOnlineDeviceCount(false);
+           
+            this.Statistics.UpdateStats();            
         }
 
-        private async Task<bool> UpdateStatsAsync()
-        {
-            await Task.Run(() => this.UpdateStats());
-            return true;
-        }
-        
         private void UpdateStatsView()
         {
             this.data_Stats.SuspendLayout();
             this.data_Stats.DataSource = this.Statistics.StatParis;
             this.data_Stats.ResumeLayout();
         }
+
+        private async Task<bool> UpdateStatsAsync()
+        {
+            await Task.Run(() => this.UpdateStats());
+            return true;
+        }            
 
         private async Task<bool> UpdateStatsViewAsync()
         {
@@ -112,6 +98,18 @@ namespace FormsAsyncTest
         }
 
         #region InboundEventsDelegates
+
+        private void On_ValidHexPacket(byte[] bytes)
+        {
+            this.logit("Valid bytes packet ");
+            this.Statistics.ComPortInterrupts++;
+            this.PacketInterpreter(new GenericPacket(bytes));
+        }
+
+        private void On_SerialBytes(byte[] bytes)
+        {
+            this.Packet.AddByte(bytes);
+        }
         
         private void logit(LogDetail it)
         {
@@ -145,23 +143,11 @@ namespace FormsAsyncTest
 
         private async void Ticks_Elapsed(object Sender, EventArgs e)
         {
-            this.logit("Ticks_Elapsed start");
-            //foreach (AutoTask item in this.Tasks.List)
-            //{
-            //    this.logit("Running item " + item.Id.ToString());
-            //    bool x = await item.RunTaskAsync();
-            //    if(item.Executed)
-            //    {
-            //        this.logit("removing event for task with id " + item.Id.ToString());
-            //        item.LogEvent -= this.logit;
-            //    }
-            //}
-            this.IRC++;
+            this.logit("Ticks_Elapsed start");            
             await Tasks.RunPendingTasksAsync();
             await Task.Run(() => UpdateStats());
-            //this.UpdateStats();
-            //this.UpdateStatsView();
-            this.UpdateStatsView();
+            this.UpdateStats();            
+            this.UpdateStatsView(); 
         }
         #endregion
 
@@ -184,31 +170,24 @@ namespace FormsAsyncTest
                         }
                         else
                         {
-                        this.data_main.DataSource = this.Logs.LogItems.ToList<LogDetail>();
-                        this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count -5);   
+                            this.data_main.DataSource = this.Logs.LogItems.ToList<LogDetail>();
+                            this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Logs.LogItems.Count -5);   
                         }
                                                                
                         break;
-                    case GridViewMode.Device:
-                        //this.logit("view is Device");
-                        this.data_main.DataSource = this.Devices.List.ToList<MonitorDevice>();
-                        //this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Devices.List.Count);         
+                    case GridViewMode.Device:                        
+                        this.data_main.DataSource = this.Devices.List.ToList<MonitorDevice>();                            
                         break;
-                    case GridViewMode.DataSample:
-                        //this.logit("view is DataSample");
-                        this.data_main.DataSource = this.Datasample.List.ToList<DataSamplePacket>();
-                        //this.UpdateFirstDisplayedScrollingRowIndex(this.data_main, this.Datasample.List.Count);                                 
+                    case GridViewMode.DataSample:                        
+                        this.data_main.DataSource = this.Datasample.List.ToList<DataSamplePacket>();                                                       
                         break;
-                    case GridViewMode.RemoteCommand:
-                        //this.logit("view is RemoteCommand");
+                    case GridViewMode.RemoteCommand:                       
                         this.data_main.DataSource = this.RemoteCommandPackets.List.ToList<RemoteCmdPacket>();
                         break;
-                    case GridViewMode.AllPackets:
-                        //this.logit("view is AllPackets");
+                    case GridViewMode.AllPackets:                        
                         this.data_main.DataSource = this.GenericPackets.Packets.ToList<GenericPacket>();
                         break;
-                    case GridViewMode.Tasks:
-                        //this.logit("View is Tasks");
+                    case GridViewMode.Tasks:                        
                         this.data_main.DataSource = this.Tasks.List.ToList<AutoTask>();
                         break;
                     default:
@@ -218,15 +197,39 @@ namespace FormsAsyncTest
                 this.data_main.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
                 this.data_main.ResumeLayout();
                 this.data_main.Refresh();
-                //bool x = await UpdateStats();
                 this.UpdateStats();
                 this.UpdateStatsView();
             }
             catch (Exception ex)
-            {
-                //throw new Exception(ex.Message);
+            {                
                 this.logit(new LogDetail("EXCEPTION: " + ex.Message));
             }            
+        }
+
+        private bool PacketFilter(GenericPacket GenericPacket)
+        {
+            bool Proceed = false;
+            MonitorDevice device = this.Devices.GetSingleDevice(GenericPacket.SourceAddress);
+            if (GenericPacket.APItype != XbeeBasePacket.XbeePacketType.DataSample)
+            {
+                this.logit("Packet is not datasample, allow packet");
+                Proceed = true;
+                return Proceed;
+            }
+            if (device == null)
+            {
+                this.logit("Unable to filter packet, device with mac " + GenericPacket.SourceAddress + " does not exist");
+                Proceed = true;
+                return Proceed;
+            }
+
+            if (device.Online == true)
+            {
+                this.logit("Device is online");
+                Proceed = true;
+            }
+
+            return Proceed;
         }
 
         private void PacketInterpreter(GenericPacket GenericPack)
@@ -234,28 +237,39 @@ namespace FormsAsyncTest
             try
             {
                 this.GenericPackets.AddGenericPacket(GenericPack);
+                MonitorDevice NewDevice = this.Devices.GetSingleDevice(GenericPack.SourceAddress);
+                if(NewDevice == null)
+                {
+                    this.logit("Create new device not found in database");
+                    this.Devices.AddDevice(GenericPack.SourceAddress);
+                }
                 switch (GenericPack.APItype)
                 {
                     case XbeeBasePacket.XbeePacketType.TransmitRequest:
-                        throw new NotImplementedException("TransmitRequest packet not implemented!");    
-                        //break;
-
+                        this.logit("WARNING - TransmitRequest packet not implemented!");
+                        break;
                     case XbeeBasePacket.XbeePacketType.RemoteCmdRespons:
                         XbeeStruct.RemoteCmdResponsStruct RemoteResponsStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdResponsStruct>(GenericPack.PacketBytes.ToArray());
                         this.RemoteCommandPackets.AddPacket(RemoteResponsStruct);
                         break;
 
-                    case XbeeBasePacket.XbeePacketType.DataSample:
-                        //this.logit("Updating datasample object");
-                        XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray());
-                        this.Datasample.addPacket(datasample);
-                        if(datasample.SamplesAsHex.Contains("1"))
+                    case XbeeBasePacket.XbeePacketType.DataSample:                       
+                        if(this.PacketFilter(GenericPack) == true)
                         {
-                            this.logit("Creating auto task to enable PIN");
-                            this.DisableDeviceIRsensor(RemoteCmdPacket.XbeeAPIpin.D0, datasample.SourceAdr64);
-                            ////this.SetDevicePin(true, datasample.SourceAdr64, 1);
-                            ////this.SetDeviceBattery(1, "BatteryLevel", 10, 1, 1);
-                        }                        
+                            XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray());
+                            this.Datasample.addPacket(datasample);
+                            if (datasample.SamplesAsHex.Contains("1"))
+                            {
+                                this.logit("Creating auto task to enable PIN");
+                                this.DisableDeviceIRsensor(RemoteCmdPacket.XbeeAPIpin.D0, datasample.SourceAdr64);                                
+                            }          
+                        }
+                        else
+                        {                            
+                            this.GenericPackets.Packets.Last().Filtered = true;
+                            this.logit("Datasample packet was filtered out");
+                        }
+                                      
                         break;
 
                     case XbeeBasePacket.XbeePacketType.RemoteCmd:
@@ -264,12 +278,13 @@ namespace FormsAsyncTest
                         break;
 
                     case XbeeBasePacket.XbeePacketType.ReceivePacket:
-                        throw new NotImplementedException("ReceivePacket not implemented!");
-                        //break;
+                        this.logit("ReceivePacket not implemented!");
+                        break;
                     default:
-                        throw new NotImplementedException("unknown packet not implemented!");
-                        //break;
+                        this.logit("unknown packet not implemented!");
+                        break;
                 }
+
                 if(this.data_main.InvokeRequired)
                 {
                     var update = new delegateDGVHandler(() => this.UpdateDGV());
@@ -282,18 +297,24 @@ namespace FormsAsyncTest
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Exception in PacketInterpreter!" + ex.Message);
-                //throw;
+                MessageBox.Show("Exception in PacketInterpreter!" + ex.Message);                
             }
+        }
+
+        private void SetDeviceOfflineStatus(bool EnableOnline, string Address, int pauseMinutes)
+        {
+            AutoTask SetOnline = new AutoTask(this.serial,this.Devices);
+            int ObjectIdInt = this.Devices.GetDeviceID(Address);
+            this.SetDevicePropertyTask(ObjectIdInt, "Online", EnableOnline.ToString(), "", pauseMinutes);
         }
 
         private void SetDevicePin(bool Enabled, string Address, int PauseMinutes)
         {
-            RemoteCmdPacket newpacket = new RemoteCmdPacket();
-            
+            RemoteCmdPacket newpacket = new RemoteCmdPacket();            
             AutoTask newtask = new AutoTask(this.serial,this.Devices);
+            int ObjectIdInt = this.Devices.GetDeviceID(Address);
             newtask.Name = "test packet";
-            newtask.ObjectID = 1;
+            newtask.ObjectID = ObjectIdInt;
             newtask.TaskType = AutoTask.AutoTaskType.ATcommand;
             newtask.bytes = newpacket.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, Address, 1, Enabled).GetPacketAsBytes();
             newtask.StartAt = DateTime.Now.AddMinutes(PauseMinutes);
@@ -307,12 +328,14 @@ namespace FormsAsyncTest
             RemoteCmdPacket packet = new RemoteCmdPacket();
             int frameid = this.Devices.GetDeviceID(Address);
             MonitorDevice Device = this.Devices.GetSingleDevice(frameid);
+            
             if (Device == null)
             {
                 this.logit("Unable to find device with ID " + frameid.ToString());
                 return;
             }
-            this.logit("Creating remotecommand packet do disable pin D0");
+            Device.Online = false;
+            this.logit("Creating remotecommand packet to disable pin D0");
             XbeeStruct.RemoteCmdStruckt cmd = packet.SetPinStatus(pin, Address, (byte)frameid, false);
             
             this.logit("Writing bytes[] to serial");
@@ -320,14 +343,18 @@ namespace FormsAsyncTest
             this.serial.Write(bytes);
             this.logit("Adding packet to list");
             this.PacketInterpreter(new GenericPacket(bytes));
+            
+            // Set device offline one minute after reenable D0-pin trigger
+            this.SetDeviceOfflineStatus(true, Address, Device.TimeOutMinutes + 1);
             this.logit("Creating AutoTask to enable in in " + Device.TimeOutMinutes.ToString() + " minutes");
             this.SetDevicePin(true, Address, Device.TimeOutMinutes);
+            
         }
 
-        private void SetDeviceBattery(int ObjectID, string PropName, byte newValue, byte OldValue, int PauseMinutes)
+        private void SetDevicePropertyTask(int ObjectID, string PropName, string newValue, string OldValue, int PauseMinutes)
         {
             AutoTask t = new AutoTask(this.serial,this.Devices);
-            t.Name = "testdevice update";
+            t.Name = "Set " + PropName + " to value '" + newValue + "'(" + OldValue + ")";
             t.ObjectID = ObjectID;
             t.OldValue = OldValue;
             t.NewValue = newValue;
@@ -351,66 +378,7 @@ namespace FormsAsyncTest
         
         
         #region Form_Events
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            this.textBox2.Text = "";
-            this.logit(new LogDetail("button1_clicked"));
-            this.InboundXbeeTestEvent("button1_clicked");
-            this.button1.Enabled = false;
-            Task tt = doWork();
-
-            try
-            {
-                await tt;
-            }
-            catch (Exception ex)
-            {
-                this.textBox2.Text = String.Format("Exception {0}", ex.Message);
-            }
-
-            if (tt.Exception != null)
-            {
-                //this.textBox2.Text = "Exception" + tt.Exception.Message;
-            }
-            else
-            {
-                this.textBox2.Text = "click finished";
-            }
-            this.button1.Enabled = true;
-
-        }
-
-        private async void button2_Click(object sender, EventArgs e)
-        {
-            //await man.PreEventProcessAsync("msgss");
-            //this.serial.TestLogEvent("this is test");
-            //this.serial.Open(); { 0x7d, 0x31,0x33,0x5e }
-            this.button2.Enabled = false;
-            //
-            //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
-            //string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
-            //XbeeBasePacket xbee = new XbeeBasePacket();
-            this.textBox3.AppendText("setting battery value to 2");
-            this.Devices.List[0].SetProperty("BatteryLevel", 2);
-            this.textBox3.AppendText(Environment.NewLine);
-            this.textBox3.AppendText("current view is " + this.CurrentGridView);
-            this.UpdateDGV();
-            //await Packet.AddByte(SampleOn);
-            this.button2.Enabled = true;
-            //string hex = Packet.GetPacketAsHex();
-            //this.GenericPackets.AddGenericPacket(Packet.PacketBytes.ToArray());
-            //var tore = "";
-
-            //this.PacketInterpreter(new GenericPacket(Packet.PacketBytes.ToArray()));
-            //this.UpdateDGV();
-            //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
-            //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
-            //List<byte> l = new List<byte>();
-            //l.AddRange(NeedEscapingbytes);
-            //Util.UnEscapeUartBytes(l);
-            //Util.EscapeUartBytes(l);
-        }
-
+        
         private void btn_logs_Click(object sender, EventArgs e)
         {
             this.btn_logs.Enabled = false;
@@ -447,19 +415,26 @@ namespace FormsAsyncTest
         {
             try
             {
+                
                 if (this.btn_Connect.Text == "Connect")
-                {
-
-                    this.btn_Connect.Text = "Disconnect";
+                {                    
                     this.serial.port = Properties.Settings.Default.ComPort;
                     this.serial.Open();
-                    
+                    if (this.serial.IsOpen)
+                    {
+                        this.btn_Connect.Text = "Disconnect";
+                    }
+                    else
+                    {
+                        this.logit("Unable to open COM-port");
+                    }
                 }
                 else
                 {
                     this.btn_Connect.Text = "Connect";
                     this.serial.close();
                 }
+                this.btn_Connect.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -475,15 +450,7 @@ namespace FormsAsyncTest
             Packet.AddByte(this.textBox1.Text);
             this.PacketInterpreter(new GenericPacket(Packet.PacketBytes.ToArray()));
             //this.UpdateDGV();
-        }
-
-        private void btn_TestSample_Click(object sender, EventArgs e)
-        {
-            string SampleTriggerHigh = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
-            XbeeBasePacket packet = new XbeeBasePacket();
-            packet.AddByte(SampleTriggerHigh);
-            this.PacketInterpreter(new GenericPacket(packet.PacketBytes.ToArray()));
-        }
+        }        
 
         private void btn_DataSample_Click(object sender, EventArgs e)
         {
@@ -491,6 +458,105 @@ namespace FormsAsyncTest
             this.CurrentGridView = GridViewMode.DataSample;
             this.UpdateDGV();
             this.btn_DataSample.Enabled = true;
+        }
+        
+        private void btn_RemoteCmd_Click(object sender, EventArgs e)
+        {
+            this.btn_RemoteCmd.Enabled = false;
+            this.CurrentGridView = GridViewMode.RemoteCommand;
+            this.UpdateDGV();
+            this.btn_RemoteCmd.Enabled = true;
+        }
+
+        private void btn_EnableD0_Click(object sender, EventArgs e)
+        {
+            if (this.data_main.SelectedCells.Count > 0)
+            {
+                int RowIndex = this.data_main.SelectedCells[0].RowIndex;
+                DataGridViewRow row = this.data_main.Rows[RowIndex];
+                if (typeof(MonitorDevice) == row.DataBoundItem.GetType())
+                {
+                    MonitorDevice dev = (MonitorDevice)row.DataBoundItem;
+                    string mac = dev.MAC;
+                    this.SetDevicePin(true, mac, 1);
+                }
+            }
+        }
+
+        #endregion
+        
+        #region Enums
+            public enum GridViewMode
+                {
+                    Log = 0,
+                    Device = 1,
+                    AllPackets = 2,
+                    DataSample = 3,
+                    RemoteCommand = 4,
+                    Tasks = 5
+                }
+        #endregion
+        
+        #region test
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Text = "";
+            this.logit(new LogDetail("button1_clicked"));
+            this.InboundXbeeTestEvent("button1_clicked");
+            this.button1.Enabled = false;
+            Task tt = doWork();
+
+            try
+            {
+                await tt;
+            }
+            catch (Exception ex)
+            {
+                this.textBox2.Text = String.Format("Exception {0}", ex.Message);
+            }
+
+            if (tt.Exception != null)
+            {
+                //this.textBox2.Text = "Exception" + tt.Exception.Message;
+            }
+            else
+            {
+                this.textBox2.Text = "click finished";
+            }
+            this.button1.Enabled = true;
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //await man.PreEventProcessAsync("msgss");
+            //this.serial.TestLogEvent("this is test");
+            //this.serial.Open(); { 0x7d, 0x31,0x33,0x5e }
+            this.button2.Enabled = false;
+            //
+            //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
+            //string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
+            //XbeeBasePacket xbee = new XbeeBasePacket();
+            this.textBox3.AppendText("setting device to disabled");
+            this.Devices.List[0].SetProperty("Online", "false");
+            this.textBox3.AppendText(Environment.NewLine);
+            this.textBox3.AppendText("current view is " + this.CurrentGridView);
+            this.UpdateDGV();
+            this.data_main.Refresh();
+            //await Packet.AddByte(SampleOn);
+            this.button2.Enabled = true;
+            //string hex = Packet.GetPacketAsHex();
+            //this.GenericPackets.AddGenericPacket(Packet.PacketBytes.ToArray());
+            //var tore = "";
+
+            //this.PacketInterpreter(new GenericPacket(Packet.PacketBytes.ToArray()));
+            //this.UpdateDGV();
+            //byte[] bytes = { 0x7d, 0x31,0x7d, 0x33,0x7d,0x5e,0xff };
+            //byte[] NeedEscapingbytes = { 0x11, 0x13, 0x7e, 0xff };  
+            //List<byte> l = new List<byte>();
+            //l.AddRange(NeedEscapingbytes);
+            //Util.UnEscapeUartBytes(l);
+            //Util.EscapeUartBytes(l);
         }
 
         private void btn_testcmd_Click(object sender, EventArgs e)
@@ -521,28 +587,14 @@ namespace FormsAsyncTest
             this.textBox3.AppendText(toree);
         }
 
-        private void btn_RemoteCmd_Click(object sender, EventArgs e)
+        private void btn_TestSample_Click(object sender, EventArgs e)
         {
-            this.btn_RemoteCmd.Enabled = false;
-            this.CurrentGridView = GridViewMode.RemoteCommand;
-            this.UpdateDGV();
-            this.btn_RemoteCmd.Enabled = true;
-        }          
-        #endregion
-        
-        #region Enums
-            public enum GridViewMode
-                {
-                    Log = 0,
-                    Device = 1,
-                    AllPackets = 2,
-                    DataSample = 3,
-                    RemoteCommand = 4,
-                    Tasks = 5
-                }
-        #endregion
-        
-        #region test
+            string SampleTriggerHigh = "7E 00 12 92 00 13 A2 00 40 A1 DD CE FF FE C1 01 00 01 00 00 01 70";
+            XbeeBasePacket packet = new XbeeBasePacket();
+            packet.AddByte(SampleTriggerHigh);
+            this.PacketInterpreter(new GenericPacket(packet.PacketBytes.ToArray()));
+        }
+
         private async Task doWork()
         {
             await Task.Delay(2000);
@@ -555,10 +607,6 @@ namespace FormsAsyncTest
             //this.textBox3.AppendText(Environment.NewLine);
         }
         #endregion
-
-       
-
-        
 
         
     }
