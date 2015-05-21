@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace XbeeStruct
 {
-    public struct RemoteCmdResponsStruct
+    public struct RemoteCmdResponsStructX
 	{
 		[MarshalAs(UnmanagedType.U1)]
 		//0
@@ -151,17 +151,18 @@ namespace XbeeStruct
             }
         }
 
-        public string GetAsHex()
-        {
-            string hex = string.Empty;
-            hex = Util.ConvertByteArrayToHexString(GetPacketAsBytes());
-            return hex;
-        } 
+        //public string GetAsHex()
+        //{
+        //    string hex = string.Empty;
+        //    hex = Util.ConvertByteArrayToHexString(GetPacketAsBytes());
+        //    return hex;
+        //} 
 
-        public byte[] GetPacketAsBytes()
-        {
-            return Util.StructToBytes<XbeeStruct.RemoteCmdResponsStruct>(this);         
-        }
+        //public byte[] GetPacketAsBytes()
+        //{
+        //    //return Util.StructToBytes<XbeeStruct.RemoteCmdResponsStruct>(this);
+        //    re
+        //}
 	}    
 }
 

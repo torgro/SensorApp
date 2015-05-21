@@ -42,21 +42,21 @@ public class DataSamples
         }
     }
 
-    private void addPacketOLD(XbeeStruct.DataSampleStruct dsStruct)
-    {
-        this.LogIt("Adding struct packet");
-        DataSamplePacket ds = new DataSamplePacket();
-        ds.API = XbeeBasePacket.XbeePacketType.DataSample;
-        ds.CheckSum = dsStruct.CheckSum;
-        ds.Id = this.List.Count;
-        ds.Length = dsStruct.Length;
-        //ds.Samples = dsStruct.SamplesAsHex;
-        ds.SourceAdr16 = dsStruct.SourceAdr16;
-        ds.SourceAdr64 = dsStruct.SourceAdr64;
-        ds.TimeDate = DateTime.Now;
-        ds.Time = DateTime.Now.ToLongTimeString();
-        this.List.Add(ds);
-    }
+    //private void addPacketOLD(XbeeStruct.DataSampleStruct dsStruct)
+    //{
+    //    this.LogIt("Adding struct packet");
+    //    DataSamplePacket ds = new DataSamplePacket();
+    //    ds.API = XbeeBasePacket.XbeePacketType.DataSample;
+    //    ds.CheckSum = dsStruct.CheckSum;
+    //    ds.Id = this.List.Count;
+    //    ds.Length = dsStruct.Length;
+    //    //ds.Samples = dsStruct.SamplesAsHex;
+    //    ds.SourceAdr16 = dsStruct.SourceAdr16;
+    //    ds.SourceAdr64 = dsStruct.SourceAdr64;
+    //    ds.TimeDate = DateTime.Now;
+    //    ds.Time = DateTime.Now.ToLongTimeString();
+    //    this.List.Add(ds);
+    //}
 
     private void LogIt(string Str)
     {

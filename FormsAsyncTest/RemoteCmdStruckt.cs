@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace XbeeStruct
 {
-    public struct RemoteCmdStruckt
+    public struct RemoteCmdStrucktX
     {
         [MarshalAs(UnmanagedType.U1)]
         //0
@@ -151,26 +151,26 @@ namespace XbeeStruct
             }
         }
 
-        public byte[] GetPacketAsBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(this));
-            // if getting value, CmdData should be empty(REMOVED) and last byte should be checksum
-            if (this.Length == 15)
-            {
-                if (this.Checksum == 0)
-                {
-                    bytes.RemoveAt(bytes.Count - 1);
-                }
-                else
-                {
-                    if (this.CmdData != 0)
-                    {
-                        bytes.RemoveAt(bytes.Count - 2);
-                    }          
-                }                      
-            }
-            return bytes.ToArray();
-        }
+        //public byte[] GetPacketAsBytes()
+        //{
+        //    List<byte> bytes = new List<byte>();
+        //    bytes.AddRange(Util.StructToBytes<XbeeStruct.RemoteCmdStruckt>(this));
+        //    // if getting value, CmdData should be empty(REMOVED) and last byte should be checksum
+        //    if (this.Length == 15)
+        //    {
+        //        if (this.Checksum == 0)
+        //        {
+        //            bytes.RemoveAt(bytes.Count - 1);
+        //        }
+        //        else
+        //        {
+        //            if (this.CmdData != 0)
+        //            {
+        //                bytes.RemoveAt(bytes.Count - 2);
+        //            }          
+        //        }                      
+        //    }
+        //    return bytes.ToArray();
+        //}
     }
 }

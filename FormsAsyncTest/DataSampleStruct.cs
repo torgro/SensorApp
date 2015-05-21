@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace XbeeStruct
 {
     //[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-    public struct DataSampleStruct
+    public struct DataSampleStructx
     {
         [MarshalAs(UnmanagedType.U1)]
         //0
@@ -67,7 +67,7 @@ namespace XbeeStruct
 
         [MarshalAs(UnmanagedType.U1)]
         //14
-        public ReceiveOption RcvOptions;
+        //public ReceiveOption RcvOptions;
 
         [MarshalAs(UnmanagedType.U1)]
         //15
@@ -163,21 +163,21 @@ namespace XbeeStruct
             }
         }
 
-        public string GetAsHex()
-        {
-            string hex = string.Empty;
-            hex = Util.ConvertByteArrayToHexString(GetPacketAsBytes());
-            return hex;
-        } 
+        //public string GetAsHex()
+        //{
+        //    string hex = string.Empty;
+        //    hex = Util.ConvertByteArrayToHexString(GetPacketAsBytes());
+        //    return hex;
+        //} 
 
-        public byte[] GetPacketAsBytes()
-        {
-            return Util.StructToBytes<XbeeStruct.DataSampleStruct>(this);         
-        }
+        //public byte[] GetPacketAsBytes()
+        //{
+        //    return Util.StructToBytes<XbeeStruct.DataSampleStruct>(this);         
+        //}
 
     }
 
-    public enum ReceiveOption : byte
+    public enum ReceiveOptionX : byte
     {
         Empty = 0x0,
         PacketAcknowledged = 0x1,

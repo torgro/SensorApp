@@ -514,12 +514,14 @@ namespace FormsAsyncTest
 
         private void ToggleD0trigger(int DeviceID, string Address, bool EnableTrigger)
         {
+            this.logit("Toggle D0 pin for device " + Address + " setting enabled to " + EnableTrigger.ToString());
             RemoteCmdPacket packet = new RemoteCmdPacket();
-            packet.CreateSetPinTriggerPacket(true, RemoteCmdPacket.XbeeAPIpin.D0, Address, (byte)DeviceID);
+            packet.CreateSetPinTriggerPacket(EnableTrigger, RemoteCmdPacket.XbeeAPIpin.D0, Address, (byte)DeviceID);
             string hex = packet.ToHexString();
             this.textBox3.AppendText(Environment.NewLine);
             this.textBox3.AppendText(hex);
             this.PacketInterpreter(packet.ToGenericPacket());
+            this.serial.Write(packet.ToByteArray());
         }
 
         private void GetD0Status(int DeviceID, String Adr)
