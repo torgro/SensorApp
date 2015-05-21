@@ -123,7 +123,7 @@ public class GenericPacket
     public RemoteCmdPacket ToRemoteCmdPacket()
     {
         RemoteCmdPacket p = null;
-        if(this.APItype == XbeeBasePacket.XbeePacketType.RemoteCmd)
+        if(this.APItype == XbeeBasePacket.XbeePacketType.RemoteCmd || this.APItype == XbeeBasePacket.XbeePacketType.RemoteCmdRespons)
         {
             p = new RemoteCmdPacket(this.PacketBytes.ToArray());
         }        
