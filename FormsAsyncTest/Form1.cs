@@ -249,32 +249,46 @@ namespace FormsAsyncTest
                         this.logit("WARNING - TransmitRequest packet not implemented!");
                         break;
                     case XbeeBasePacket.XbeePacketType.RemoteCmdRespons:
-                        XbeeStruct.RemoteCmdResponsStruct RemoteResponsStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdResponsStruct>(GenericPack.PacketBytes.ToArray());
-                        this.RemoteCommandPackets.AddPacket(RemoteResponsStruct);
+                        //XbeeStruct.RemoteCmdResponsStruct RemoteResponsStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdResponsStruct>(GenericPack.PacketBytes.ToArray());
+                        //this.RemoteCommandPackets.AddPacket(RemoteResponsStruct);
+                        this.RemoteCommandPackets.AddPacket(GenericPack);
                         break;
 
                     case XbeeBasePacket.XbeePacketType.DataSample:                       
                         if(this.PacketFilter(GenericPack) == true)
                         {
-                            XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray());
-                            this.Datasample.addPacket(datasample);
-                            if (datasample.SamplesAsHex.Contains("1"))
+                            //XbeeStruct.DataSampleStruct datasample = Util.BytesToStructure<XbeeStruct.DataSampleStruct>(GenericPack.PacketBytes.ToArray());
+                            //this.Datasample.addPacket(datasample);
+                            DataSamplePacket datasample = GenericPack.ToDataSamplePacket();
+                            if (datasample == null)
                             {
-                                this.logit("Creating auto task to enable PIN");
-                                this.DisableDeviceIRsensor(RemoteCmdPacket.XbeeAPIpin.D0, datasample.SourceAdr64);                                
-                            }          
+                                this.logit("WARNING - ToDataSamplePacket returned an null packet!");
+                            }
+                            else
+                            {
+                                if (datasample.Samples.Contains("1"))
+                                {
+                                    this.logit("Creating auto task to enable PIN");
+                                    this.DisableDeviceIRsensor(RemoteCmdPacket.XbeeAPIpin.D0, datasample.SourceAdr64);
+                                    this.Datasample.AddPacket(datasample);
+                                }
+                                else
+                                {
+                                    this.logit("WARNING - A datasample slipped through the filter");
+                                }
+                            }                            
                         }
                         else
                         {                            
                             this.GenericPackets.Packets.Last().Filtered = true;
                             this.logit("Datasample packet was filtered out");
-                        }
-                                      
+                        }                                      
                         break;
 
                     case XbeeBasePacket.XbeePacketType.RemoteCmd:
-                        XbeeStruct.RemoteCmdStruckt RemoteStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(GenericPack.PacketBytes.ToArray());
-                        this.RemoteCommandPackets.AddPacket(RemoteStruct);
+                        //XbeeStruct.RemoteCmdStruckt RemoteStruct = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(GenericPack.PacketBytes.ToArray());
+                        //this.RemoteCommandPackets.AddPacket(RemoteStruct);
+                        this.RemoteCommandPackets.AddPacket(GenericPack);
                         break;
 
                     case XbeeBasePacket.XbeePacketType.ReceivePacket:
@@ -316,10 +330,11 @@ namespace FormsAsyncTest
             newtask.Name = "test packet";
             newtask.ObjectID = ObjectIdInt;
             newtask.TaskType = AutoTask.AutoTaskType.ATcommand;
-            newtask.bytes = newpacket.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, Address, 1, Enabled).GetPacketAsBytes();
-            newtask.StartAt = DateTime.Now.AddMinutes(PauseMinutes);
-            newtask.LogEvent += this.logit;
-            this.Tasks.addTask(newtask);
+            //TODO
+            //newtask.bytes = newpacket.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, Address, 1, Enabled).GetPacketAsBytes();
+            //newtask.StartAt = DateTime.Now.AddMinutes(PauseMinutes);
+            //newtask.LogEvent += this.logit;
+            //this.Tasks.addTask(newtask);
         }
 
         private void DisableDeviceIRsensor(RemoteCmdPacket.XbeeAPIpin pin, string Address)
@@ -336,18 +351,18 @@ namespace FormsAsyncTest
             }
             Device.Online = false;
             this.logit("Creating remotecommand packet to disable pin D0");
-            XbeeStruct.RemoteCmdStruckt cmd = packet.SetPinStatus(pin, Address, (byte)frameid, false);
+            //XbeeStruct.RemoteCmdStruckt cmd = packet.SetPinStatus(pin, Address, (byte)frameid, false);
+            //TODO
+            //this.logit("Writing bytes[] to serial");
+            //byte[] bytes = cmd.GetPacketAsBytes();
+            //this.serial.Write(bytes);
+            //this.logit("Adding packet to list");
+            //this.PacketInterpreter(new GenericPacket(bytes));
             
-            this.logit("Writing bytes[] to serial");
-            byte[] bytes = cmd.GetPacketAsBytes();
-            this.serial.Write(bytes);
-            this.logit("Adding packet to list");
-            this.PacketInterpreter(new GenericPacket(bytes));
-            
-            // Set device offline one minute after reenable D0-pin trigger
-            this.SetDeviceOfflineStatus(true, Address, Device.TimeOutMinutes + 1);
-            this.logit("Creating AutoTask to enable in in " + Device.TimeOutMinutes.ToString() + " minutes");
-            this.SetDevicePin(true, Address, Device.TimeOutMinutes);
+            //// Set device offline one minute after reenable D0-pin trigger
+            //this.SetDeviceOfflineStatus(true, Address, Device.TimeOutMinutes + 1);
+            //this.logit("Creating AutoTask to enable in in " + Device.TimeOutMinutes.ToString() + " minutes");
+            //this.SetDevicePin(true, Address, Device.TimeOutMinutes);
             
         }
 
@@ -503,21 +518,23 @@ namespace FormsAsyncTest
         private void ToggleD0trigger(int DeviceID, string Address, bool EnableTrigger)
         {
             RemoteCmdPacket packet = new RemoteCmdPacket();
-            XbeeStruct.RemoteCmdStruckt struckt = packet.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0,Address,(byte)DeviceID,EnableTrigger);
-            string hex = Util.ConvertByteArrayToHexString(struckt.GetPacketAsBytes());
-            this.GenericPackets.AddGenericPacket(new GenericPacket(struckt.GetPacketAsBytes()));
-            this.serial.Write(struckt.GetPacketAsBytes());
+            packet.CreateSetPinTriggerPacket(true, RemoteCmdPacket.XbeeAPIpin.D0, Address, (byte)DeviceID);
+            string hex = packet.ToHexString();
+            this.textBox3.AppendText(Environment.NewLine);
+            this.textBox3.AppendText(hex);
+            this.PacketInterpreter(packet.ToGenericPacket());
         }
 
         private void GetD0Status(int DeviceID, String Adr)
         {
             RemoteCmdPacket packet = new RemoteCmdPacket();
-            byte[] bytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D0, Adr, (byte)DeviceID);
-            XbeeStruct.RemoteCmdStruckt StatusPacket = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(bytes);
-            string hex = Util.ConvertByteArrayToHexString(bytes);
-            this.GenericPackets.AddGenericPacket(new GenericPacket(bytes));
-            this.serial.Write(bytes);
+            packet.CreatePinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D0, Adr, (byte)DeviceID);
 
+            byte[] bytes = packet.ToByteArray();
+            string hex = packet.ToHexString();
+            this.textBox3.Text = hex;            
+            this.PacketInterpreter(packet.ToGenericPacket());
+            //this.serial.Write(bytes);
         }
 
         private void btn_StatusD0_Click(object sender, EventArgs e)
@@ -590,14 +607,21 @@ namespace FormsAsyncTest
             //string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
             //string SampleOn = "7E 00 12 92 00 7D 33 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 00 71";
             //XbeeBasePacket xbee = new XbeeBasePacket();
-            RemoteCmdPacket on = new RemoteCmdPacket();
-            on.CreateSetPinTriggerPacket(true, RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 16);
 
-            string hex = on.ToString();
+            string SampleOn = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
+            XbeeBasePacket xbee = new XbeeBasePacket(SampleOn);
+            byte[] bytes = xbee.PacketBytes.ToArray();
+            DataSamplePacket Triggered = new DataSamplePacket(bytes);
+            this.PacketInterpreter(new GenericPacket(bytes));
+            //RemoteCmdPacket on = new RemoteCmdPacket();
+            //string shouldbeempty = on.ToHexString();
+            //on.CreateSetPinTriggerPacket(true, RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 16);
+            //string hex = on.ToHexString();
+            //RemoteCmdPacket off = new RemoteCmdPacket();
+            //off.CreateSetPinTriggerPacket(false, RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 16);
+            //string hexoff = off.ToHexString();
+            //this.PacketInterpreter(new GenericPacket(on.ToByteArray()));
 
-            RemoteCmdPacket off = new RemoteCmdPacket();
-            off.CreateSetPinTriggerPacket(false, RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 16);
-            string hexoff = off.ToString();
             //this.textBox3.AppendText("setting device to disabled");
             //this.Devices.List[0].SetProperty("Online", "false");
             //this.textBox3.AppendText(Environment.NewLine);
@@ -629,24 +653,24 @@ namespace FormsAsyncTest
             //RemoteCmdPackets packets = new RemoteCmdPackets();
 
             RemoteCmdPacket packet = new RemoteCmdPacket();
-            byte[] PinStatusBytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D3, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 1);
-            XbeeStruct.RemoteCmdStruckt statuspin = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(PinStatusBytes);
-            this.PacketInterpreter(new GenericPacket(statuspin.GetPacketAsBytes()));
-            //packets.AddPacket(statuspin);
-            XbeeBasePacket xbee = new XbeeBasePacket(PinStatusBytes);
+            //byte[] PinStatusBytes = packet.GetPinStatusPacket(RemoteCmdPacket.XbeeAPIpin.D3, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 1);
+            //XbeeStruct.RemoteCmdStruckt statuspin = Util.BytesToStructure<XbeeStruct.RemoteCmdStruckt>(PinStatusBytes);
+            //this.PacketInterpreter(new GenericPacket(statuspin.GetPacketAsBytes()));
+            ////packets.AddPacket(statuspin);
+            //XbeeBasePacket xbee = new XbeeBasePacket(PinStatusBytes);
 
-            string toree = xbee.GetPacketAsHex();
-            this.textBox3.AppendText(toree);
-            toree = Util.ConvertByteArrayToHexString(statuspin.GetPacketAsBytes());
-            this.textBox3.AppendText(Environment.NewLine);
-            this.textBox3.AppendText(toree);
+            //string toree = xbee.GetPacketAsHex();
+            //this.textBox3.AppendText(toree);
+            //toree = Util.ConvertByteArrayToHexString(statuspin.GetPacketAsBytes());
+            //this.textBox3.AppendText(Environment.NewLine);
+            //this.textBox3.AppendText(toree);
 
-            packet = new RemoteCmdPacket();
-            XbeeStruct.RemoteCmdStruckt setpin = packet.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 1, true);
-            this.PacketInterpreter(new GenericPacket(setpin.GetPacketAsBytes()));
-            this.textBox3.AppendText(Environment.NewLine);
-            toree = Util.ConvertByteArrayToHexString(setpin.GetPacketAsBytes());
-            this.textBox3.AppendText(toree);
+            //packet = new RemoteCmdPacket();
+            //XbeeStruct.RemoteCmdStruckt setpin = packet.SetPinStatus(RemoteCmdPacket.XbeeAPIpin.D0, "00 13 A2 00 40 A1 D8 CE".Replace(" ", ""), 1, true);
+            //this.PacketInterpreter(new GenericPacket(setpin.GetPacketAsBytes()));
+            //this.textBox3.AppendText(Environment.NewLine);
+            //toree = Util.ConvertByteArrayToHexString(setpin.GetPacketAsBytes());
+            //this.textBox3.AppendText(toree);
         }
 
         private void btn_TestSample_Click(object sender, EventArgs e)

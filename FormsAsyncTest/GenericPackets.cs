@@ -114,6 +114,32 @@ public class GenericPacket
         this.Filtered = false;
     }
 
+    public string ToHexString()
+    {
+        string hex = Util.ConvertByteArrayToHexString(this.PacketBytes.ToArray());
+        return hex;
+    }
+
+    public RemoteCmdPacket ToRemoteCmdPacket()
+    {
+        RemoteCmdPacket p = null;
+        if(this.APItype == XbeeBasePacket.XbeePacketType.RemoteCmd)
+        {
+            p = new RemoteCmdPacket(this.PacketBytes.ToArray());
+        }        
+        return p;
+    }
+
+    public DataSamplePacket ToDataSamplePacket()
+    {
+        DataSamplePacket sample = null;
+        if (this.APItype == XbeeBasePacket.XbeePacketType.DataSample)
+        {
+            sample = new DataSamplePacket(this.PacketBytes.ToArray());
+        }
+        return sample;
+    }
+
     private XbeeBasePacket.XbeePacketDirection GetPacketDirection(XbeeBasePacket.XbeePacketType APItype)
     {
         XbeeBasePacket.XbeePacketDirection Direction;
