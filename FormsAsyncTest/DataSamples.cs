@@ -62,6 +62,7 @@ public class DataSamples
 
 public class DataSamplePacket
 {
+    public byte Delimitter;
     public DateTime TimeDate { get; set; }
     public string Time { get; set; }
     public int Id { get; set; }
@@ -80,8 +81,6 @@ public class DataSamplePacket
             return StringSample;
         }
     }
-    //public string SourceAdr16 { get; set; }
-    //public string SourceAdr64 { get; set; }
     public string SourceAdr16
     {
         get
@@ -135,8 +134,9 @@ public class DataSamplePacket
         }
 
     }
+
     public List<byte> PacketBytes;
-    public byte Delimitter;
+    
     private byte Length0;
     private byte Address1;
     private byte Address2;
@@ -155,6 +155,7 @@ public class DataSamplePacket
     private byte NumberOfSamples;
     private List<byte> mAnalogSamples;
     private List<byte> mDestAdr64Bytes;
+
     public DataSamplePacket()
     {
         this.setDefaults();
@@ -214,4 +215,5 @@ public class DataSamplePacket
         }
         this.CheckSum = this.PacketBytes.Last();
     }
+
 }
