@@ -1,1 +1,6 @@
 FormsAsyncTest/obj/Debug/
+FormsAsyncTest/ConKey.txt
+FormsAsyncTest/bin/Debug/StorageKey.txt
+FormsAsyncTest/bin/Debug/ServiceBusKey.txt
+FormsAsyncTest/ServiceBusKey.txt
+FormsAsyncTest/StorageKey.txt

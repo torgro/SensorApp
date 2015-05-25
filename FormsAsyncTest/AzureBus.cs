@@ -13,9 +13,8 @@ public class AzureBus
     public event LogEventEventHandler LogEvent;
     public delegate void LogEventEventHandler(LogDetail LogItem);
 
-    const string QueueName = "IssueTrackingQueue";
-    private string EndPoint = "Endpoint=sb://ardupilotbus.servicebus.windows.net/;SharedAccessKeyName=root;SharedAccessKey=";
-    private string nokkel = "44 4d 68 32 76 7a 37 74 55 4e 58 49 56 44 64 35 57 35 43 44 66 54 6b 69 4b 46 33 68 55 74 55 65 64 5a 4b 65 41 69 4c 43 78 6c 55 3d";
+    const string QueueName = "sensors";
+    private string nokkel = "";
     private string ConStr = "";
     private QueueClient queue;
     private MessagingFactory factory;
@@ -24,35 +23,43 @@ public class AzureBus
     {
         //MessagingFactory factory = null;
         try
-        {
-            this.ConStr = EndPoint + nokkel;
+        {            
+            string path = System.IO.Directory.GetCurrentDirectory() + @"\ServiceBusKey.txt";
+            this.nokkel = System.IO.File.ReadAllText(path);
+            this.ConStr = nokkel;
             //NamespaceManager namespaceClient = NamespaceManager.CreateFromConnectionString(this.ConStr);
             this.factory = MessagingFactory.CreateFromConnectionString(this.ConStr);
             this.queue = factory.CreateQueueClient(AzureBus.QueueName);
-
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            
-            throw;
+            System.Windows.Forms.MessageBox.Show("Exception ServiceBus - " + ex.Message);
         }
     }
 
     public void SendMsg(BrokeredMessage msg)
     {
-        this.queue.BeginSend(msg, OnSendComplete, new Tuple<QueueClient, string>(queue, msg.MessageId));
-
-        //return true;
+        if(this.queue != null)
+        {
+            this.LogIt("SendMsg - Sending message to queue");
+            this.queue.BeginSend(msg, OnSendComplete, new Tuple<QueueClient, string>(queue, msg.MessageId));
+        }
+        else
+        {
+            this.LogIt("SendMsg - Unable to send msg, queue is null");
+        }        
     }
 
     public void OnSendComplete(IAsyncResult result)
     {
+        this.LogIt("OnSendComplete - Start");
         Tuple<QueueClient, string> stateInfo = (Tuple<QueueClient, string>)result.AsyncState;
         QueueClient queueClient = stateInfo.Item1;
         string messageId = stateInfo.Item2;
-
+        this.LogIt("OnSendComplete - Message with id " + messageId + "was sent");
         try
         {
+            this.LogIt("OnSendComplete - Ending send async");
             queueClient.EndSend(result);
         }
         catch (Exception ex)
@@ -65,11 +72,11 @@ public class AzureBus
     {
         BrokeredMessage msg = new BrokeredMessage(Device.Name);
         msg.MessageId = packet.Id.ToString();
-        msg.Properties.Add("Sender", packet.SourceAdr64);
-        msg.Properties.Add("GPSlat", Device.GPSlat);
-        msg.Properties.Add("GPSlong", Device.GPSlong);
-        msg.Properties.Add("Pin", "D0");
-        msg.Properties.Add("Samples", packet.Samples);
+        msg.Properties.Add("time", DateTime.Now.ToLongTimeString());
+        msg.Properties.Add("lat", Device.GPSlat);
+        msg.Properties.Add("lng", Device.GPSlong);
+        msg.Properties.Add("date", "D0");
+       // msg.Properties.Add("Samples", packet.Samples);
         this.SendMsg(msg);
     }
 

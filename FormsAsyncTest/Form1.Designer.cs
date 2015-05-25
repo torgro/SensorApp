@@ -48,6 +48,7 @@
             this.btn_EnableD0 = new System.Windows.Forms.Button();
             this.btn_DisableD0 = new System.Windows.Forms.Button();
             this.btn_StatusD0 = new System.Windows.Forms.Button();
+            this.btn_TestAzure = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -242,11 +243,22 @@
             this.btn_StatusD0.UseVisualStyleBackColor = true;
             this.btn_StatusD0.Click += new System.EventHandler(this.btn_StatusD0_Click);
             // 
+            // btn_TestAzure
+            // 
+            this.btn_TestAzure.Location = new System.Drawing.Point(1126, 10);
+            this.btn_TestAzure.Name = "btn_TestAzure";
+            this.btn_TestAzure.Size = new System.Drawing.Size(145, 48);
+            this.btn_TestAzure.TabIndex = 21;
+            this.btn_TestAzure.Text = "TestAzure";
+            this.btn_TestAzure.UseVisualStyleBackColor = true;
+            this.btn_TestAzure.Click += new System.EventHandler(this.btn_TestAzure_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.btn_TestAzure);
             this.Controls.Add(this.btn_StatusD0);
             this.Controls.Add(this.btn_DisableD0);
             this.Controls.Add(this.btn_EnableD0);
@@ -298,6 +310,7 @@
         private System.Windows.Forms.Button btn_EnableD0;
         private System.Windows.Forms.Button btn_DisableD0;
         private System.Windows.Forms.Button btn_StatusD0;
+        private System.Windows.Forms.Button btn_TestAzure;
     }
 }
 

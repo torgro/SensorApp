@@ -8,6 +8,9 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace FormsAsyncTest
 {
@@ -24,6 +27,8 @@ namespace FormsAsyncTest
         private DataSamples Datasample = new DataSamples();
         private RemoteCmdPackets RemoteCommandPackets = new RemoteCmdPackets();
         private AutoTasks Tasks = new AutoTasks();
+        private AzureBus Azure;
+        private AzureStorage Storage;
         
         private System.Windows.Forms.Timer ticks;
         private GridViewMode CurrentGridView = GridViewMode.Log;
@@ -41,7 +46,11 @@ namespace FormsAsyncTest
             this.Packet.VaildPacket += this.On_ValidHexPacket;
             this.Devices.LogEvent += this.logit;            
             this.Tasks.LogEvent += this.logit;
-            this.RemoteCommandPackets.LogEvent += this.logit;            
+            this.RemoteCommandPackets.LogEvent += this.logit;
+            this.Azure = new AzureBus();
+            this.Azure.LogEvent += this.logit;
+            this.Storage = new AzureStorage();
+            this.Storage.LogEvent += this.logit;
             this.data_Stats.SuspendLayout();
             this.data_Stats.DataSource = this.Statistics.StatParis;
             this.data_Stats.ResumeLayout();
@@ -54,12 +63,14 @@ namespace FormsAsyncTest
             MonitorDevice mon = new MonitorDevice();
             mon.Enabled = true;
             mon.MAC = "0013A20040A1D8CE";
-            mon.GPSlat = "59,664874";
-            mon.GPSlong = "6,444361";
+            mon.GPSlat = "59.664874";
+            mon.GPSlong = "6.444361";
             mon.Name = "bøen";
+            mon.PartitionKey = "device";
             this.Devices.AddDevice(mon);
             this.UpdateStats();
             this.UpdateStatsView();        
+            
         }              
 
         private void UpdateStats()
@@ -269,6 +280,16 @@ namespace FormsAsyncTest
                                     MonitorDevice dev = this.Devices.GetSingleDevice(datasample.SourceAdr64);
                                     this.SetDevicePin(true, RemoteCmdPacket.XbeeAPIpin.D0, datasample.SourceAdr64, dev.TimeOutMinutes);
                                     this.Datasample.AddPacket(datasample);
+                                    if (dev.GPSlat.Length > 0)
+                                    {
+                                        this.logit("Sending sample to azure service bus");
+                                        this.Azure.SendDatasample(datasample, dev);
+                                    }
+                                    else
+                                    {
+                                        this.logit("not sending to azure, missing GPS coordinates for device " + dev.MAC);
+                                    }
+                                    
                                 }
                                 else
                                 {
@@ -675,7 +696,7 @@ namespace FormsAsyncTest
 
         private void btn_TestSample_Click(object sender, EventArgs e)
         {
-            string SampleTriggerHigh = "7E 00 12 92 00 13 A2 00 40 A1 DD CE FF FE C1 01 00 01 00 00 01 70";
+            string SampleTriggerHigh = "7E 00 12 92 00 13 A2 00 40 A1 D8 CE FF FE C1 01 00 01 00 00 01 70";
             XbeeBasePacket packet = new XbeeBasePacket();
             packet.AddByte(SampleTriggerHigh);
             this.PacketInterpreter(new GenericPacket(packet.PacketBytes.ToArray()));
@@ -694,10 +715,15 @@ namespace FormsAsyncTest
         }
         #endregion
 
-        
-
-        
-
+        private void btn_TestAzure_Click(object sender, EventArgs e)
+        {
+            this.logit("Creating or getting table");
+            this.Storage.GetOrCreateTable("Sensors");
+            this.logit("updating table recoreds");
+            List<MonitorDevice> llist = this.Storage.GetAzureTableAll<MonitorDevice>("device");
+            this.Storage.InsertorReplaceEntity<MonitorDevice>(this.Devices.List[0]);
+            this.logit("done");
+        }
         
     }
 

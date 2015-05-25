@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using Microsoft.WindowsAzure.Storage;
 
 public class MonitorDevices
 {
@@ -12,6 +13,7 @@ public class MonitorDevices
     public List<TreeNode> TreeNodes { get; set; }
     public event LogEventEventHandler LogEvent;
     public delegate void LogEventEventHandler(LogDetail LogItem);
+    public const string PartitionKey = "device";
 
     public MonitorDevices() 
     {
@@ -159,11 +161,32 @@ public class MonitorDevices
     }
 }
 
-public class MonitorDevice
+public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
 {
-
     public string Name { get; set; }
-    public int DeviceID { get; set; }
+    //public string RowKey
+    //{
+    //    get
+    //    {
+    //        return this.DeviceID.ToString();
+    //    }
+    //    set
+    //    {
+    //        this.DeviceID = int.Parse(value);
+    //    }
+    //}
+    //public string PartitionKey { get; set; }
+    public int DeviceID 
+    { 
+        get
+        {
+            return int.Parse(this.RowKey);
+        }
+        set
+        {
+            this.RowKey = value.ToString();
+        }
+    }
     public string Location { get; set; }
     public string GPSlat { get; set; }
     public string GPSlong { get; set; }
@@ -177,7 +200,7 @@ public class MonitorDevice
     public string MAC { get; set; }
     public string FlightPlan;// { get; set; }
     public bool Enabled { get; set; }
-    public List<XbeeBasePacket> Packets { get; set; }
+    //public List<XbeeBasePacket> Packets { get; set; }
     public bool Sensor1Detect { get; set; }
     public bool Sensor2Detect { get; set; }
     public bool D0triggerON { get; set; }
@@ -186,9 +209,16 @@ public class MonitorDevice
     public bool D3triggerON { get; set; }
     public bool D4triggerON { get; set; }
 
+    public MonitorDevice(string partition, string rowkey)
+    {
+        this.PartitionKey = partition;
+        this.RowKey = rowkey;
+        
+    }
+
     public MonitorDevice()
     {
-        this.Packets = new List<XbeeBasePacket>();
+        //this.Packets = new List<XbeeBasePacket>();
         this.Online = true;
         this.Enabled = true;
         this.Location = string.Empty;
@@ -204,6 +234,7 @@ public class MonitorDevice
         this.Sensor1Detect = false;
         this.Sensor2Detect = false;
         this.TimeOutMinutes = 1;
+        this.PartitionKey = "monitor";
     }
    
     public void SetProperty(string PropertyName, string value)
@@ -256,7 +287,7 @@ public class MonitorDevice
     }
 }
 
-public enum MonitorHeading
+public enum MonitorHeading:byte
 {
     North = 0,
     West = 1,
