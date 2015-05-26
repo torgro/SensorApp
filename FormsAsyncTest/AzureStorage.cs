@@ -57,6 +57,20 @@ public class AzureStorage
         this.LogIt("Insert done");
     }
 
+    public async Task InsertOrReplaceEntityBatch(IList<ITableEntity> list)
+    {
+        IList<TableResult> results;
+        if(list != null)
+        {
+            TableBatchOperation batch = new TableBatchOperation();
+            foreach (ITableEntity item in list)
+            {
+                batch.InsertOrReplace(item);
+            }
+            results = await this.tbl.ExecuteBatchAsync(batch);
+        }
+    }
+
     public async Task InsertOrReplaceEntityAsync(ITableEntity entity)
     {
         TableOperation insert = TableOperation.InsertOrReplace(entity);
@@ -82,7 +96,7 @@ public class AzureStorage
         return list;
     }
 
-    public MonitorDevice GetAzureTableDevice(int DeviceId)
+    public MonitorDevice GetAzureTableDevicee(int DeviceId)
     {
         TableQuery<MonitorDevice> query;
         MonitorDevice dev = null;
@@ -103,12 +117,38 @@ public class AzureStorage
         return dev;
     }
 
-    public MonitorDevice GetSingleDevice(string PartKey, string rowKey)
+    public List<T> GetEntityByRowKey<T> (string rowKey) where T : ITableEntity, new ()
     {
-        TableOperation get = TableOperation.Retrieve<MonitorDevice>(PartKey, rowKey);
-        TableResult result = this.tbl.Execute(get);
+        TableQuery<T> query;
+        string filter = string.Empty;
+        List<T> results = null;
+        try
+        {
+            filter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey);
+            query = new TableQuery<T>().Where(filter);
+            results = this.tbl.ExecuteQuery(query).Select(ent => (T)ent).ToList();
+            return results;
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetEntityByRowKey - " + ex.Message);
+        }
+        return results;
+    }
 
-        return result.Result as MonitorDevice;
+    public T GetSingleEntity<T> (string PartKey, string rowKey) where T : ITableEntity
+    {
+        TableResult result = null;
+        try
+        {
+            TableOperation get = TableOperation.Retrieve<T>(PartKey, rowKey);
+            result = this.tbl.Execute(get);
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetSingle - " + ex.Message);
+        }    
+        return (T)result.Result;
     }
 
     virtual protected void OnLogEvent(LogDetail it)
@@ -131,18 +171,5 @@ public class AzureStorage
         log.TimeDate = DateTime.Now;
 
         OnLogEvent(log);
-    }
-}
-
-public class MonitorDev : TableEntity
-{
-    public int DeviceID { get; set; }
-    public string Location { get; set; }
-    public string GPSlat { get; set; }
-    public string GPSlong { get; set; }
-
-    public MonitorDev()
-    { 
-        this.PartitionKey = "device";
     }
 }
