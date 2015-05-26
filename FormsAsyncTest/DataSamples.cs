@@ -60,12 +60,22 @@ public class DataSamples
     }
 }
 
-public class DataSamplePacket
+public class DataSamplePacket : Microsoft.WindowsAzure.Storage.Table.TableEntity
 {
     public byte Delimitter;
     public DateTime TimeDate { get; set; }
     public string Time { get; set; }
-    public int Id { get; set; }
+    public int Id 
+    {
+        get
+        {
+            return int.Parse(this.RowKey);
+        }
+        set
+        {
+            this.RowKey = value.ToString();
+        }
+    }
     public XbeeBasePacket.XbeePacketType API { get; set; }
     public byte CheckSum { get; set; }
     public ushort Length { get; set; }
@@ -80,6 +90,7 @@ public class DataSamplePacket
             }
             return StringSample;
         }
+        set {}
     }
     public string SourceAdr16
     {
@@ -178,6 +189,7 @@ public class DataSamplePacket
         this.DigitalSamples = new List<byte>();
         this.mDestAdr64Bytes = new List<byte>();
         this.mAnalogSamples = new List<byte>();
+        this.PartitionKey = "datasample";
     }
 
     private void ParseBytes(byte[] bytes)

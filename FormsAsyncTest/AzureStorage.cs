@@ -15,6 +15,8 @@ public class AzureStorage
     private CloudStorageAccount Account;
     private CloudTableClient tblClient;
     private CloudTable tbl;
+    public string tableName;
+    public bool TableCreated;
     public event LogEventEventHandler LogEvent;
     public delegate void LogEventEventHandler(LogDetail LogItem);
 
@@ -26,6 +28,7 @@ public class AzureStorage
             this.con = System.IO.File.ReadAllText(path);
             this.Account = CloudStorageAccount.Parse(this.con);
             this.tblClient = this.Account.CreateCloudTableClient();
+            this.TableCreated = false;
         }
         catch (Exception ex)
         {
@@ -33,10 +36,58 @@ public class AzureStorage
         }       
     }
 
+    //public void GetTableDeleteIfExists(string tableName)
+    //{
+    //        //unable to recreate a table for a time if it has been deleted!!!
+    //        try
+    //        {
+    //            this.LogIt("Start GetTableDeleteIfExists");
+    //            if (this.tblClient == null)
+    //            {
+    //                this.LogIt("TableClient is null");
+    //                return;
+    //            }
+
+    //            this.tbl = this.tblClient.GetTableReference(tableName);
+                
+    //            if (this.tbl.Exists())
+    //            {
+    //                this.LogIt("GetTableDeleteIfExists - dropping table " + tableName);
+    //                this.tbl.Delete();
+    //            }
+    //            this.tbl = this.tblClient.GetTableReference(tableName);
+
+    //            this.LogIt("GetTableDeleteIfExists - creating table " + tableName);
+    //            this.tbl.Create();
+    //            this.TableCreated = true;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            this.LogIt("Exception in GetTableReference - " + ex.Message);
+    //        }            
+        
+    //}
+
+    public void GetOrCreateTableNew(string tableName)
+    {       
+        this.LogIt("Creating or getting table");
+        try
+        {
+            if(this.GetTableReference(tableName))
+            {
+                this.tbl.CreateIfNotExists();
+            }                        
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetOrCreateTable - " + ex.Message);
+        }        
+    }
+
     public void GetOrCreateTable(string tableName)
     {
         this.LogIt("Start GetOrCreateTable");
-        if(this.tblClient == null)
+        if (this.tblClient == null)
         {
             this.LogIt("TableClient is null");
             return;
@@ -46,11 +97,12 @@ public class AzureStorage
         {
             this.tbl = this.tblClient.GetTableReference(tableName);
             this.tbl.CreateIfNotExists();
+            this.TableCreated = true;
         }
         catch (Exception ex)
         {
             this.LogIt("Exception in GetOrCreateTable - " + ex.Message);
-        }        
+        }
     }
 
     public async Task GetOrCreateTableAsync(string tableName)
@@ -102,7 +154,7 @@ public class AzureStorage
         }        
     }
 
-    public IList<TableResult> InsertOrReplaceEntityBatch(IList<ITableEntity> list)
+    public IList<TableResult> InsertOrReplaceEntityBatch<T>(List<T> list)
     {
         IList<TableResult> results = null;
         try
@@ -161,6 +213,29 @@ public class AzureStorage
             this.LogIt("Exception in GetAzureTableAll - " + ex.Message);
         }
         return list;
+    }
+
+    public IList<TableResult> DropAllEntities<T>(string partkey) where T : TableEntity, new()
+    {
+        List<T> list = this.GetAzureTableAll<T>(partkey);
+        TableBatchOperation batch = new TableBatchOperation();
+        IList<TableResult> results = null;
+        foreach (T item in list)
+        {
+            batch.Delete(item);
+        }
+
+        if (list.Count > 0)
+        {
+            this.LogIt("Deleting all entities");
+            results = this.tbl.ExecuteBatch(batch);
+        }
+        else
+        {
+            this.LogIt("Nothing to delete!");
+        }
+
+        return results;
     }
 
     public async Task<List<T>> GetAzureTableAllAsync<T>(string partKey) where T : TableEntity , new()
@@ -267,5 +342,28 @@ public class AzureStorage
         log.TimeDate = DateTime.Now;
 
         OnLogEvent(log);
+    }
+
+    private bool GetTableReference(string tableName)
+    {
+        bool ReturnValue = false;
+        this.tableName = tableName;
+        this.LogIt("Start GetTableReference");
+        if (this.tblClient == null)
+        {
+            this.LogIt("TableClient is null");
+            return ReturnValue;
+        }
+        try
+        {
+            this.tbl = this.tblClient.GetTableReference(tableName);
+            ReturnValue = true;
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetTableReference" + ex.Message);
+        }
+
+        return ReturnValue;
     }
 }

@@ -29,6 +29,7 @@ namespace FormsAsyncTest
         private AutoTasks Tasks = new AutoTasks();
         private AzureBus Azure;
         private AzureStorage Storage;
+        private AzureStorage AzureDataSample;
         
         private System.Windows.Forms.Timer ticks;
         private GridViewMode CurrentGridView = GridViewMode.Log;
@@ -49,13 +50,17 @@ namespace FormsAsyncTest
             this.RemoteCommandPackets.LogEvent += this.logit;
             this.Azure = new AzureBus();
             this.Azure.LogEvent += this.logit;
-            this.Storage = new AzureStorage();
+            this.Storage = new AzureStorage();            
             this.Storage.LogEvent += this.logit;
+            this.AzureDataSample = new AzureStorage();
+            this.AzureDataSample.LogEvent += this.logit;
+            this.AzureDataSample.GetOrCreateTable("datasample");
+            this.AzureDataSample.DropAllEntities<DataSamplePacket>("datasample");
             this.data_Stats.SuspendLayout();
             this.data_Stats.DataSource = this.Statistics.StatParis;
             this.data_Stats.ResumeLayout();
             this.ticks = new System.Windows.Forms.Timer();
-            this.ticks.Interval = 20000;
+            this.ticks.Interval = 30000;
             this.textBox3.AppendText("Ticks is disabled!!");
             this.textBox3.AppendText(Environment.NewLine);
             this.ticks.Enabled = true;
@@ -284,11 +289,14 @@ namespace FormsAsyncTest
                                     {
                                         this.logit("Sending sample to azure service bus");
                                         this.Azure.SendDatasample(datasample, dev);
+                                        this.logit("Sending sample to azure storage");
+                                        this.SendDataSampleToAzure(datasample);
                                     }
                                     else
                                     {
                                         this.logit("not sending to azure, missing GPS coordinates for device " + dev.MAC);
                                     }
+                                    
                                     
                                 }
                                 else
@@ -329,6 +337,26 @@ namespace FormsAsyncTest
             catch (Exception ex)
             {
                 MessageBox.Show("Exception in PacketInterpreter!" + ex.Message);                
+            }
+        }
+        
+        private async Task SendDataSampleToAzure(DataSamplePacket packet)
+        {
+            if (this.AzureDataSample != null)
+            {
+                if(this.AzureDataSample.TableCreated)
+                {
+                    await this.AzureDataSample.InsertOrReplaceEntityAsync(packet);
+                    this.logit("SendDataSampleToAzure - Posted sample to Azure");
+                }
+                else
+                {
+                    this.logit("WARNING - Datasample table does not exists");
+                }
+            }
+            else
+            {
+                this.logit("WARNING - AzureDataSample is NULL");
             }
         }
 
@@ -717,15 +745,21 @@ namespace FormsAsyncTest
 
         private void btn_TestAzure_Click(object sender, EventArgs e)
         {
+            MonitorDevice mon = new MonitorDevice();
+            mon.Enabled = true;
+            mon.MAC = "0013A20040A1D8CC";
+            mon.GPSlat = "59.664875";
+            mon.GPSlong = "6.444362";
+            mon.Name = "bøen2";
+            mon.PartitionKey = "device";
+            this.Devices.AddDevice(mon);
             this.logit("Creating or getting table");
             this.Storage.GetOrCreateTable("Sensors");
             this.logit("updating table recoreds");
             List<MonitorDevice> llist = this.Storage.GetAzureTableAll<MonitorDevice>("device");
-            this.Storage.InsertorReplaceEntity(this.Devices.List[0]);
-            this.logit("done");
-            
-        }
-        
+            var insert = this.Storage.InsertOrReplaceEntityBatch<MonitorDevice>(this.Devices.List);
+            this.logit("done");            
+        }        
     }
 
     public class manager
