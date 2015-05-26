@@ -721,8 +721,9 @@ namespace FormsAsyncTest
             this.Storage.GetOrCreateTable("Sensors");
             this.logit("updating table recoreds");
             List<MonitorDevice> llist = this.Storage.GetAzureTableAll<MonitorDevice>("device");
-            this.Storage.InsertorReplaceEntity<MonitorDevice>(this.Devices.List[0]);
+            this.Storage.InsertorReplaceEntity(this.Devices.List[0]);
             this.logit("done");
+            
         }
         
     }

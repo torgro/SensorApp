@@ -42,39 +42,107 @@ public class AzureStorage
             return;
         }
         this.LogIt("Creating or getting table");
-        this.tbl = this.tblClient.GetTableReference(tableName);
-        
-        this.tbl.CreateIfNotExists();
+        try
+        {
+            this.tbl = this.tblClient.GetTableReference(tableName);
+            this.tbl.CreateIfNotExists();
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetOrCreateTable - " + ex.Message);
+        }        
     }
 
-    public void InsertorReplaceEntity<T>(ITableEntity obj) //, string PartKey, string rowKey) //where T : TableEntity , new()
+    public async Task GetOrCreateTableAsync(string tableName)
+    {
+        this.LogIt("Start GetOrCreateTableAsync");
+        if (this.tblClient == null)
+        {
+            this.LogIt("TableClient is null");
+            return;
+        }
+        try
+        {
+            this.tbl = this.tblClient.GetTableReference(tableName);
+            await this.tbl.CreateIfNotExistsAsync();
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetOrCreateTableAsync - " + ex.Message);
+        }        
+    }
+
+    public void InsertorReplaceEntity(ITableEntity entity)
     {
         //ITableEntity newT = new T();
         //newT.RowKey = rowKey;
         //newT.PartitionKey = PartKey;
-        TableOperation insert = TableOperation.InsertOrReplace(obj);
-        this.tbl.Execute(insert);
-        this.LogIt("Insert done");
-    }
-
-    public async Task InsertOrReplaceEntityBatch(IList<ITableEntity> list)
-    {
-        IList<TableResult> results;
-        if(list != null)
+        try
         {
-            TableBatchOperation batch = new TableBatchOperation();
-            foreach (ITableEntity item in list)
-            {
-                batch.InsertOrReplace(item);
-            }
-            results = await this.tbl.ExecuteBatchAsync(batch);
+            TableOperation insert = TableOperation.InsertOrReplace(entity);
+            this.tbl.Execute(insert);
+            this.LogIt("Insert done");
         }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in InsertorReplaceEntity - " + ex.Message);
+        }        
     }
 
     public async Task InsertOrReplaceEntityAsync(ITableEntity entity)
     {
-        TableOperation insert = TableOperation.InsertOrReplace(entity);
-        await this.tbl.ExecuteAsync(insert);
+        try
+        {
+            TableOperation insert = TableOperation.InsertOrReplace(entity);
+            await this.tbl.ExecuteAsync(insert);
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in InsertOrReplaceEntityAsync - " + ex.Message);
+        }        
+    }
+
+    public IList<TableResult> InsertOrReplaceEntityBatch(IList<ITableEntity> list)
+    {
+        IList<TableResult> results = null;
+        try
+        {
+            if (list != null)
+            {
+                TableBatchOperation batch = new TableBatchOperation();
+                foreach (ITableEntity item in list)
+                {
+                    batch.InsertOrReplace(item);
+                }
+                results = this.tbl.ExecuteBatch(batch);
+            }
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in InsertOrReplaceEntityBatch - " + ex.Message);
+        }
+        return results;
+    }
+
+    public async Task InsertOrReplaceEntityBatchAsync(IList<ITableEntity> list)
+    {
+        IList<TableResult> results;
+        try
+        {
+            if (list != null)
+            {
+                TableBatchOperation batch = new TableBatchOperation();
+                foreach (ITableEntity item in list)
+                {
+                    batch.InsertOrReplace(item);
+                }
+                results = await this.tbl.ExecuteBatchAsync(batch);
+            }
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in InsertOrReplaceEntityBatchAsync - " + ex.Message);
+        }        
     }
 
     public List<T> GetAzureTableAll<T>(string partKey) where T : TableEntity , new()
@@ -92,29 +160,32 @@ public class AzureStorage
         {
             this.LogIt("Exception in GetAzureTableAll - " + ex.Message);
         }
-
         return list;
     }
 
-    public MonitorDevice GetAzureTableDevicee(int DeviceId)
+    public async Task<List<T>> GetAzureTableAllAsync<T>(string partKey) where T : TableEntity , new()
     {
-        TableQuery<MonitorDevice> query;
-        MonitorDevice dev = null;
+        TableQuerySegment<T> segment = null;
+        List<T> list = new List<T>();
+        TableQuery<T> query = null;
         string filter = string.Empty;
+        filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partKey);
+        query = new TableQuery<T>().Where(filter);
+        TableContinuationToken token = null;
         try
         {
-            filter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, DeviceId.ToString());
-            query = new TableQuery<MonitorDevice>().Where(filter);
-            //TableQuery<CustomerEntity> query = new TableQuery<CustomerEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "Smith"));
-
-            dev = this.tbl.ExecuteQuery<MonitorDevice>(query).FirstOrDefault();                 
+            do
+            {
+                segment = await this.tbl.ExecuteQuerySegmentedAsync<T>(query, token);
+                token = segment.ContinuationToken;
+                list.AddRange(segment);
+            } while (token != null);
         }
         catch (Exception ex)
         {
-            this.LogIt("Exception in GetAzureTableDevice - " + ex.Message);
-        }
-        
-        return dev;
+            this.LogIt("Exception in GetAzureTableAllAsync - " + ex.Message);
+        }       
+        return list;
     }
 
     public List<T> GetEntityByRowKey<T> (string rowKey) where T : ITableEntity, new ()
@@ -136,6 +207,31 @@ public class AzureStorage
         return results;
     }
 
+    public async Task<List<T>> GetEntityByRowKeyAsync<T>(string rowKey) where T : ITableEntity , new()
+    {
+        TableQuery<T> query;
+        string filter = string.Empty;
+        TableQuerySegment<T> segment = null;
+        List<T> list = new List<T>();
+        filter = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey);
+        query = new TableQuery<T>().Where(filter);
+        TableContinuationToken token = null;
+        try
+        {
+            do
+            {
+                segment = await this.tbl.ExecuteQuerySegmentedAsync(query, token);
+                token = segment.ContinuationToken;
+                list.AddRange(segment);
+            } while (token != null);
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetEntityByRowKeyAsync - " + ex.Message);
+        }        
+        return list;
+    }
+
     public T GetSingleEntity<T> (string PartKey, string rowKey) where T : ITableEntity
     {
         TableResult result = null;
@@ -146,7 +242,7 @@ public class AzureStorage
         }
         catch (Exception ex)
         {
-            this.LogIt("Exception in GetSingle - " + ex.Message);
+            this.LogIt("Exception in GetSingleEntity - " + ex.Message);
         }    
         return (T)result.Result;
     }
