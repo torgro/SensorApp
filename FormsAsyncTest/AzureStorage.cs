@@ -36,54 +36,6 @@ public class AzureStorage
         }       
     }
 
-    //public void GetTableDeleteIfExists(string tableName)
-    //{
-    //        //unable to recreate a table for a time if it has been deleted!!!
-    //        try
-    //        {
-    //            this.LogIt("Start GetTableDeleteIfExists");
-    //            if (this.tblClient == null)
-    //            {
-    //                this.LogIt("TableClient is null");
-    //                return;
-    //            }
-
-    //            this.tbl = this.tblClient.GetTableReference(tableName);
-                
-    //            if (this.tbl.Exists())
-    //            {
-    //                this.LogIt("GetTableDeleteIfExists - dropping table " + tableName);
-    //                this.tbl.Delete();
-    //            }
-    //            this.tbl = this.tblClient.GetTableReference(tableName);
-
-    //            this.LogIt("GetTableDeleteIfExists - creating table " + tableName);
-    //            this.tbl.Create();
-    //            this.TableCreated = true;
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            this.LogIt("Exception in GetTableReference - " + ex.Message);
-    //        }            
-        
-    //}
-
-    public void GetOrCreateTableNew(string tableName)
-    {       
-        this.LogIt("Creating or getting table");
-        try
-        {
-            if(this.GetTableReference(tableName))
-            {
-                this.tbl.CreateIfNotExists();
-            }                        
-        }
-        catch (Exception ex)
-        {
-            this.LogIt("Exception in GetOrCreateTable - " + ex.Message);
-        }        
-    }
-
     public void GetOrCreateTable(string tableName)
     {
         this.LogIt("Start GetOrCreateTable");
@@ -117,6 +69,7 @@ public class AzureStorage
         {
             this.tbl = this.tblClient.GetTableReference(tableName);
             await this.tbl.CreateIfNotExistsAsync();
+            this.TableCreated = true;
         }
         catch (Exception ex)
         {
@@ -236,6 +189,11 @@ public class AzureStorage
         }
 
         return results;
+    }
+
+    public IList<TableResult> DropAllEntities<T>(string partkey) where T : TableEntity, new()
+    {
+        throw new NotImplementedException("not implemented");
     }
 
     public async Task<List<T>> GetAzureTableAllAsync<T>(string partKey) where T : TableEntity , new()
