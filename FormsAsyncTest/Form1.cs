@@ -759,6 +759,12 @@ namespace FormsAsyncTest
             List<MonitorDevice> llist = this.Storage.GetAzureTableAll<MonitorDevice>("device");
             var insert = this.Storage.InsertOrReplaceEntityBatch<MonitorDevice>(this.Devices.List);
             this.logit("done");            
+        }
+
+        private void btn_pushbullet_Click(object sender, EventArgs e)
+        {
+            Pushbullet push = new Pushbullet();
+            push.SendLink("", "testtitle", "thisis the body");
         }        
     }
 

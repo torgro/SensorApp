@@ -191,9 +191,26 @@ public class AzureStorage
         return results;
     }
 
-    public IList<TableResult> DropAllEntities<T>(string partkey) where T : TableEntity, new()
+    public async Task<IList<TableResult>> DropAllEntitiesAsync<T>(string partKey) where T : TableEntity, new()
     {
-        throw new NotImplementedException("not implemented");
+        List<T> list = this.GetAzureTableAll<T>(partKey);
+        TableBatchOperation batch = new TableBatchOperation();
+        IList<TableResult> results = null;
+        foreach (T item in list)
+        {
+            batch.Delete(item);
+        }
+
+        if (list.Count > 0)
+        {
+            this.LogIt("Deleting all entities");
+            results = await this.tbl.ExecuteBatchAsync(batch);
+        }
+        else
+        {
+            this.LogIt("Nothing to delete!");
+        }
+        return results;
     }
 
     public async Task<List<T>> GetAzureTableAllAsync<T>(string partKey) where T : TableEntity , new()
@@ -302,26 +319,26 @@ public class AzureStorage
         OnLogEvent(log);
     }
 
-    private bool GetTableReference(string tableName)
-    {
-        bool ReturnValue = false;
-        this.tableName = tableName;
-        this.LogIt("Start GetTableReference");
-        if (this.tblClient == null)
-        {
-            this.LogIt("TableClient is null");
-            return ReturnValue;
-        }
-        try
-        {
-            this.tbl = this.tblClient.GetTableReference(tableName);
-            ReturnValue = true;
-        }
-        catch (Exception ex)
-        {
-            this.LogIt("Exception in GetTableReference" + ex.Message);
-        }
+    //private bool GetTableReference(string tableName)
+    //{
+    //    bool ReturnValue = false;
+    //    this.tableName = tableName;
+    //    this.LogIt("Start GetTableReference");
+    //    if (this.tblClient == null)
+    //    {
+    //        this.LogIt("TableClient is null");
+    //        return ReturnValue;
+    //    }
+    //    try
+    //    {
+    //        this.tbl = this.tblClient.GetTableReference(tableName);
+    //        ReturnValue = true;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        this.LogIt("Exception in GetTableReference" + ex.Message);
+    //    }
 
-        return ReturnValue;
-    }
+    //    return ReturnValue;
+    //}
 }
