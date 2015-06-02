@@ -201,5 +201,10 @@ public static class Util
 		Marshal.FreeHGlobal(ptr);
 		return arr;
 	}
+
+    public static bool IsBitSet(int mask, int pos)
+    {
+        return (mask & (1 << pos)) != 0;
+    }
 }
 

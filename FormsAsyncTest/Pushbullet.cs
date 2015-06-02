@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -38,7 +37,7 @@ using Newtonsoft.Json.Linq;
         public void SendLink(string channel, string title, string body)
         {
             string pushtype = "link";
-            string deviceId = "ufexVNDsjz9biq5J7Y";//W510 device
+            //string deviceId = "ufexVNDsjz9biq5J7Y";//W510 device
             //channel_tag https://www.pushbullet.com/channel?tag=hjortefot
             var data = new KeyValuePairList<string,string>
 			{
@@ -46,26 +45,29 @@ using Newtonsoft.Json.Linq;
 				{"type", pushtype},
 				{"title", "Alarm!"},
                 {"body", "snublebluss snublebluss"},
-                {"url", "hjortefot2.azurewebsites.net"},
+                {"url", "http://hjortefot2.azurewebsites.net"},
                 {"channel_tag", "hjortefot"}
 			};
+
             HttpResponseMessage response;
+
             using (var httpcont = new FormUrlEncodedContent(data))
             {
                 response = this.client.PostAsync(this.pushUrl, httpcont).Result;
             }
+
             string responsstring = null;
+
             if (response.IsSuccessStatusCode)
             {
                 responsstring = response.Content.ReadAsStringAsync().Result;
+                string v = response.Content.ReadAsStringAsync().Result;
             }
+
             if(responsstring != null)
             {
-                dynamic obj = JObject.Parse(responsstring);
+                dynamic obj = JObject.Parse(responsstring);                
             }
-
-            string tore = "";
-
         }
     }
 

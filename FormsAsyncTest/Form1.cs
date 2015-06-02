@@ -63,7 +63,7 @@ namespace FormsAsyncTest
             this.ticks.Interval = 30000;
             this.textBox3.AppendText("Ticks is disabled!!");
             this.textBox3.AppendText(Environment.NewLine);
-            this.ticks.Enabled = true;
+            //this.ticks.Enabled = true;
             this.ticks.Tick += this.Ticks_Elapsed;
             MonitorDevice mon = new MonitorDevice();
             mon.Enabled = true;
@@ -265,7 +265,14 @@ namespace FormsAsyncTest
                         this.logit("WARNING - TransmitRequest packet not implemented!");
                         break;
                     case XbeeBasePacket.XbeePacketType.RemoteCmdRespons:
-                       this.RemoteCommandPackets.AddPacket(GenericPack);
+                        this.RemoteCommandPackets.AddPacket(GenericPack);
+                        RemoteCmdResponsType.ISpacket isPacket = GenericPack.ToRemoteCmdResponsISpacket();
+                        if (isPacket != null)
+                        {
+                            this.logit("Updating device battery level, old is '" + NewDevice.BatteryLevel.ToString() + "'");
+                            this.Devices.SetBatteryLevel(isPacket);
+                            this.logit("Updating device battery level, new is '" + NewDevice.BatteryLevel.ToString() + "'");
+                        }
                         break;
 
                     case XbeeBasePacket.XbeePacketType.DataSample:                       
@@ -545,6 +552,26 @@ namespace FormsAsyncTest
             }
         }
 
+        private void btn_CheckBatt_Click(object sender, EventArgs e)
+        {
+            if (this.data_main.SelectedCells.Count > 0)
+            {
+                int RowIndex = this.data_main.SelectedCells[0].RowIndex;
+                DataGridViewRow row = this.data_main.Rows[RowIndex];
+                if (typeof(MonitorDevice) == row.DataBoundItem.GetType())
+                {
+                    MonitorDevice dev = (MonitorDevice)row.DataBoundItem;
+                    string mac = dev.MAC;
+                    this.logit("Checking battery for device " + mac);
+                    RemoteCmdPacket packet = new RemoteCmdPacket();
+                    packet.GetBatteryLevel(mac, (byte)dev.DeviceID);
+                    this.logit(packet.ToHexString());
+                    this.PacketInterpreter(packet.ToGenericPacket());
+                    this.serial.Write(packet.ToByteArray());
+                }
+            }
+        }        
+
         private void btn_DisableD0_Click(object sender, EventArgs e)
         {
             if (this.data_main.SelectedCells.Count > 0)
@@ -720,6 +747,18 @@ namespace FormsAsyncTest
             //this.textBox3.AppendText(Environment.NewLine);
             //toree = Util.ConvertByteArrayToHexString(setpin.GetPacketAsBytes());
             //this.textBox3.AppendText(toree);
+
+
+            string RemoteCmdResponsWithAnalogData = "7E 00 17 97 01 00 13 A2 00 40 A1 D8 CE FF FE 49 53 00 01 00 00 06 02 FF 02 0D 6A";
+            XbeeBasePacket pack = new XbeeBasePacket();
+            pack.AddByte(RemoteCmdResponsWithAnalogData);
+            this.PacketInterpreter(new GenericPacket(pack.PacketBytes.ToArray()));
+            this.logit(" done btn_testcmd_Click ");
+
+            //RemoteCmdPacket pack = new RemoteCmdPacket();
+            //pack.digitalMaskValue = (RemoteCmdPacket.DigitalMask)0x1810;            
+            //bool isD4 = pack.digitalMaskValue.HasFlag(RemoteCmdPacket.DigitalMask.D4);
+            //string tore = "";
         }
 
         private void btn_TestSample_Click(object sender, EventArgs e)
@@ -765,7 +804,9 @@ namespace FormsAsyncTest
         {
             Pushbullet push = new Pushbullet();
             push.SendLink("", "testtitle", "thisis the body");
-        }        
+        }
+
+        
     }
 
     public class manager

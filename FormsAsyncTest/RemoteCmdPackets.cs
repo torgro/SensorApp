@@ -8,6 +8,7 @@ using System.Diagnostics;
 public class RemoteCmdPackets
 {
     public List<RemoteCmdPacket> List;
+    //public List<RemoteCmdResponsType> ResponsTypeList;
     //events and delegates
     public event LogEventEventHandler LogEvent;
     public delegate void LogEventEventHandler(LogDetail LogItem);
@@ -15,6 +16,7 @@ public class RemoteCmdPackets
     public RemoteCmdPackets()
     {
         this.List = new List<RemoteCmdPacket>();
+        //this.ResponsTypeList = new List<RemoteCmdResponsType>();
     }
 
     public void AddPacket(GenericPacket GenPacket)
@@ -32,49 +34,6 @@ public class RemoteCmdPackets
 	    }
     }
     
-    //private void AddPacket(XbeeStruct.RemoteCmdStruckt StructPacket)
-    //{
-    //    this.LogIt("Adding RemoteCmdStruckt packet");
-    //    RemoteCmdPacket packet = new RemoteCmdPacket();
-    //    packet.TimeDate = DateTime.Now;
-    //    packet.Id = this.List.Count;
-    //    packet.CheckSum = StructPacket.Checksum;
-    //    packet.API = XbeeBasePacket.XbeePacketType.RemoteCmd;
-    //    packet.Length = StructPacket.Length;
-    //    if (packet.Length == 15)
-    //    {
-    //        packet.CheckSum = StructPacket.CmdData;
-    //        //packet.CmdData = 0;
-    //    }
-    //    packet.ATcmd = StructPacket.ATcmd;
-    //    //packet.CmdData = StructPacket.CmdData;
-    //    //packet.cmdOptions = StructPacket.CmdOptions;
-    //    packet.FrameID = StructPacket.FrameID;
-    //    packet.DestAdr16 = StructPacket.DestAdr16;
-    //    packet.DestAdr64 = StructPacket.DestAdr64;
-    //    packet.Direction = XbeeBasePacket.XbeePacketDirection.Out;
-    //    this.List.Add(packet);
-    //}
-
-    //private void AddPacket(XbeeStruct.RemoteCmdResponsStruct RemoteCmdStruct)
-    //{
-    //    this.LogIt("Adding RemoteCmdResponsStruct packet");
-    //    RemoteCmdPacket packet = new RemoteCmdPacket();
-    //    packet.TimeDate = DateTime.Now;
-    //    packet.Id = this.List.Count;
-    //    packet.CheckSum = RemoteCmdStruct.Checksum;
-    //    packet.API = XbeeBasePacket.XbeePacketType.RemoteCmdRespons;
-    //    packet.Length = RemoteCmdStruct.Length;
-    //    packet.ATcmd = RemoteCmdStruct.ATcmd;
-    //    packet.RemoteStatus = (RemoteCmdPacket.RemoteCmdResponsStatus)Enum.Parse(typeof(RemoteCmdPacket.RemoteCmdResponsStatus), RemoteCmdStruct.RemStatus.ToString());//RemoteCmdStruct.RemStatus;
-    //    packet.CmdRespons = RemoteCmdStruct.ResponsValue;
-    //    packet.FrameID = RemoteCmdStruct.FrameID;
-    //    packet.DestAdr16 = RemoteCmdStruct.shortAdr;
-    //    packet.DestAdr64 = RemoteCmdStruct.SourceAdr;
-    //    packet.Direction = XbeeBasePacket.XbeePacketDirection.In;
-    //    this.List.Add(packet);
-    //}
-
     virtual protected void OnLogEvent(LogDetail it)
     {
         if (LogEvent != null)
@@ -202,7 +161,11 @@ public class RemoteCmdPacket
     {
         get
         {
-            string RemoteCmd = this.mCmdRemoteData.ToString();
+            string RemoteCmd = string.Empty;//this.mCmdRemoteData.ToString();
+            foreach (byte item in this.mCmdRemoteData)
+            {
+                RemoteCmd += Util.ConvertToHex(item) + " ";
+            }
             if (this.API == XbeeBasePacket.XbeePacketType.RemoteCmd)
             {
                 return "";
@@ -211,7 +174,8 @@ public class RemoteCmdPacket
         }
         set
         {
-            this.mCmdRemoteData = Convert.ToByte(value);
+            //fixme
+            this.mCmdRemoteData.Add(Convert.ToByte(value));//Convert.ToByte(value);
         }
     }
     public string RemoteStatus 
@@ -227,6 +191,8 @@ public class RemoteCmdPacket
     }
     public byte CheckSum { get; set; }
 
+    public DigitalMask digitalMaskValue;
+
     public List<byte> AllBytes;
 
     private List<byte> mDestAdr64Bytes;
@@ -234,7 +200,7 @@ public class RemoteCmdPacket
     private byte mCmdParameter;
     private byte Length0;
     private char[] mATcmd;
-    private byte mCmdRemoteData;
+    private System.Collections.ArrayList mCmdRemoteData;
     private byte mDestAddress1;
     private byte mDestAddress2;
     private byte mDestAddress3;
@@ -293,6 +259,7 @@ public class RemoteCmdPacket
         this.Length0 = 0x0;
         //this.mATcmd = new byte [] {0x0,0x0};
         this.mDestAdr64Bytes = new List<byte>();
+        this.mCmdRemoteData = new System.Collections.ArrayList();
     }
 
     public void CreatePinStatusPacket(XbeeAPIpin Pin, String Address, byte FrameID)
@@ -366,8 +333,21 @@ public class RemoteCmdPacket
         list[list.Count - 1] = (byte)checksum;
         this.AllBytes = list;
     }
+
+    public void GetBatteryLevel(string Adr, byte FrameID)
+    {
+        this.Delimiter = 0x7E;
+        this.Length0 = 0x0;
+        this.Length = 15;
+        this.API = XbeeBasePacket.XbeePacketType.RemoteCmd;
+        this.FrameID = FrameID;
+        this.DestAdr64 = Adr;
+        this.DestAdr16 = "FFFE";
+        this.cmdOptions = apiCmdOptions.ApplyChanges;
+        this.ATcmd = "IS";
+        this.UpdateAllBytes();
+    }
      
-   
     private void GetPinStatus(XbeeAPIpin Pin, string Adr, byte FrameID)
     {
         this.Delimiter = 0x7E;        
@@ -428,11 +408,17 @@ public class RemoteCmdPacket
                 //this is a getter packet, no commanddata (commanddata)
                 this.CheckSum = bytes[18];
             }
-            if (this.Length == 16) //0x10
+            if (this.Length >= 16) //0x10
             {
                 //this is a setter packet, parameters are included (commanddata)
-                this.mCmdRemoteData = bytes[18];
-                this.CheckSum = bytes[19];
+
+                //this.mCmdRemoteData = bytes[18];
+                for (int i = 18; i < (bytes.Length - 1); i++)
+                {
+                    this.mCmdRemoteData.Add(bytes[i]);
+                }
+                int lastbyte = bytes.Length;
+                this.CheckSum = bytes[bytes.Length - 1];
             }
             this.AllBytes.AddRange(bytes);  
             this.Direction = XbeeBasePacket.XbeePacketDirection.In;
@@ -480,13 +466,6 @@ public class RemoteCmdPacket
             this.Direction = XbeeBasePacket.XbeePacketDirection.Out;
         }
     }
-
-    //private ushort CalcStructLength(byte[] ArrayOfBytes)
-    //{
-    //    ushort ReturnLength = 0;
-    //    ReturnLength = (ushort)(ArrayOfBytes.Length - 4);
-    //    return ReturnLength;
-    //}
 
     public enum apiCmdType : int
     {
@@ -540,4 +519,36 @@ public class RemoteCmdPacket
         TransmissionFailed = 0x4
 
     }
+
+    //http://derekwill.com/2015/03/05/bit-processing-in-c/
+    [Flags]
+    public enum DigitalMask : short
+    {
+        None = 0,
+        D0 = 1,     //00000000 00000001
+        D1 = 2,     //00000000 00000010
+        D2 = 4,     //00000000 00000100
+        D3 = 8,     //00000000 00001000
+        D4 = 16,    //00000000 00010000
+        D5 = 32,    //00000000 00100000
+        D6 = 64,    //00000000 01000000
+        D7 = 128,   //00000000 10000000
+        D8 = 256,   //00000001 00000000
+        D9 = 512,   //00000010 00000000
+        D10 = 1024, //00000100 00000000
+        D11 = 2048, //00001000 00000000
+        D12 = 4096  //00010000 00000000
+                         //11000 00010000
+    }
+
+    [Flags]
+    public enum AnalogMask
+    {
+        None = 0,
+        A0 = 1,  //00000000 00000001
+        A1 = 2,  //00000000 00000010
+        A2 = 4,  //00000000 00000100
+        A3 = 8   //00000000 00001000
+    }
+
 }

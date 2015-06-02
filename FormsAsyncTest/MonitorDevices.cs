@@ -159,23 +159,27 @@ public class MonitorDevices
 
         return q.FirstOrDefault();
     }
+
+    public void SetBatteryLevel(RemoteCmdResponsType.ISpacket isPacket)
+    {
+        if (isPacket != null)
+        {
+            if (isPacket.SourceAddress.Length > 0)
+            {
+                MonitorDevice mon = this.GetSingleDevice(isPacket.SourceAddress);
+                if (mon != null)
+                {
+                    mon.SetBatteryLevel(isPacket);
+                }
+            }
+        }
+    }
 }
 
 public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
 {
     public string Name { get; set; }
-    //public string RowKey
-    //{
-    //    get
-    //    {
-    //        return this.DeviceID.ToString();
-    //    }
-    //    set
-    //    {
-    //        this.DeviceID = int.Parse(value);
-    //    }
-    //}
-    //public string PartitionKey { get; set; }
+   
     public int DeviceID 
     { 
         get
@@ -193,14 +197,13 @@ public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
     public bool Online { get; set; }
     public int NumberOfSensors { get; set; }
     public int TimeOutMinutes { get; set; }
-    public string LastStatus { get; set; }
-    public string Logs;//{ get; set; }
+    //public string LastStatus { get; set; }
+    //public string Logs;//{ get; set; }
     public MonitorHeading Heading { get; set; }
-    public long BatteryLevel { get; set; }
+    public double BatteryLevel { get; set; }
     public string MAC { get; set; }
     public string FlightPlan;// { get; set; }
     public bool Enabled { get; set; }
-    //public List<XbeeBasePacket> Packets { get; set; }
     public bool Sensor1Detect { get; set; }
     public bool Sensor2Detect { get; set; }
     public bool D0triggerON { get; set; }
@@ -208,12 +211,12 @@ public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
     public bool D2triggerON { get; set; }
     public bool D3triggerON { get; set; }
     public bool D4triggerON { get; set; }
+    public List<byte[]> AnalogSamples { get; set; }
 
     public MonitorDevice(string partition, string rowkey)
     {
         this.PartitionKey = partition;
-        this.RowKey = rowkey;
-        
+        this.RowKey = rowkey;        
     }
 
     public MonitorDevice()
@@ -223,8 +226,8 @@ public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
         this.Enabled = true;
         this.Location = string.Empty;
         this.Name = string.Empty;
-        this.LastStatus = string.Empty;
-        this.Logs = string.Empty;
+        //this.LastStatus = string.Empty;
+        //this.Logs = string.Empty;
         this.BatteryLevel = 0;
         this.DeviceID = 0;
         this.GPSlat = string.Empty;
@@ -235,6 +238,34 @@ public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
         this.Sensor2Detect = false;
         this.TimeOutMinutes = 1;
         this.PartitionKey = "monitor";
+        this.AnalogSamples = new List<byte[]>();
+    }
+
+    public void SetBatteryLevel(byte[] AnalogByteSample)
+    {
+        this.AnalogSamples.Add(AnalogByteSample);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(AnalogByteSample);
+        }
+        int AnalogRawValue = BitConverter.ToInt16(AnalogByteSample, 0);
+        double Voltage = 99.99;
+        if (AnalogRawValue > 0)
+        {
+            Voltage = ((double)AnalogRawValue / 1023) * 3.3;
+        }
+        this.BatteryLevel = Math.Round((Voltage *2), 2, MidpointRounding.AwayFromZero);
+    }
+
+    public void SetBatteryLevel(RemoteCmdResponsType.ISpacket packet)
+    {
+        if(packet != null)
+        {
+            if (packet.AnalogSamples.Count > 0)
+	        {
+                this.SetBatteryLevel(packet.AnalogSamples[0]);
+	        }            
+        }
     }
    
     public void SetProperty(string PropertyName, string value)

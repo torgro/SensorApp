@@ -130,6 +130,22 @@ public class GenericPacket
         return p;
     }
 
+    public RemoteCmdResponsType.ISpacket ToRemoteCmdResponsISpacket()
+    {
+        RemoteCmdResponsType.ISpacket ISpacket = null;
+        if (this.APItype == XbeeBasePacket.XbeePacketType.RemoteCmdRespons)
+        {
+            RemoteCmdResponsType.ISpacket ISpacketTemp = new RemoteCmdResponsType.ISpacket();
+            ISpacketTemp.ParseFullPacket(this);
+            if (ISpacketTemp.SourceAddress.Length > 0)
+            {
+                //packet has been parsed, return it
+                ISpacket = ISpacketTemp;                
+            }
+        }
+        return ISpacket;
+    }
+
     public DataSamplePacket ToDataSamplePacket()
     {
         DataSamplePacket sample = null;
