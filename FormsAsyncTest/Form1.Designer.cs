@@ -51,6 +51,9 @@
             this.btn_TestAzure = new System.Windows.Forms.Button();
             this.btn_pushbullet = new System.Windows.Forms.Button();
             this.btn_CheckBatt = new System.Windows.Forms.Button();
+            this.btn_Cmd1 = new System.Windows.Forms.Button();
+            this.btn_Cmd2 = new System.Windows.Forms.Button();
+            this.btn_Cmd3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.data_main)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.data_Stats)).BeginInit();
             this.SuspendLayout();
@@ -217,7 +220,7 @@
             // 
             // btn_EnableD0
             // 
-            this.btn_EnableD0.Location = new System.Drawing.Point(143, 466);
+            this.btn_EnableD0.Location = new System.Drawing.Point(132, 656);
             this.btn_EnableD0.Name = "btn_EnableD0";
             this.btn_EnableD0.Size = new System.Drawing.Size(101, 46);
             this.btn_EnableD0.TabIndex = 18;
@@ -227,7 +230,7 @@
             // 
             // btn_DisableD0
             // 
-            this.btn_DisableD0.Location = new System.Drawing.Point(250, 466);
+            this.btn_DisableD0.Location = new System.Drawing.Point(239, 656);
             this.btn_DisableD0.Name = "btn_DisableD0";
             this.btn_DisableD0.Size = new System.Drawing.Size(101, 46);
             this.btn_DisableD0.TabIndex = 19;
@@ -237,7 +240,7 @@
             // 
             // btn_StatusD0
             // 
-            this.btn_StatusD0.Location = new System.Drawing.Point(357, 466);
+            this.btn_StatusD0.Location = new System.Drawing.Point(346, 656);
             this.btn_StatusD0.Name = "btn_StatusD0";
             this.btn_StatusD0.Size = new System.Drawing.Size(101, 46);
             this.btn_StatusD0.TabIndex = 20;
@@ -257,7 +260,7 @@
             // 
             // btn_pushbullet
             // 
-            this.btn_pushbullet.Location = new System.Drawing.Point(504, 464);
+            this.btn_pushbullet.Location = new System.Drawing.Point(493, 654);
             this.btn_pushbullet.Name = "btn_pushbullet";
             this.btn_pushbullet.Size = new System.Drawing.Size(145, 48);
             this.btn_pushbullet.TabIndex = 22;
@@ -267,7 +270,7 @@
             // 
             // btn_CheckBatt
             // 
-            this.btn_CheckBatt.Location = new System.Drawing.Point(670, 466);
+            this.btn_CheckBatt.Location = new System.Drawing.Point(659, 656);
             this.btn_CheckBatt.Name = "btn_CheckBatt";
             this.btn_CheckBatt.Size = new System.Drawing.Size(101, 46);
             this.btn_CheckBatt.TabIndex = 23;
@@ -275,11 +278,42 @@
             this.btn_CheckBatt.UseVisualStyleBackColor = true;
             this.btn_CheckBatt.Click += new System.EventHandler(this.btn_CheckBatt_Click);
             // 
+            // btn_Cmd1
+            // 
+            this.btn_Cmd1.Location = new System.Drawing.Point(141, 468);
+            this.btn_Cmd1.Name = "btn_Cmd1";
+            this.btn_Cmd1.Size = new System.Drawing.Size(101, 46);
+            this.btn_Cmd1.TabIndex = 24;
+            this.btn_Cmd1.Text = "Cmd1";
+            this.btn_Cmd1.UseVisualStyleBackColor = true;
+            this.btn_Cmd1.Click += new System.EventHandler(this.btn_Cmd1_Click);
+            // 
+            // btn_Cmd2
+            // 
+            this.btn_Cmd2.Location = new System.Drawing.Point(248, 468);
+            this.btn_Cmd2.Name = "btn_Cmd2";
+            this.btn_Cmd2.Size = new System.Drawing.Size(101, 46);
+            this.btn_Cmd2.TabIndex = 25;
+            this.btn_Cmd2.Text = "Cmd2";
+            this.btn_Cmd2.UseVisualStyleBackColor = true;
+            // 
+            // btn_Cmd3
+            // 
+            this.btn_Cmd3.Location = new System.Drawing.Point(355, 468);
+            this.btn_Cmd3.Name = "btn_Cmd3";
+            this.btn_Cmd3.Size = new System.Drawing.Size(101, 46);
+            this.btn_Cmd3.TabIndex = 26;
+            this.btn_Cmd3.Text = "Cmd3";
+            this.btn_Cmd3.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1366, 745);
+            this.Controls.Add(this.btn_Cmd3);
+            this.Controls.Add(this.btn_Cmd2);
+            this.Controls.Add(this.btn_Cmd1);
             this.Controls.Add(this.btn_CheckBatt);
             this.Controls.Add(this.btn_pushbullet);
             this.Controls.Add(this.btn_TestAzure);
@@ -337,6 +371,9 @@
         private System.Windows.Forms.Button btn_TestAzure;
         private System.Windows.Forms.Button btn_pushbullet;
         private System.Windows.Forms.Button btn_CheckBatt;
+        private System.Windows.Forms.Button btn_Cmd1;
+        private System.Windows.Forms.Button btn_Cmd2;
+        private System.Windows.Forms.Button btn_Cmd3;
     }
 }
 

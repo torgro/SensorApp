@@ -1,0 +1,142 @@
+{"id":4,"TimeDate":"2015-07-04T22:42:24.5527729+02:00","time":"22:42:24","ClassName":"form1","Method":".ctor","Description":"path is C:\\Users\\Tore\\Dropbox\\SourceTreeRepros\\SensorApp\\FormsAsyncTest\\bin\\Debug","Level":0}
+{"id":5,"TimeDate":"2015-07-04T22:42:29.9467014+02:00","time":"22:42:29","ClassName":"XbeeCOM","Method":"Open","Description":"Current port is 'com9'","Level":0}
+{"id":6,"TimeDate":"2015-07-04T22:42:30.1654087+02:00","time":"22:42:30","ClassName":"XbeeCOM","Method":"initPort","Description":"Running initPort in xbeecom","Level":0}
+{"id":7,"TimeDate":"2015-07-04T22:42:30.4468421+02:00","time":"22:42:30","ClassName":"XbeeCOM","Method":"Open","Description":"Serialport is OPEN, using port com9","Level":0}
+{"id":8,"TimeDate":"2015-07-04T22:42:30.7436739+02:00","time":"22:42:30","ClassName":"XbeeCOM","Method":"Open","Description":"BaudRate is 9600","Level":0}
+{"id":9,"TimeDate":"2015-07-04T22:42:36.4160133+02:00","time":"22:42:36","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040BB3F1A","Level":0}
+{"id":10,"TimeDate":"2015-07-04T22:42:36.4940922+02:00","time":"22:42:36","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 BB 3F 1A FF FE 02 49 53 43","Level":0}
+{"id":11,"TimeDate":"2015-07-04T22:42:36.7284674+02:00","time":"22:42:36","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 BB 3F 1A FF FE 02 49 53 43'","Level":0}
+{"id":12,"TimeDate":"2015-07-04T22:42:36.7753502+02:00","time":"22:42:36","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":13,"TimeDate":"2015-07-04T22:42:36.8847341+02:00","time":"22:42:36","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 2","Level":0}
+{"id":14,"TimeDate":"2015-07-04T22:42:36.9003895+02:00","time":"22:42:36","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":15,"TimeDate":"2015-07-04T22:42:37.0878428+02:00","time":"22:42:37","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 26","Level":0}
+{"id":16,"TimeDate":"2015-07-04T22:42:37.2441119+02:00","time":"22:42:37","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":17,"TimeDate":"2015-07-04T22:42:37.384716+02:00","time":"22:42:37","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":18,"TimeDate":"2015-07-04T22:42:37.5255565+02:00","time":"22:42:37","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '5,99'","Level":0}
+{"id":19,"TimeDate":"2015-07-04T22:42:37.7599127+02:00","time":"22:42:37","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 0","Level":0}
+{"id":20,"TimeDate":"2015-07-04T23:16:17.1313886+02:00","time":"23:16:17","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 6","Level":0}
+{"id":21,"TimeDate":"2015-07-05T00:23:07.370097+02:00","time":"00:23:07","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 6","Level":0}
+{"id":22,"TimeDate":"2015-07-05T00:35:37.9384081+02:00","time":"00:35:37","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 6","Level":0}
+{"id":23,"TimeDate":"2015-07-05T00:38:11.1484372+02:00","time":"00:38:11","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 6","Level":0}
+{"id":24,"TimeDate":"2015-07-05T01:01:44.2568781+02:00","time":"01:01:44","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 6","Level":0}
+{"id":4,"TimeDate":"2015-07-05T11:35:01.7992955+02:00","time":"11:35:01","ClassName":"form1","Method":".ctor","Description":"path is C:\\Users\\Tore\\Dropbox\\SourceTreeRepros\\SensorApp\\FormsAsyncTest\\bin\\Debug","Level":0}
+{"id":5,"TimeDate":"2015-07-05T11:35:04.6448647+02:00","time":"11:35:04","ClassName":"XbeeCOM","Method":"Open","Description":"Current port is 'com9'","Level":0}
+{"id":6,"TimeDate":"2015-07-05T11:35:04.8011772+02:00","time":"11:35:04","ClassName":"XbeeCOM","Method":"initPort","Description":"Running initPort in xbeecom","Level":0}
+{"id":7,"TimeDate":"2015-07-05T11:35:05.019928+02:00","time":"11:35:05","ClassName":"XbeeCOM","Method":"Open","Description":"The port 'com9' does not exist.","Level":0}
+{"id":8,"TimeDate":"2015-07-05T11:35:05.1918012+02:00","time":"11:35:05","ClassName":"form1","Method":"btn_Connect_Click","Description":"Unable to open COM-port","Level":0}
+{"id":9,"TimeDate":"2015-07-05T11:35:20.1943036+02:00","time":"11:35:20","ClassName":"XbeeCOM","Method":"Open","Description":"Current port is 'com9'","Level":0}
+{"id":10,"TimeDate":"2015-07-05T11:35:20.6161752+02:00","time":"11:35:20","ClassName":"XbeeCOM","Method":"Open","Description":"Serialport is OPEN, using port com9","Level":0}
+{"id":11,"TimeDate":"2015-07-05T11:35:20.959927+02:00","time":"11:35:20","ClassName":"XbeeCOM","Method":"Open","Description":"BaudRate is 9600","Level":0}
+{"id":12,"TimeDate":"2015-07-05T11:35:28.3368477+02:00","time":"11:35:28","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040BB3F1A","Level":0}
+{"id":13,"TimeDate":"2015-07-05T11:35:28.3993517+02:00","time":"11:35:28","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 BB 3F 1A FF FE 02 49 53 43","Level":0}
+{"id":14,"TimeDate":"2015-07-05T11:35:28.6962229+02:00","time":"11:35:28","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 BB 3F 1A FF FE 02 49 53 43'","Level":0}
+{"id":15,"TimeDate":"2015-07-05T11:35:28.7587228+02:00","time":"11:35:28","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":16,"TimeDate":"2015-07-05T11:35:28.868169+02:00","time":"11:35:28","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":17,"TimeDate":"2015-07-05T11:35:30.2901087+02:00","time":"11:35:30","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 8","Level":0}
+{"id":18,"TimeDate":"2015-07-05T11:35:30.4010184+02:00","time":"11:35:30","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 20","Level":0}
+{"id":19,"TimeDate":"2015-07-05T11:35:30.5416932+02:00","time":"11:35:30","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":20,"TimeDate":"2015-07-05T11:35:30.6822685+02:00","time":"11:35:30","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":21,"TimeDate":"2015-07-05T11:35:30.8072713+02:00","time":"11:35:30","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '5,17'","Level":0}
+{"id":22,"TimeDate":"2015-07-05T11:35:31.0416497+02:00","time":"11:35:31","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 0","Level":0}
+{"id":23,"TimeDate":"2015-07-05T11:37:49.4661629+02:00","time":"11:37:49","ClassName":"XbeeCOM","Method":"close","Description":"Serial port is open, closing com9","Level":0}
+{"id":24,"TimeDate":"2015-07-05T11:37:49.6536774+02:00","time":"11:37:49","ClassName":"XbeeCOM","Method":"close","Description":"Removing handler","Level":0}
+{"id":4,"TimeDate":"2015-07-05T12:50:31.636203+02:00","time":"12:50:31","ClassName":"form1","Method":".ctor","Description":"path is C:\\Users\\Tore\\Dropbox\\SourceTreeRepros\\SensorApp\\FormsAsyncTest\\bin\\Debug","Level":0}
+{"id":5,"TimeDate":"2015-07-05T12:50:37.3867554+02:00","time":"12:50:37","ClassName":"XbeeCOM","Method":"Open","Description":"Current port is 'com9'","Level":0}
+{"id":6,"TimeDate":"2015-07-05T12:50:37.6055216+02:00","time":"12:50:37","ClassName":"XbeeCOM","Method":"initPort","Description":"Running initPort in xbeecom","Level":0}
+{"id":7,"TimeDate":"2015-07-05T12:50:37.933628+02:00","time":"12:50:37","ClassName":"XbeeCOM","Method":"Open","Description":"Serialport is OPEN, using port com9","Level":0}
+{"id":8,"TimeDate":"2015-07-05T12:50:38.1994175+02:00","time":"12:50:38","ClassName":"XbeeCOM","Method":"Open","Description":"BaudRate is 9600","Level":0}
+{"id":9,"TimeDate":"2015-07-05T12:50:44.4813493+02:00","time":"12:50:44","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":10,"TimeDate":"2015-07-05T12:50:44.5438+02:00","time":"12:50:44","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":11,"TimeDate":"2015-07-05T12:50:44.7782039+02:00","time":"12:50:44","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":12,"TimeDate":"2015-07-05T12:50:44.8406795+02:00","time":"12:50:44","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":13,"TimeDate":"2015-07-05T12:50:44.950073+02:00","time":"12:50:44","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":14,"TimeDate":"2015-07-05T12:50:44.965732+02:00","time":"12:50:44","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 6","Level":0}
+{"id":15,"TimeDate":"2015-07-05T12:50:45.168806+02:00","time":"12:50:45","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 22","Level":0}
+{"id":16,"TimeDate":"2015-07-05T12:50:45.2938076+02:00","time":"12:50:45","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":17,"TimeDate":"2015-07-05T12:50:45.4500561+02:00","time":"12:50:45","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":18,"TimeDate":"2015-07-05T12:50:45.59068+02:00","time":"12:50:45","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '5'","Level":0}
+{"id":19,"TimeDate":"2015-07-05T12:50:59.0059777+02:00","time":"12:50:59","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":20,"TimeDate":"2015-07-05T12:50:59.0684912+02:00","time":"12:50:59","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":21,"TimeDate":"2015-07-05T12:50:59.2872106+02:00","time":"12:50:59","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":22,"TimeDate":"2015-07-05T12:50:59.3497081+02:00","time":"12:50:59","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":23,"TimeDate":"2015-07-05T12:50:59.4434846+02:00","time":"12:50:59","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":24,"TimeDate":"2015-07-05T12:50:59.4590868+02:00","time":"12:50:59","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 3","Level":0}
+{"id":25,"TimeDate":"2015-07-05T12:51:27.8941221+02:00","time":"12:51:27","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 25","Level":0}
+{"id":26,"TimeDate":"2015-07-05T12:51:28.0347453+02:00","time":"12:51:28","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":27,"TimeDate":"2015-07-05T12:51:28.1441512+02:00","time":"12:51:28","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":28,"TimeDate":"2015-07-05T12:51:28.3003684+02:00","time":"12:51:28","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '4,97'","Level":0}
+{"id":29,"TimeDate":"2015-07-05T12:51:38.8797086+02:00","time":"12:51:38","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":30,"TimeDate":"2015-07-05T12:51:38.9422038+02:00","time":"12:51:38","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":31,"TimeDate":"2015-07-05T12:51:39.1766266+02:00","time":"12:51:39","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":32,"TimeDate":"2015-07-05T12:51:39.2391058+02:00","time":"12:51:39","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":33,"TimeDate":"2015-07-05T12:51:39.3484785+02:00","time":"12:51:39","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":34,"TimeDate":"2015-07-05T12:51:39.3640831+02:00","time":"12:51:39","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 7","Level":0}
+{"id":35,"TimeDate":"2015-07-05T12:51:39.5203719+02:00","time":"12:51:39","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 21","Level":0}
+{"id":36,"TimeDate":"2015-07-05T12:51:39.692225+02:00","time":"12:51:39","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":37,"TimeDate":"2015-07-05T12:51:39.8328512+02:00","time":"12:51:39","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":38,"TimeDate":"2015-07-05T12:51:39.9735745+02:00","time":"12:51:39","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '4,97'","Level":0}
+{"id":39,"TimeDate":"2015-07-05T12:51:48.2872568+02:00","time":"12:51:48","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":40,"TimeDate":"2015-07-05T12:51:48.3341184+02:00","time":"12:51:48","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":41,"TimeDate":"2015-07-05T12:51:48.5841215+02:00","time":"12:51:48","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":42,"TimeDate":"2015-07-05T12:51:48.6466196+02:00","time":"12:51:48","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":43,"TimeDate":"2015-07-05T12:51:48.7559977+02:00","time":"12:51:48","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":44,"TimeDate":"2015-07-05T12:51:48.7716164+02:00","time":"12:51:48","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 9","Level":0}
+{"id":45,"TimeDate":"2015-07-05T12:51:48.9434932+02:00","time":"12:51:48","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 19","Level":0}
+{"id":46,"TimeDate":"2015-07-05T12:51:49.0843001+02:00","time":"12:51:49","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":47,"TimeDate":"2015-07-05T12:51:49.240503+02:00","time":"12:51:49","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":48,"TimeDate":"2015-07-05T12:51:49.3655259+02:00","time":"12:51:49","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '5,03'","Level":0}
+{"id":49,"TimeDate":"2015-07-05T12:52:38.6958551+02:00","time":"12:52:38","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":50,"TimeDate":"2015-07-05T12:52:38.758355+02:00","time":"12:52:38","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":51,"TimeDate":"2015-07-05T12:52:38.9933358+02:00","time":"12:52:38","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":52,"TimeDate":"2015-07-05T12:52:39.0559002+02:00","time":"12:52:39","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":53,"TimeDate":"2015-07-05T12:52:39.1652475+02:00","time":"12:52:39","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":54,"TimeDate":"2015-07-05T12:52:39.1808349+02:00","time":"12:52:39","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 13","Level":0}
+{"id":55,"TimeDate":"2015-07-05T12:52:39.3527105+02:00","time":"12:52:39","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 15","Level":0}
+{"id":56,"TimeDate":"2015-07-05T12:52:39.4933847+02:00","time":"12:52:39","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":57,"TimeDate":"2015-07-05T12:52:39.6183495+02:00","time":"12:52:39","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":58,"TimeDate":"2015-07-05T12:52:39.774585+02:00","time":"12:52:39","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '4,94'","Level":0}
+{"id":59,"TimeDate":"2015-07-05T12:52:44.0718542+02:00","time":"12:52:44","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":60,"TimeDate":"2015-07-05T12:52:44.1499782+02:00","time":"12:52:44","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":61,"TimeDate":"2015-07-05T12:52:44.3687272+02:00","time":"12:52:44","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":62,"TimeDate":"2015-07-05T12:52:44.4312247+02:00","time":"12:52:44","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":63,"TimeDate":"2015-07-05T12:52:44.5562571+02:00","time":"12:52:44","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":64,"TimeDate":"2015-07-05T12:52:44.5562571+02:00","time":"12:52:44","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 16","Level":0}
+{"id":65,"TimeDate":"2015-07-05T12:52:44.7125353+02:00","time":"12:52:44","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 12","Level":0}
+{"id":66,"TimeDate":"2015-07-05T12:52:44.8531052+02:00","time":"12:52:44","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":67,"TimeDate":"2015-07-05T12:52:44.9781364+02:00","time":"12:52:44","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":68,"TimeDate":"2015-07-05T12:52:45.1032025+02:00","time":"12:52:45","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '4,95'","Level":0}
+{"id":69,"TimeDate":"2015-07-05T12:52:51.1200076+02:00","time":"12:52:51","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":70,"TimeDate":"2015-07-05T12:52:51.1824951+02:00","time":"12:52:51","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":71,"TimeDate":"2015-07-05T12:52:51.432526+02:00","time":"12:52:51","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":72,"TimeDate":"2015-07-05T12:52:51.4794409+02:00","time":"12:52:51","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":73,"TimeDate":"2015-07-05T12:52:51.5887692+02:00","time":"12:52:51","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":74,"TimeDate":"2015-07-05T12:52:51.6200203+02:00","time":"12:52:51","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 12","Level":0}
+{"id":75,"TimeDate":"2015-07-05T12:52:51.7606371+02:00","time":"12:52:51","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 16","Level":0}
+{"id":76,"TimeDate":"2015-07-05T12:52:51.9013172+02:00","time":"12:52:51","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":77,"TimeDate":"2015-07-05T12:52:52.0264574+02:00","time":"12:52:52","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":78,"TimeDate":"2015-07-05T12:52:52.1670872+02:00","time":"12:52:52","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '5,01'","Level":0}
+{"id":79,"TimeDate":"2015-07-05T13:05:27.7561659+02:00","time":"13:05:27","ClassName":"XbeeCOM","Method":"close","Description":"Serial port is open, closing com9","Level":0}
+{"id":80,"TimeDate":"2015-07-05T13:05:27.9593044+02:00","time":"13:05:27","ClassName":"XbeeCOM","Method":"close","Description":"Removing handler","Level":0}
+{"id":4,"TimeDate":"2015-09-04T16:08:56.3392632+02:00","time":"16:08:56","ClassName":"form1","Method":".ctor","Description":"path is C:\\Users\\Tore\\Dropbox\\SourceTreeRepros\\SensorApp\\FormsAsyncTest\\bin\\Debug","Level":0}
+{"id":5,"TimeDate":"2015-09-04T16:09:01.6213186+02:00","time":"16:09:01","ClassName":"XbeeCOM","Method":"Open","Description":"Current port is 'com9'","Level":0}
+{"id":6,"TimeDate":"2015-09-04T16:09:01.8557117+02:00","time":"16:09:01","ClassName":"XbeeCOM","Method":"initPort","Description":"Running initPort in xbeecom","Level":0}
+{"id":7,"TimeDate":"2015-09-04T16:09:02.1369759+02:00","time":"16:09:02","ClassName":"XbeeCOM","Method":"Open","Description":"The port 'com9' does not exist.","Level":0}
+{"id":8,"TimeDate":"2015-09-04T16:09:02.4338197+02:00","time":"16:09:02","ClassName":"form1","Method":"btn_Connect_Click","Description":"Unable to open COM-port","Level":0}
+{"id":4,"TimeDate":"2015-09-04T16:11:39.2302151+02:00","time":"16:11:39","ClassName":"form1","Method":".ctor","Description":"path is C:\\Users\\Tore\\Dropbox\\SourceTreeRepros\\SensorApp\\FormsAsyncTest\\bin\\Debug","Level":0}
+{"id":5,"TimeDate":"2015-09-04T16:11:48.9028446+02:00","time":"16:11:48","ClassName":"XbeeCOM","Method":"Open","Description":"Current port is 'com11'","Level":0}
+{"id":6,"TimeDate":"2015-09-04T16:11:49.1215899+02:00","time":"16:11:49","ClassName":"XbeeCOM","Method":"initPort","Description":"Running initPort in xbeecom","Level":0}
+{"id":7,"TimeDate":"2015-09-04T16:11:49.3872454+02:00","time":"16:11:49","ClassName":"XbeeCOM","Method":"Open","Description":"Serialport is OPEN, using port com11","Level":0}
+{"id":8,"TimeDate":"2015-09-04T16:11:49.6374147+02:00","time":"16:11:49","ClassName":"XbeeCOM","Method":"Open","Description":"BaudRate is 9600","Level":0}
+{"id":9,"TimeDate":"2015-09-04T16:11:58.1717132+02:00","time":"16:11:58","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"Checking battery for device 0013A20040B7DF64","Level":0}
+{"id":10,"TimeDate":"2015-09-04T16:11:58.2342172+02:00","time":"16:11:58","ClassName":"form1","Method":"btn_CheckBatt_Click","Description":"7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D","Level":0}
+{"id":11,"TimeDate":"2015-09-04T16:11:58.4842172+02:00","time":"16:11:58","ClassName":"XbeeCOM","Method":"Write","Description":"Sending this hex thingy '7E 00 0F 17 01 00 13 A2 00 40 B7 DF 64 FF FE 02 49 53 5D'","Level":0}
+{"id":12,"TimeDate":"2015-09-04T16:11:58.5467171+02:00","time":"16:11:58","ClassName":"XbeeCOM","Method":"Write","Description":"Writing 20 bytes to the serialport","Level":0}
+{"id":13,"TimeDate":"2015-09-04T16:11:58.6563308+02:00","time":"16:11:58","ClassName":"XbeeCOM","Method":"Write","Description":"Writing done","Level":0}
+{"id":14,"TimeDate":"2015-09-04T16:11:58.7032196+02:00","time":"16:11:58","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 5","Level":0}
+{"id":15,"TimeDate":"2015-09-04T16:11:58.8438292+02:00","time":"16:11:58","ClassName":"XbeeCOM","Method":"DataReceivedHandler","Description":"Data frame Received, length: 23","Level":0}
+{"id":16,"TimeDate":"2015-09-04T16:11:58.9844571+02:00","time":"16:11:58","ClassName":"form1","Method":"On_ValidHexPacket","Description":"Valid bytes packet ","Level":0}
+{"id":17,"TimeDate":"2015-09-04T16:11:59.1407719+02:00","time":"16:11:59","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, old is '0'","Level":0}
+{"id":18,"TimeDate":"2015-09-04T16:11:59.2814104+02:00","time":"16:11:59","ClassName":"form1","Method":"PacketInterpreter","Description":"Updating device battery level, new is '6,09'","Level":0}
+{"id":19,"TimeDate":"2015-09-04T16:12:19.0967515+02:00","time":"16:12:19","ClassName":"XbeeCOM","Method":"close","Description":"Serial port is open, closing com11","Level":0}
+{"id":20,"TimeDate":"2015-09-04T16:12:19.2842564+02:00","time":"16:12:19","ClassName":"XbeeCOM","Method":"close","Description":"Removing handler","Level":0}
+{"id":4,"TimeDate":"2015-09-04T18:30:37.3071189+02:00","time":"18:30:37","ClassName":"form1","Method":".ctor","Description":"path is C:\\Users\\Tore\\Dropbox\\SourceTreeRepros\\SensorApp\\FormsAsyncTest\\bin\\Debug","Level":0}

@@ -200,6 +200,7 @@ public class MonitorDevice : Microsoft.WindowsAzure.Storage.Table.TableEntity
     //public string LastStatus { get; set; }
     //public string Logs;//{ get; set; }
     public MonitorHeading Heading { get; set; }
+    
     public double BatteryLevel { get; set; }
     public string MAC { get; set; }
     public string FlightPlan;// { get; set; }

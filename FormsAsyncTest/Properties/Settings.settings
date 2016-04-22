@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ComPort" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">com13</Value>
+      <Value Profile="(Default)">com11</Value>
     </Setting>
   </Settings>
 </SettingsFile>

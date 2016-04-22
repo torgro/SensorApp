@@ -25,7 +25,7 @@ namespace FormsAsyncTest.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("com13")]
+        [global::System.Configuration.DefaultSettingValueAttribute("com11")]
         public string ComPort {
             get {
                 return ((string)(this["ComPort"]));

@@ -257,6 +257,29 @@ public class AzureStorage
         return results;
     }
 
+    public List<T> GetEntity<T>(string PartKey, string rowKey, string queryComparisons) where T : ITableEntity, new()
+    {
+        TableQuery<T> query;
+        string filterRowKey = string.Empty;
+        string filterPartkey = string.Empty;
+        List<T> results = null;
+        string filter = string.Empty;
+        try
+        {
+            filterPartkey = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, PartKey);
+            filterRowKey = TableQuery.GenerateFilterCondition("RowKey", queryComparisons, rowKey);
+            filter = TableQuery.CombineFilters(filterPartkey,TableOperators.And, filterRowKey);
+            query = new TableQuery<T>().Where(filter);
+            results = this.tbl.ExecuteQuery(query).Select(ent => (T)ent).ToList();
+            return results;
+        }
+        catch (Exception ex)
+        {
+            this.LogIt("Exception in GetEntityByRowKey - " + ex.Message);
+        }
+        return results;
+    }
+
     public async Task<List<T>> GetEntityByRowKeyAsync<T>(string rowKey) where T : ITableEntity , new()
     {
         TableQuery<T> query;

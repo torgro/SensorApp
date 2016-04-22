@@ -20,7 +20,7 @@ public class DataSamples
 
     public void AddPacket(DataSamplePacket packet)
     {
-        packet.Id = this.List.Count;
+        packet.Id = DateTime.Now.Ticks; //this.List.Count;
         packet.TimeDate = DateTime.Now;
         packet.Time = DateTime.Now.ToLongTimeString();
         this.List.Add(packet);
@@ -31,7 +31,7 @@ public class DataSamples
         DataSamplePacket packet = GenericPack.ToDataSamplePacket();
         if(packet != null)
         {
-            packet.Id = this.List.Count;
+            packet.Id = DateTime.Now.Ticks; //this.List.Count;
             packet.TimeDate = DateTime.Now;
             packet.Time = DateTime.Now.ToLongTimeString();
             this.List.Add(packet);
@@ -65,11 +65,11 @@ public class DataSamplePacket : Microsoft.WindowsAzure.Storage.Table.TableEntity
     public byte Delimitter;
     public DateTime TimeDate { get; set; }
     public string Time { get; set; }
-    public int Id 
+    public long Id 
     {
         get
         {
-            return int.Parse(this.RowKey);
+            return long.Parse(this.RowKey);
         }
         set
         {

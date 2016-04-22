@@ -54,6 +54,17 @@ public class AutoTasks
         return list;
     }
 
+    public DateTime GetNextTaskStart()
+    {
+        System.Collections.Generic.IEnumerable<AutoTask> q =
+            from it in this.List.AsEnumerable()
+            where it.Executed == false
+            orderby it.StartAt descending
+            select it;
+
+        return q.First().StartAt;
+    }
+
     public async Task<bool> RunPendingTasksAsync()
     {
         bool Executed = false;

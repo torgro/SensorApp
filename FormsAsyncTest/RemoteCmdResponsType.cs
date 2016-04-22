@@ -63,7 +63,8 @@ namespace RemoteCmdResponsType
                 if (bytes[19] > 0 || bytes[20] > 0)
                 {
                     byte[] by = new byte[] { bytes[19], bytes[20] };
-                    var digMask = BitConverter.ToInt32(by, 0);
+                    var digMask = BitConverter.ToInt16(by, 0);
+                    //var ddd = BitConverter.to
                     this.DigitalChannelMask = (RemoteCmdPacket.DigitalMask)digMask;
                 }
                 else
@@ -79,7 +80,7 @@ namespace RemoteCmdResponsType
                 if (bytes.Length > 23)
                 {
                     //22 og 23 = DigitalSample (bit mask)
-                    this.DigitalSamples = (RemoteCmdPacket.DigitalMask)BitConverter.ToInt32(new byte[] { bytes[22], bytes[23] }, 0);
+                    this.DigitalSamples = (RemoteCmdPacket.DigitalMask)BitConverter.ToInt16(new byte[] { bytes[22], bytes[23] }, 0);
                 }
             }
 

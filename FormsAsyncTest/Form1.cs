@@ -55,7 +55,7 @@ namespace FormsAsyncTest
             this.AzureDataSample = new AzureStorage();
             this.AzureDataSample.LogEvent += this.logit;
             this.AzureDataSample.GetOrCreateTable("datasample");
-            this.AzureDataSample.DropAllEntities<DataSamplePacket>("datasample");
+           // this.AzureDataSample.DropAllEntities<DataSamplePacket>("datasample");
             this.data_Stats.SuspendLayout();
             this.data_Stats.DataSource = this.Statistics.StatParis;
             this.data_Stats.ResumeLayout();
@@ -67,15 +67,18 @@ namespace FormsAsyncTest
             this.ticks.Tick += this.Ticks_Elapsed;
             MonitorDevice mon = new MonitorDevice();
             mon.Enabled = true;
-            mon.MAC = "0013A20040A1D8CE";
+            //mon.MAC = "0013A20040BB3F1A";
+            mon.MAC = "0013A20040B7DF64";
             mon.GPSlat = "59.664874";
             mon.GPSlong = "6.444361";
             mon.Name = "bøen";
             mon.PartitionKey = "device";
             this.Devices.AddDevice(mon);
             this.UpdateStats();
-            this.UpdateStatsView();        
-            
+            this.UpdateStatsView();
+            this.SetupGridCmdButtons();
+            this.Logs.SendToFile = true;
+            this.logit("path is " + System.IO.Directory.GetCurrentDirectory());
         }              
 
         private void UpdateStats()
@@ -161,7 +164,8 @@ namespace FormsAsyncTest
         {
             this.logit("Ticks_Elapsed start");            
             await Tasks.RunPendingTasksAsync();
-            await Task.Run(() => UpdateStats());
+            //await Task.Run(() => UpdateStats());
+            //this.ticks.in
             this.UpdateStats();            
             this.UpdateStatsView(); 
         }
@@ -176,6 +180,7 @@ namespace FormsAsyncTest
         {
             try
             {
+                //this.SetupGridCmdButtons();
                 this.data_main.SuspendLayout();
                 switch (this.CurrentGridView)
                 {
@@ -292,12 +297,13 @@ namespace FormsAsyncTest
                                     MonitorDevice dev = this.Devices.GetSingleDevice(datasample.SourceAdr64);
                                     this.SetDevicePin(true, RemoteCmdPacket.XbeeAPIpin.D0, datasample.SourceAdr64, dev.TimeOutMinutes);
                                     this.Datasample.AddPacket(datasample);
+                                    
                                     if (dev.GPSlat.Length > 0)
                                     {
                                         this.logit("Sending sample to azure service bus");
                                         this.Azure.SendDatasample(datasample, dev);
                                         this.logit("Sending sample to azure storage");
-                                        this.SendDataSampleToAzure(datasample);
+                                        this.SendDataSampleToAzure(this.Datasample.List.Last());
                                     }
                                     else
                                     {
@@ -353,7 +359,7 @@ namespace FormsAsyncTest
             {
                 if(this.AzureDataSample.TableCreated)
                 {
-                    await this.AzureDataSample.InsertOrReplaceEntityAsync(packet);
+                    this.AzureDataSample.InsertOrReplaceEntityAsync(packet);
                     this.logit("SendDataSampleToAzure - Posted sample to Azure");
                 }
                 else
@@ -454,6 +460,7 @@ namespace FormsAsyncTest
             this.CurrentGridView = GridViewMode.Log;
             this.UpdateDGV();
             this.btn_logs.Enabled = true;
+            this.SetupGridCmdButtons();
         }
 
         private void btn_tasks_Click(object sender, EventArgs e)
@@ -461,6 +468,7 @@ namespace FormsAsyncTest
             this.btn_tasks.Enabled = false;
             this.CurrentGridView = GridViewMode.Tasks;
             this.UpdateDGV();
+            this.SetupGridCmdButtons();
             this.btn_tasks.Enabled = true;
         }
 
@@ -469,6 +477,7 @@ namespace FormsAsyncTest
             this.btn_device.Enabled = false;
             this.CurrentGridView = GridViewMode.Device;
             this.UpdateDGV();
+            this.SetupGridCmdButtons();
             this.btn_device.Enabled = true;
         }
 
@@ -477,6 +486,7 @@ namespace FormsAsyncTest
             this.btn_AllPackets.Enabled = false;
             this.CurrentGridView = GridViewMode.AllPackets;
             this.UpdateDGV();
+            this.SetupGridCmdButtons();
             this.btn_AllPackets.Enabled = true;
         }
 
@@ -566,6 +576,7 @@ namespace FormsAsyncTest
                     RemoteCmdPacket packet = new RemoteCmdPacket();
                     packet.GetBatteryLevel(mac, (byte)dev.DeviceID);
                     this.logit(packet.ToHexString());
+                    this.PacketInterpreter(packet.ToGenericPacket());
                     this.PacketInterpreter(packet.ToGenericPacket());
                     this.serial.Write(packet.ToByteArray());
                 }
@@ -784,26 +795,100 @@ namespace FormsAsyncTest
 
         private void btn_TestAzure_Click(object sender, EventArgs e)
         {
-            MonitorDevice mon = new MonitorDevice();
-            mon.Enabled = true;
-            mon.MAC = "0013A20040A1D8CC";
-            mon.GPSlat = "59.664875";
-            mon.GPSlong = "6.444362";
-            mon.Name = "bøen2";
-            mon.PartitionKey = "device";
-            this.Devices.AddDevice(mon);
-            this.logit("Creating or getting table");
-            this.Storage.GetOrCreateTable("Sensors");
-            this.logit("updating table recoreds");
-            List<MonitorDevice> llist = this.Storage.GetAzureTableAll<MonitorDevice>("device");
-            var insert = this.Storage.InsertOrReplaceEntityBatch<MonitorDevice>(this.Devices.List);
-            this.logit("done");            
+            //MonitorDevice mon = new MonitorDevice();
+            //mon.Enabled = true;
+            //mon.MAC = "0013A20040A1D8CC";
+            //mon.GPSlat = "59.664875";
+            //mon.GPSlong = "6.444362";
+            //mon.Name = "bøen2";
+            //mon.PartitionKey = "device";
+            //this.Devices.AddDevice(mon);
+            //this.logit("Creating or getting table");
+            //this.Storage.GetOrCreateTable("Sensors");
+            //this.logit("updating table recoreds");
+            //List<MonitorDevice> llist = this.Storage.GetAzureTableAll<MonitorDevice>("device");
+            //var insert = this.Storage.InsertOrReplaceEntityBatch<MonitorDevice>(this.Devices.List);
+            //this.logit("done");       
+
+            List<DataSamplePacket> list = this.AzureDataSample.GetEntity<DataSamplePacket>("datasample", "635690574949901010", QueryComparisons.GreaterThan);
+            string tore = "";
         }
 
         private void btn_pushbullet_Click(object sender, EventArgs e)
         {
             Pushbullet push = new Pushbullet();
             push.SendLink("", "testtitle", "thisis the body");
+        }
+
+        private void ClearLog()
+        {
+            this.logit("cmd1 click event");
+        }
+
+        private void SetupGridCmdButtons()
+        {
+            switch (this.CurrentGridView)
+            {
+                case GridViewMode.Log:
+                    this.btn_Cmd1.Text = "Clear all";
+                    this.btn_Cmd1.Visible = true;
+                    this.btn_Cmd2.Visible = false;
+                    this.btn_Cmd3.Visible = false;
+                    break;
+                case GridViewMode.Device:
+                    this.btn_Cmd1.Visible = false;
+                    this.btn_Cmd2.Visible = false;
+                    this.btn_Cmd3.Visible = false;
+                    break;
+                case GridViewMode.AllPackets:
+                    this.btn_Cmd1.Text = "Clear all";
+                    this.btn_Cmd1.Visible = false;
+                    this.btn_Cmd2.Visible = false;
+                    this.btn_Cmd3.Visible = false;
+                    break;
+                case GridViewMode.DataSample:
+                    this.btn_Cmd1.Visible = false;
+                    this.btn_Cmd2.Visible = false;
+                    this.btn_Cmd3.Visible = false;
+                    break;
+                case GridViewMode.RemoteCommand:
+                    this.btn_Cmd1.Visible = false;
+                    this.btn_Cmd2.Visible = false;
+                    this.btn_Cmd3.Visible = false;
+                    break;
+                case GridViewMode.Tasks:
+                    this.btn_Cmd1.Visible = false;
+                    this.btn_Cmd2.Visible = false;
+                    this.btn_Cmd3.Visible = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void btn_Cmd1_Click(object sender, EventArgs e)
+        {
+            switch (this.CurrentGridView)
+            {
+                case GridViewMode.Log:
+                    this.ClearLog();
+                    break;
+                case GridViewMode.Device:
+                    this.btn_Cmd1.Visible = true;
+                    this.btn_Cmd1.Text = "AddDevice";
+
+                    break;
+                case GridViewMode.AllPackets:
+                    break;
+                case GridViewMode.DataSample:
+                    break;
+                case GridViewMode.RemoteCommand:
+                    break;
+                case GridViewMode.Tasks:
+                    break;
+                default:
+                    break;
+            }
         }
 
         
